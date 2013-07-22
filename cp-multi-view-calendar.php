@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: CP Multi View Calendar
+Plugin Name: CP Multi View Event Calendar
 Plugin URI: http://wordpress.dwbooster.com/calendars/cp-multi-view-calendar
 Description: This plugin allows you to insert event calendars into your WP website.
 Version: 1.01
