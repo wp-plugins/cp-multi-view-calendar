@@ -161,3 +161,4 @@ The following area some sample event calendar views. You can apply or mix config
 
 = 1.0.1 =
 * Interface modifications.
+* Added missing images folder
