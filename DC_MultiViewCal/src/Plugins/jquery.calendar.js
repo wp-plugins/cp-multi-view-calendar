@@ -2083,7 +2083,17 @@
             $(".mv_dlg").css("height","0px");
         }
         function parseDate(str){
-            return new Date(Date.parse(str));
+            var mon1 = parseInt(str.substring(0,2));
+            var dt1 = parseInt(str.substring(3,5));
+            var yr1 = parseInt(str.substring(6,10));
+            if (str.length==16)
+            {
+                var h = parseInt(str.substring(11,13));
+                var m = parseInt(str.substring(14,16));
+                return new Date(yr1, mon1-1, dt1,h,m);
+            }
+            else
+                return new Date(yr1, mon1-1, dt1);
         }
         function gP(h, m) {
             //return h * 42 + parseInt(m / 60 * 42);
