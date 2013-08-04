@@ -2083,13 +2083,13 @@
             $(".mv_dlg").css("height","0px");
         }
         function parseDate(str){
-            var mon1 = parseInt(str.substring(0,2));
-            var dt1 = parseInt(str.substring(3,5));
-            var yr1 = parseInt(str.substring(6,10));
+            var mon1 = 1*(str.substring(0,2));
+            var dt1 = 1*(str.substring(3,5));
+            var yr1 = 1*(str.substring(6,10));
             if (str.length==16)
             {
-                var h = parseInt(str.substring(11,13));
-                var m = parseInt(str.substring(14,16));
+                var h = 1*(str.substring(11,13));
+                var m = 1*(str.substring(14,16));
                 return new Date(yr1, mon1-1, dt1,h,m);
             }
             else
