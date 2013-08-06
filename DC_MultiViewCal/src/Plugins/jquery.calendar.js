@@ -1965,8 +1965,7 @@
                             if (($.inArray(ne[j].toString(), excludeEvents))==-1)
                             {
                                 tmp = v.slice(0);
-                                tmp[2] = ne[j]; 
-                                console.log(DateAdd("l", diff , ne[j]));
+                                tmp[2] = ne[j];
                                 tmp[3] = DateAdd("l", diff , ne[j]);
                                 tmpArray[tmpArray.length] = tmp;
                             }
@@ -2008,7 +2007,7 @@
 
                     if (option.eventItems[i][2] >= es) {
                         for (var j = 0; j < jl; j++) {
-                            if (option.eventItems[i][0] == events[j][0] && option.eventItems[i][2] < start) {
+                            if ((option.eventItems[i][0] == events[j][0]) && (option.eventItems[i][2] == events[j][2]) && (option.eventItems[i][2] < start)) {
                                 events.splice(j, 1); //for duplicated event
                                 jl--;
                                 break;
@@ -2083,17 +2082,10 @@
             $(".mv_dlg").css("height","0px");
         }
         function parseDate(str){
-            var mon1 = 1*(str.substring(0,2));
-            var dt1 = 1*(str.substring(3,5));
-            var yr1 = 1*(str.substring(6,10));
-            if (str.length==16)
-            {
-                var h = 1*(str.substring(11,13));
-                var m = 1*(str.substring(14,16));
-                return new Date(yr1, mon1-1, dt1,h,m);
-            }
-            else
-                return new Date(yr1, mon1-1, dt1);
+            var s = str.split(" ");
+            var s0 = s[0].split("/");
+            var s1 = s[1].split(":");
+            return new Date(s0[2]*1, s0[0]*1-1, s0[1]*1,s1[0]*1,s1[1]*1);
         }
         function gP(h, m) {
             //return h * 42 + parseInt(m / 60 * 42);
