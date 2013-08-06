@@ -7,6 +7,8 @@ define("JC_NO_OVERLAPPING_TIME",false);
 define("JC_NO_OVERLAPPING_SUBJECT",false);
 define("JC_NO_OVERLAPPING_LOCATION",false);
 
+$_POST = stripslashes_deep( $_POST );
+
 $method = $_GET["method"];
 $calid = $_GET["calid"];
 
