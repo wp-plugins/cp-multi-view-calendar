@@ -111,7 +111,7 @@
           <script>function showhide(id){var obj1 = document.getElementById("<?php echo $this->prefix; ?>_showtooltip");var obj2 = document.getElementById("<?php echo $this->prefix; ?>_tooltipon");var obj3 = document.getElementById(id+"div");if ((obj1.checked) && (obj2.selectedIndex==1))    obj3.style.display = "none";else        obj3.style.display = "";}</script>
           <div>
             <input type="checkbox" id="<?php echo $this->prefix; ?>_showtooltip" name="<?php echo $this->prefix; ?>[showtooltip]" value="true"  onclick="javascript:showhide('mvparams')"/><span>Show tooltip on</span>
-            <select id="<?php echo $this->prefix; ?>_tooltipon" name="<?php echo $this->prefix; ?>[tooltipon]" onchange="javascript:showhide('mvparams')"><option value="1"  >mouse over</option><option value="0" >click</option></select>
+            <select id="<?php echo $this->prefix; ?>_tooltipon" name="<?php echo $this->prefix; ?>[tooltipon]" onchange="javascript:showhide('mvparams')"><option value="0"  >mouse over</option><option value="1" >click</option></select>
           </div>
           <label id="mvparams-lbl" class="hasTip">&nbsp;</label>
           <div id="mvparamsdiv">
