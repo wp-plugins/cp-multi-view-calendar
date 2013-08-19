@@ -104,11 +104,11 @@ function addCalendar($calid, $st, $et, $sub, $ade, $loc){
     if (checkIfOverlapping($calid, $st, $et,$sub, $loc,0))
     {
     $sql = "insert into `".DC_MV_CAL."` (`".DC_MV_CAL_IDCAL."`,`".DC_MV_CAL_TITLE."`, `".DC_MV_CAL_FROM."`, `".DC_MV_CAL_TO."`, `".DC_MV_CAL_ISALLDAY."`, `".DC_MV_CAL_LOCATION."`, `owner`, `published`) values ('".$calid."','"
-      .$wpdb->escape($sub)."', '"
+      .esc_sql($sub)."', '"
       .php2MySqlTime(js2PhpTime($st))."', '"
       .php2MySqlTime(js2PhpTime($et))."', '"
-      .$wpdb->escape($ade)."', '"
-      .$wpdb->escape($loc)."', ".$user->ID.",1)";
+      .esc_sql($ade)."', '"
+      .esc_sql($loc)."', ".$user->ID.",1)";
     
     if (!$wpdb->query($sql)){
       $ret['IsSuccess'] = false;
@@ -140,13 +140,13 @@ function addDetailedCalendar($calid, $st, $et, $sub, $ade, $dscr, $loc, $color, 
     if (checkIfOverlapping($calid, $st, $et,$sub, $loc,0))
     {
     $sql = "insert into `".DC_MV_CAL."` (`".DC_MV_CAL_IDCAL."`,`".DC_MV_CAL_TITLE."`, `".DC_MV_CAL_FROM."`, `".DC_MV_CAL_TO."`, `".DC_MV_CAL_ISALLDAY."`, `".DC_MV_CAL_DESCRIPTION."`, `".DC_MV_CAL_LOCATION."`, `".DC_MV_CAL_COLOR."`,`rrule`,`uid`,`owner`, `published`) values ('".$calid."','"
-      .$wpdb->escape($sub)."', '"
+      .esc_sql($sub)."', '"
       .php2MySqlTime(js2PhpTime($st))."', '"
       .php2MySqlTime(js2PhpTime($et))."', '"
-      .$wpdb->escape($ade)."', '"
-      .$wpdb->escape($dscr)."', '"
-      .$wpdb->escape($loc)."', '"
-      .$wpdb->escape($color)."', '".$wpdb->escape($rrule)."', ".$wpdb->escape($uid).", ".$user->ID.",1 )";
+      .esc_sql($ade)."', '"
+      .esc_sql($dscr)."', '"
+      .esc_sql($loc)."', '"
+      .esc_sql($color)."', '".esc_sql($rrule)."', ".esc_sql($uid).", ".$user->ID.",1 )";
     
     if (!$wpdb->query($sql)){
       $ret['IsSuccess'] = false;
@@ -284,12 +284,12 @@ function updateDetailedCalendar($id, $st, $et, $sub, $ade, $dscr, $loc, $color, 
             $sql = "update `".DC_MV_CAL."` set"
               . " `".DC_MV_CAL_FROM."`='" . php2MySqlTime(js2PhpTime($st)) . "', "
               . " `".DC_MV_CAL_TO."`='" . php2MySqlTime(js2PhpTime($et)) . "', "
-              . " `".DC_MV_CAL_TITLE."`='" . $wpdb->escape($sub) . "', "
-              . " `".DC_MV_CAL_ISALLDAY."`='" . $wpdb->escape($ade) . "', "
-              . " `".DC_MV_CAL_DESCRIPTION."`='" . $wpdb->escape($dscr) . "', "
-              . " `".DC_MV_CAL_LOCATION."`='" . $wpdb->escape($loc) . "', "
-              . " `".DC_MV_CAL_COLOR."`='" . $wpdb->escape($color) . "', "
-              . " `rrule`='" . $wpdb->escape($rrule) . "' "
+              . " `".DC_MV_CAL_TITLE."`='" . esc_sql($sub) . "', "
+              . " `".DC_MV_CAL_ISALLDAY."`='" . esc_sql($ade) . "', "
+              . " `".DC_MV_CAL_DESCRIPTION."`='" . esc_sql($dscr) . "', "
+              . " `".DC_MV_CAL_LOCATION."`='" . esc_sql($loc) . "', "
+              . " `".DC_MV_CAL_COLOR."`='" . esc_sql($color) . "', "
+              . " `rrule`='" . esc_sql($rrule) . "' "
               . "where `id`=" . $id;            
             if (!$wpdb->query($sql)){
               $ret['IsSuccess'] = false;
@@ -317,7 +317,7 @@ function updateDetailedCalendar($id, $st, $et, $sub, $ade, $dscr, $loc, $color, 
             //add
             $pre_rrule .= ";".$rruleType;
             $sql = "update `".DC_MV_CAL."` set"
-              . " `rrule`='" . $wpdb->escape($pre_rrule) . "' "
+              . " `rrule`='" . esc_sql($pre_rrule) . "' "
               . "where `id`=" . $id;            
             $wpdb->query($sql);
             return addDetailedCalendar($calid, $st, $et, $sub, $ade, $dscr, $loc, $color, $rrule,0,$tz);
@@ -327,12 +327,12 @@ function updateDetailedCalendar($id, $st, $et, $sub, $ade, $dscr, $loc, $color, 
             $sql = "update `".DC_MV_CAL."` set"
               . " `".DC_MV_CAL_FROM."`='" . php2MySqlTime(js2PhpTime($st)) . "', "
               . " `".DC_MV_CAL_TO."`='" . php2MySqlTime(js2PhpTime($et)) . "', "
-              . " `".DC_MV_CAL_TITLE."`='" . $wpdb->escape($sub) . "', "
-              . " `".DC_MV_CAL_ISALLDAY."`='" . $wpdb->escape($ade) . "', "
-              . " `".DC_MV_CAL_DESCRIPTION."`='" . $wpdb->escape($dscr) . "', "
-              . " `".DC_MV_CAL_LOCATION."`='" . $wpdb->escape($loc) . "', "
-              . " `".DC_MV_CAL_COLOR."`='" . $wpdb->escape($color) . "', "
-              . " `rrule`='" . $wpdb->escape($rrule) . "' "
+              . " `".DC_MV_CAL_TITLE."`='" . esc_sql($sub) . "', "
+              . " `".DC_MV_CAL_ISALLDAY."`='" . esc_sql($ade) . "', "
+              . " `".DC_MV_CAL_DESCRIPTION."`='" . esc_sql($dscr) . "', "
+              . " `".DC_MV_CAL_LOCATION."`='" . esc_sql($loc) . "', "
+              . " `".DC_MV_CAL_COLOR."`='" . esc_sql($color) . "', "
+              . " `rrule`='" . esc_sql($rrule) . "' "
               . "where `id`=" . $id;            
             if (!$wpdb->query($sql)){
               $ret['IsSuccess'] = false;
@@ -364,7 +364,7 @@ function removeCalendar($id,$rruleType){
             $exdate = $rows[0]->exdate.substr($rruleType,8);
             
             $sql = "update `".DC_MV_CAL."` set"
-              . " `exdate`='" . $wpdb->escape($exdate) . "' "
+              . " `exdate`='" . esc_sql($exdate) . "' "
               . "where `id`=" . $id;
             
             if (!$wpdb->query($sql)){
@@ -393,7 +393,7 @@ function removeCalendar($id,$rruleType){
             //add
             $pre_rrule .= ";".substr($rruleType,4);
             $sql = "update `".DC_MV_CAL."` set"
-              . " `rrule`=" . $wpdb->escape($pre_rrule) . " "
+              . " `rrule`=" . esc_sql($pre_rrule) . " "
               . "where `id`=" . $id;            
             if (!$qpdb->query($sql)){
               $ret['IsSuccess'] = false;
