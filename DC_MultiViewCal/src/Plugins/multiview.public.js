@@ -16,7 +16,7 @@ try {
             var pathCalendar = mvcconfig.ajax_url;
             dc_subjects = "";
             dc_locations = "";
-            initMultiViewCal("cal"+mvcconfig.calendar, mvcconfig.calendar,(mvcconfig.params));
+            initMultiViewCal("cal"+mvcconfig.calendar+"_"+i, mvcconfig.calendar,(mvcconfig.params));
         }
     }
 }catch (e) {} 
