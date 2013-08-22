@@ -135,7 +135,7 @@ class CP_MultiViewCalendar extends CP_BaseClass {
         }        
         $params = '{'.substr($params,1).'}';
         
-        wp_localize_script('cpmvc-publicjs', 'cpmvc_configmultiview'.($this->print_counter++), array('obj'  	=>
+        wp_localize_script('cpmvc-publicjs', 'cpmvc_configmultiview'.($this->print_counter), array('obj'  	=>
               '{"params":'.$params.',
                "ajax_url":"'.str_replace(array('"', "'"),array('\\"', "\\'"),$this->get_site_url()).'/?cpmvc_id='.$atts["id"].'&cpmvc_do_action=mvparse",
                "calendar":"'.str_replace(array('"', "'"),array('\\"', "\\'"),$atts["id"]).'"
@@ -143,6 +143,7 @@ class CP_MultiViewCalendar extends CP_BaseClass {
            ));
         
         @include dirname( __FILE__ ) . '/cp-public-int.inc.php';
+        $this->print_counter++;
     }
 
 

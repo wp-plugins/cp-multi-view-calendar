@@ -17,7 +17,7 @@ global $wpdb;
 <link href="<?php echo plugins_url('/DC_MultiViewCal/css/main.css', __FILE__); ?>" type="text/css" rel="stylesheet" />
 <noscript>The CP Multi View Event Calendar requires JavaScript enabled</noscript>
  <div style="z-index:1000;">
-    <div id="cal1" class="multicalendar"></div>
+    <div id="cal1_<?php echo $this->print_counter; ?>" class="multicalendar"></div>
  </div>        
  <div style="clear:both;"></div> 
 
