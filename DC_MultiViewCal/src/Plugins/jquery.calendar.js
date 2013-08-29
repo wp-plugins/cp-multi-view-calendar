@@ -2315,7 +2315,7 @@
                 data = getdata($(this));
             }
             if (data != null) {
-                if (option.quickDeleteUrl != "" && data[8] == 1 && ( (option.readonly != true) || (option.readonly == true && option.showtooltipdwm) )) {
+                if (option.quickDeleteUrl != "" && data[8] == 1 && ( (option.readonly != true) || (option.readonly == true && option.showtooltipdwm) || (option.readonly == true && option.showtooltipdwm_mouseover)   )) {
                      var csbuddle = '<div id="bbit-cs-buddle">'
                         +'<div id="bbit-cs-buddle-timeshow" class="bubbletime"></div>'
                         +'<div id="bbit-cs-title" class="bubbletitle"></div>'
@@ -2484,6 +2484,10 @@
             //click
             ccontent.find("div.rb-o").each(function(i) {
                 $(this).click(dayshow);
+                if (option.showtooltipdwm_mouseover) {
+                    $(this).mouseover(dayshow);
+                    $(this).mouseout(function() {try {$("#bbit-cs-buddle").dialog("close");}catch (e) {}});
+                }
             });
 
             edata = events = null;
@@ -2854,6 +2858,10 @@
                 $("div.chip", gridcontainer).each(function(i) {
                     var chip = $(this);
                     chip.click(dayshow);
+                    if (option.showtooltipdwm_mouseover) {
+                        chip.mouseover(dayshow);
+                        chip.mouseout(function() {try {$("#bbit-cs-buddle").dialog("close");}catch (e) {}});
+                    }
                     if (chip.hasClass("drag")) {
                         chip.mousedown(function(e) { dragStart.call(this, "dw3", e); return false; });
                         //resize
@@ -2868,6 +2876,10 @@
                 $("div.rb-o", gridcontainer).each(function(i) {
                     var chip = $(this);
                     chip.click(dayshow);
+                    if (option.showtooltipdwm_mouseover) {
+                        chip.mouseover(dayshow);
+                        chip.mouseout(function() {try {$("#bbit-cs-buddle").dialog("close");}catch (e) {}});
+                    }
                     if (chip.hasClass("drag") && (viewtype == "week" || viewtype == "nDays" ) ) {
                         //drag;
                         chip.mousedown(function(e) { dragStart.call(this, {dw5:"dw5",row:chip.attr("row")}, e); return false; });
@@ -2899,6 +2911,10 @@
                 $("div.rb-o", gridcontainer).each(function(i) {
                     var chip = $(this);
                     chip.click(dayshow);
+                    if (option.showtooltipdwm_mouseover) {
+                        chip.mouseover(dayshow);
+                        chip.mouseout(function() {try {$("#bbit-cs-buddle").dialog("close");}catch (e) {}});
+                    }
                     if (chip.hasClass("drag")) {
                         //drag;//aqui
                         chip.mousedown(function(e) { dragStart.call(this, "m2", e); return false; });
