@@ -163,6 +163,28 @@ function initMultiViewCal(container,calendarId,config)
             
                     };
                     op = $jc.extend(config, op);
+                    if (op.startdate && (op.startdate.length>=8) && (op.startdate.length<=10))
+                    {
+                        var i = op.startdate.split("-");
+                        op.startdate = new Date(i[0]*1,i[1]*1-1,i[2]*1);
+                        op.showday = op.startdate;
+                    }
+                    else
+                        op.mindate = "";
+                    if (op.mindate && (op.mindate.length>=8) && (op.mindate.length<=10))
+                    {
+                        var i = op.mindate.split("-");
+                        op.mindate = new Date(i[0]*1,i[1]*1-1,i[2]*1);
+                    }
+                    else
+                        op.mindate = "";
+                    if (op.maxdate && (op.maxdate.length>=8) && (op.maxdate.length<=10))
+                    {
+                        var i = op.maxdate.split("-");
+                        op.maxdate = new Date(i[0]*1,i[1]*1-1,i[2]*1);
+                    }
+                    else
+                        op.maxdate = "";     
                     var $dv = $jc("#calhead"+op.thecontainer);
                     var _MH = document.documentElement.clientHeight;
                     var dvH = $dv.height() + 2;
@@ -379,19 +401,25 @@ function initMultiViewCal(container,calendarId,config)
                     //previous date range
                     try {
                     $jc("#sfprevbtn"+op.thecontainer).click(function(e) {
+                        if (!$jc("#sfprevbtn"+op.thecontainer).hasClass("non-navigate"))
+                        {
+                            
                         var p = $jc("#gridcontainer"+op.thecontainer).previousRange().BcalGetOp();
                         if (p && p.datestrshow) {
                             $jc("#txtdatetimeshow"+op.thecontainer).text(p.datestrshow);
                         }
-            
+                        }
                     });
                     } catch(e){};
                     //next date range
                     try {
                     $jc("#sfnextbtn"+op.thecontainer).click(function(e) {
+                        if (!$jc("#sfnextbtn"+op.thecontainer).hasClass("non-navigate"))
+                        {
                         var p = $jc("#gridcontainer"+op.thecontainer).nextRange().BcalGetOp();
                         if (p && p.datestrshow) {
                             $jc("#txtdatetimeshow"+op.thecontainer).text(p.datestrshow);
+                        }
                         }
                     });
                     } catch(e){};

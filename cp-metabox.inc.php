@@ -146,6 +146,7 @@
         generateShortCode : function() { 
             var attrs = '';
             jQuery.each(this['options'], function(name, value){
+                value = value.replace(/"/g,'#');
                 if (value != '') {attrs += ' ' + name + '="' + value + '"';}
             });
             return '[<?php echo $this->shorttag; ?>' + attrs + ']'; 

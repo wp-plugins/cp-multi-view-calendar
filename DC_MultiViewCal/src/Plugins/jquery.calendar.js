@@ -405,6 +405,52 @@
         function render() {
             //params needed
             //viewType, showday, events, config
+            if (option.mindate!="" && option.mindate>option.showday)
+                option.showday = option.mindate;
+            if (option.maxdate!="" && option.maxdate<option.showday)
+                option.showday = option.maxdate;
+            if (option.vstart && option.vend)
+            {    
+                if (option.view=="month" || option.view=="nMonth")
+                {
+                    if (option.view=="month")
+                        var meses = 1;
+                    else
+                        var meses = option.numberOfMonths;
+                    var firstdate = new Date(option.showday.getFullYear(), option.showday.getMonth(), 1);
+                    var m = (option.showday.getMonth()+meses)%12;
+                    var y = option.showday.getFullYear()+Math.floor((option.showday.getMonth()+meses)/12);
+                    var enddate = new Date(y, m, 1);
+                    enddate = DateAdd("d", -1 , enddate);
+                    
+                }
+                else
+                {
+                    var firstdate = option.vstart;
+                    var enddate = option.vend;
+                }
+                if (option.mindate>=firstdate && option.mindate<=enddate)
+                {                    
+                    $("#sfprevbtn"+option.thecontainer).find(".ui-icon-circle-triangle-w").css({ opacity: 0.3 });
+                    $("#sfprevbtn"+option.thecontainer).addClass("non-navigate");                    
+                }    
+                else
+                {
+                    $("#sfprevbtn"+option.thecontainer).find(".ui-icon-circle-triangle-w").css({ opacity: 1 });
+                    $("#sfprevbtn"+option.thecontainer).removeClass("non-navigate");
+                }    
+                if (option.maxdate>=firstdate && option.maxdate<=enddate)
+                {
+                    $("#sfnextbtn"+option.thecontainer).find(".ui-icon-circle-triangle-e").css({ opacity: 0.3 });
+                    $("#sfnextbtn"+option.thecontainer).addClass("non-navigate");
+                }    
+                else
+                {
+                    $("#sfnextbtn"+option.thecontainer).find(".ui-icon-circle-triangle-e").css({ opacity: 1 });
+                    $("#sfnextbtn"+option.thecontainer).removeClass("non-navigate");
+                }
+            }    
+                 
             var showday = new Date(option.showday.getFullYear(), option.showday.getMonth(), option.showday.getDate());
             var events = option.eventItems;
             var config = { view: option.view, weekstartday: option.weekstartday, theme: option.theme,thecontainer: option.thecontainer };
@@ -494,7 +540,6 @@
             option.vstart = firstdate;
             option.vend = enddate;
             option.datestrshow = CalDateShow(option.vstart, option.vend);
-
             var html = [];
             html.push("<div id=\"nmonths"+config.thecontainer+"\" class=\"nmonths\" >");
             html.push("</div>");
@@ -529,6 +574,8 @@
                             monthNamesShort:__MonthName,
                             monthNames:__MonthNameLarge,
                             dayNamesShort:__WDAY,
+                            //minDate:option.mindate,
+                            //maxDate:option.maxdate,
                             dayNamesMin:__WDAY2,
                             onChangeMonthYear: function(year, month, inst){
                                 var c = $(this).datepicker("getDate");
