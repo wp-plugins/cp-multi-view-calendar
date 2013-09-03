@@ -110,7 +110,7 @@ function addCalendar($calid, $st, $et, $sub, $ade, $loc){
       .esc_sql($ade)."', '"
       .esc_sql($loc)."', ".$user->ID.",1)";
     
-    if (!$wpdb->query($sql)){
+    if ($wpdb->query($sql)=== FALSE){
       $ret['IsSuccess'] = false;
       $ret['Msg'] = $wpdb->last_error;
     }else{
@@ -148,7 +148,7 @@ function addDetailedCalendar($calid, $st, $et, $sub, $ade, $dscr, $loc, $color, 
       .esc_sql($loc)."', '"
       .esc_sql($color)."', '".esc_sql($rrule)."', ".esc_sql($uid).", ".$user->ID.",1 )";
     
-    if (!$wpdb->query($sql)){
+    if ($wpdb->query($sql)=== FALSE){
       $ret['IsSuccess'] = false;
       $ret['Msg'] = $wpdb->last_error;
     }else{
@@ -251,7 +251,7 @@ function updateCalendar($id, $st, $et){
           . " `".DC_MV_CAL_FROM."`='" . php2MySqlTime(js2PhpTime($st)) . "', "
           . " `".DC_MV_CAL_TO."`='" . php2MySqlTime(js2PhpTime($et)) . "' "
           . "where `id`=" . $id;        
-        if (!$wpdb->query($sql)){
+        if ($wpdb->query($sql)=== FALSE){
           $ret['IsSuccess'] = false;
           $ret['Msg'] = $wpdb->last_error;
         }else{
@@ -282,8 +282,8 @@ function updateDetailedCalendar($id, $st, $et, $sub, $ade, $dscr, $loc, $color, 
         else if ($rruleType=="all")
         {
             $sql = "update `".DC_MV_CAL."` set"
-              . " `".DC_MV_CAL_FROM."`='" . php2MySqlTime(js2PhpTime($st)) . "', "
-              . " `".DC_MV_CAL_TO."`='" . php2MySqlTime(js2PhpTime($et)) . "', "
+              //. " `".DC_MV_CAL_FROM."`='" . php2MySqlTime(js2PhpTime($st)) . "', "
+              //. " `".DC_MV_CAL_TO."`='" . php2MySqlTime(js2PhpTime($et)) . "', "
               . " `".DC_MV_CAL_TITLE."`='" . esc_sql($sub) . "', "
               . " `".DC_MV_CAL_ISALLDAY."`='" . esc_sql($ade) . "', "
               . " `".DC_MV_CAL_DESCRIPTION."`='" . esc_sql($dscr) . "', "
@@ -291,7 +291,7 @@ function updateDetailedCalendar($id, $st, $et, $sub, $ade, $dscr, $loc, $color, 
               . " `".DC_MV_CAL_COLOR."`='" . esc_sql($color) . "', "
               . " `rrule`='" . esc_sql($rrule) . "' "
               . "where `id`=" . $id;            
-            if (!$wpdb->query($sql)){
+            if ($wpdb->query($sql)=== FALSE){
               $ret['IsSuccess'] = false;
               $ret['Msg'] = $wpdb->last_error;
             }else{
@@ -334,7 +334,7 @@ function updateDetailedCalendar($id, $st, $et, $sub, $ade, $dscr, $loc, $color, 
               . " `".DC_MV_CAL_COLOR."`='" . esc_sql($color) . "', "
               . " `rrule`='" . esc_sql($rrule) . "' "
               . "where `id`=" . $id;            
-            if (!$wpdb->query($sql)){
+            if ($wpdb->query($sql)=== FALSE){
               $ret['IsSuccess'] = false;
               $ret['Msg'] = $wpdb->last_error;
             }else{
@@ -367,7 +367,7 @@ function removeCalendar($id,$rruleType){
               . " `exdate`='" . esc_sql($exdate) . "' "
               . "where `id`=" . $id;
             
-            if (!$wpdb->query($sql)){
+            if ($wpdb->query($sql)=== FALSE){
               $ret['IsSuccess'] = false;
               $ret['Msg'] = $wpdb->last_error;
             }else{
@@ -407,7 +407,7 @@ function removeCalendar($id,$rruleType){
         else  // $rruleType = "del_all" or ""
         {
             $sql = "delete from `".DC_MV_CAL."` where `id`=" . $id;	        
-            if (!$wpdb->query($sql)){
+            if ($wpdb->query($sql)=== FALSE){
               $ret['IsSuccess'] = false;
               $ret['Msg'] = $wpdb->last_error;
             }else{
