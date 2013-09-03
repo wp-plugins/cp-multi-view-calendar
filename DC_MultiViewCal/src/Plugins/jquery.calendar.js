@@ -2006,7 +2006,7 @@
                         }
                         r  = RRule.fromString(v[6],v[2]);//
                         var diff = v[3]-v[2];
-                        ne = r.between( start, end);
+                        ne = r.between( DateAdd("d", -1, start), DateAdd("d", 1, end));
                         for (var j=0;j<ne.length;j++)
                         {
                             if (($.inArray(ne[j].toString(), excludeEvents))==-1)

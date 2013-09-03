@@ -263,7 +263,7 @@ $(function() {
                   case 4:
                       format += "FREQ=WEEKLY";
                       for (var i=0;i<weekDays.length;i++)
-                          if ($("#byday"+weekDays[i]).attr("checked"))
+                          if ($("#byday"+weekDays[i]).is(":checked"))
                           {
                               if (summary =="")
                               {
@@ -288,7 +288,7 @@ $(function() {
                   break;
                   case 5:
                       format += "FREQ=MONTHLY";
-                      if ($("#byday_m").attr("checked"))
+                      if ($("#byday_m").is(":checked"))
                       {
                           summary += " "+i18n.dcmvcal.on_day+" "+currentDate.getDate();
                           format += ";BYMONTHDAY="+currentDate.getDate();
@@ -308,7 +308,7 @@ $(function() {
                   break;
                   case 6:
                       format += "FREQ=YEARLY;BYMONTH="+(currentDate.getMonth()+1);
-                      if ($("#byday_m").attr("checked"))
+                      if ($("#byday_m").is(":checked"))
                       {
                           summary += " "+i18n.dcmvcal.on+" " + monthsName[currentDate.getMonth()] + " " + currentDate.getDate();
                       }
@@ -326,7 +326,7 @@ $(function() {
                       }
                   break;
               }
-              if ($("#end_count").attr("checked"))
+              if ($("#end_count").is(":checked"))
               {
                   if (parseInt($("#end_after").val())==1)
                       summary = i18n.dcmvcal.once;
@@ -336,7 +336,7 @@ $(function() {
                       format += ";COUNT="+$("#end_after").val();
                   }
               }
-              else if ($("#end_until").attr("checked"))
+              else if ($("#end_until").is(":checked"))
               {
                   if ($("#end_until_input").val()!="")
                   {
