@@ -2054,7 +2054,7 @@
 
                     if (option.eventItems[i][2] >= es) {
                         for (var j = 0; j < jl; j++) {
-                            if ((option.eventItems[i][0] == events[j][0]) && (option.eventItems[i][2] == events[j][2]) && (option.eventItems[i][2] < start)) {
+                            if ((option.eventItems[i][0] == events[j][0]) && (option.eventItems[i][2].toString() == events[j][2].toString()) && (option.eventItems[i][2] < start)) {
                                 events.splice(j, 1); //for duplicated event
                                 jl--;
                                 break;
