@@ -73,3 +73,4 @@
 #editEventContainer,#bbit-cal-buddle,#bbit-cs-buddle,.mv_dlg_nmonth{display:none}
 .multicalendar table{border-bottom:0px;line-height:15px;margin:0px}
 .multicalendar th{line-height:15px;}
+.multicalendar div.ctoolbar div.fbutton.non-navigate {CURSOR: default;}

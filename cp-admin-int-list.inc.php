@@ -59,6 +59,18 @@ if ($message) echo "<div id='setting-error-settings_updated' class='updated sett
 
 <div id="normal-sortables" class="meta-box-sortables">
 
+  <div id="metabox_basic_settings" class="postbox" >
+  <h3 class='hndle' style="padding:5px;"><span>Instructions</span></h3>
+  <div class="inside"> 
+   
+      <p>To insert a calendar into a page or post, go to the <strong>edition of the page/post</strong> and use the box named "<strong>CP Multi View Calendar</strong>" below the edition area.</p> 
+      
+      <p>In that area you can create a new view and when ready sent the shortcode to the editor through the button included for that purpose.</p>
+      
+      <p>Note: Use the section below only to manage the caledar's data.</p>
+
+  </div>    
+ </div>
 
  <div id="metabox_basic_settings" class="postbox" >
   <h3 class='hndle' style="padding:5px;"><span>Calendar List / Items List</span></h3>
@@ -116,13 +128,14 @@ if ($message) echo "<div id='setting-error-settings_updated' class='updated sett
    
   </div>    
  </div> 
+
  
 <?php if ($this->is_administrator()) { ?>    
  <div id="metabox_basic_settings" class="postbox" >
   <h3 class='hndle' style="padding:5px;"><span>New Calendar / Item</span></h3>
   <div class="inside"> 
-       
-     * Pro version supports multiple calendars. <a href="http://wordpress.dwbooster.com/calendars/cp-multi-view-calendar">Click here for details</a>.
+   
+        * Pro version supports multiple calendars. <a href="http://wordpress.dwbooster.com/calendars/cp-multi-view-calendar">Click here for details</a>.
 
   </div>    
  </div>

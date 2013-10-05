@@ -3,14 +3,24 @@
 class CP_MultiViewCalendar extends CP_BaseClass {
 
     private $calendar = 1;
-    private $menu_parameter = 'cp_multiview';
-    private $prefix = 'cp_multiview';
+    private $menu_parameter = 'cp_multiview';    
     private $plugin_name = 'CP Multi View Calendar';
+    private $prefix = 'cp_multiview';
     private $plugin_URL = 'http://wordpress.dwbooster.com/calendars/cp-multi-view-calendar';
-    private $print_counter = 0;
-
+    private $print_counter = 0;       
+    private $ajax_nonce;    
+    
     public $shorttag = 'CPMV_CALENDAR';
 
+    function CP_MultiViewCalendar()
+    {
+        if ( is_admin() ) { 
+            add_action('wp_ajax_'.$this->prefix.'add_calendar', array($this,'ajax_add_calendar'));      
+            add_action('wp_ajax_'.$this->prefix.'delete_calendar', array($this,'ajax_delete_calendar'));
+            add_action('wp_ajax_'.$this->prefix.'get_views', array($this,'ajax_get_views'));
+        }
+    }
+    
     function _install() {
         global $wpdb;
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
@@ -57,6 +67,33 @@ class CP_MultiViewCalendar extends CP_BaseClass {
         );
         ";
         $wpdb->query($sql);
+        
+        $sql = "CREATE TABLE IF NOT EXISTS ".$wpdb->prefix."dc_mv_views (
+          id int(10) unsigned NOT NULL AUTO_INCREMENT,
+          calid int(10) unsigned DEFAULT NULL,          
+          viewDay text,
+          viewWeek text,
+          viewMonth text,
+          viewNMonth text,
+          viewdefault text,
+          start_weekday text,
+          cssStyle text,
+          palette text,
+          edition text,
+          btoday text,
+          bnavigation text,
+          brefresh text,
+          numberOfMonths text,
+          showtooltip text,
+          tooltipon text,
+          shownavigate text,
+          url text,
+          target text,
+          otherparams text,          
+          PRIMARY KEY  (id)
+        );
+        ";
+        $wpdb->query($sql);
 
         // insert initial data
         $count = $wpdb->get_var( "SELECT COUNT(id) FROM ".$wpdb->prefix."dc_mv_calendars" );
@@ -83,8 +120,107 @@ class CP_MultiViewCalendar extends CP_BaseClass {
         return $buffered_contents;
     }
 
+    private function show_preview($id) {
+        global $wpdb;
+       
+        if (file_exists(dirname( __FILE__ ).'/DC_MultiViewCal/language/multiview_lang_'.WPLANG.'.js'))
+            $langscript = plugins_url('/DC_MultiViewCal/language/multiview_lang_'.WPLANG.'.js', __FILE__);
+        else
+            $langscript = plugins_url('/DC_MultiViewCal/language/multiview_lang_en_GB.js', __FILE__);       
 
-    function insert_public_item($atts) {        
+        $convert_arr = array(
+             'viewday'        =>  'viewDay',
+             'viewweek'       =>  'viewWeek',
+             'viewmonth'      =>  'viewMonth',
+             'viewnmonth'     =>  'viewNMonth',
+             'numberofmonths' =>  'numberOfMonths',
+             'cssstyle'       =>  'cssStyle',
+             'militarytime'   =>  'militaryTime',
+             'useradd'        =>  'userAdd',
+             'useredit'       =>  'userEdit',
+             'userdel'        =>  'userDel',
+             'usereditowner'  =>  'userEditOwner',
+             'userdelowner'   =>  'userDelOwner',
+             'userowner'      =>  'userOwner',
+             'palettedefault' =>  'paletteDefault'
+         );  
+    
+        $myrows = $wpdb->get_results( "SELECT * FROM ".$wpdb->prefix."dc_mv_views WHERE id=".intval($id) );
+        $base_params = array ();
+        $base_params['id'] = $myrows[0]->calid;
+        if ($myrows[0]->viewWeek == 'true') $base_params['viewDay'] = $myrows[0]->viewDay;
+        if ($myrows[0]->viewWeek == 'true') $base_params['viewWeek'] = $myrows[0]->viewWeek;
+        if ($myrows[0]->viewMonth == 'true') $base_params['viewMonth'] = $myrows[0]->viewMonth;
+        if ($myrows[0]->viewNMonth == 'true') $base_params['viewNMonth'] = $myrows[0]->viewNMonth;
+        $base_params['viewdefault'] = $myrows[0]->viewdefault;
+        $base_params['start_weekday'] = $myrows[0]->start_weekday;
+        $base_params['cssStyle'] = $myrows[0]->cssStyle;
+        $base_params['palette'] = $myrows[0]->palette;
+        if ($myrows[0]->edition == 'true') $base_params['edition'] = $myrows[0]->edition;
+        if ($myrows[0]->btoday == 'true') $base_params['btoday'] = $myrows[0]->btoday;
+        if ($myrows[0]->bnavigation == 'true') $base_params['bnavigation'] = $myrows[0]->bnavigation;
+        if ($myrows[0]->brefresh == 'true') $base_params['brefresh'] = $myrows[0]->brefresh;
+        $base_params['numberOfMonths'] = $myrows[0]->numberOfMonths;
+        if ($myrows[0]->showtooltip == 'true') $base_params['showtooltip'] = $myrows[0]->showtooltip;
+        $base_params['tooltipon'] = $myrows[0]->tooltipon;
+        if ($myrows[0]->shownavigate == 'true') $base_params['shownavigate'] = $myrows[0]->shownavigate;
+        $base_params['url'] = $myrows[0]->url;
+        $base_params['target'] = $myrows[0]->target;
+        $base_params['otherparams'] = $myrows[0]->otherparams;
+
+    
+        $params = "";                   
+        foreach ($base_params as $item => $value)
+        {
+            if (isset($convert_arr[$item]))
+                $item = $convert_arr[$item];
+            $item = str_replace(array('"', "'"),array('\\"', "\\'"),$item);
+            if (is_numeric($value) || $value == 'true' || $value == 'false')
+                $params .= ',"'.$item.'":'.$value;
+            else
+                $params .= ',"'.$item.'":"'.str_replace(array('"', "'"),array('\\"', "\\'"),$value).'"';
+        }        
+        $params = '{'.substr($params,1).'}';       
+        $params = str_replace(array('"', "'"),array('\\"', "\\'"),$params);
+        $this->print_counter = 0;
+        $plugin_url = plugins_url('', __FILE__);
+        ?>  
+<!DOCTYPE html>
+<html>      
+<head><title>CP Multi View Event Calendar - Preview</title></head>
+<body>
+<script type='text/javascript' src='<?php echo $plugin_url.'/../../../'; ?>wp-includes/js/jquery/jquery.js'></script>        
+<script type='text/javascript' src='<?php echo $plugin_url.'/../../../'; ?>wp-includes/js/jquery/ui/jquery.ui.core.min.js'></script>
+<script type='text/javascript' src='<?php echo $plugin_url.'/../../../'; ?>wp-includes/js/jquery/ui/jquery.ui.widget.min.js'></script>
+<script type='text/javascript' src='<?php echo $plugin_url.'/../../../'; ?>wp-includes/js/jquery/ui/jquery.ui.mouse.min.js'></script>
+<script type='text/javascript' src='<?php echo $plugin_url.'/../../../'; ?>wp-includes/js/jquery/ui/jquery.ui.resizable.min.js'></script>
+<script type='text/javascript' src='<?php echo $plugin_url.'/../../../'; ?>wp-includes/js/jquery/ui/jquery.ui.draggable.min.js'></script>
+<script type='text/javascript' src='<?php echo $plugin_url.'/../../../'; ?>wp-includes/js/jquery/ui/jquery.ui.button.min.js'></script>
+<script type='text/javascript' src='<?php echo $plugin_url.'/../../../'; ?>wp-includes/js/jquery/ui/jquery.ui.position.min.js?'></script>
+<script type='text/javascript' src='<?php echo $plugin_url.'/../../../'; ?>wp-includes/js/jquery/ui/jquery.ui.dialog.min.js'></script>
+<script type='text/javascript' src='<?php echo $plugin_url.'/../../../'; ?>wp-includes/js/jquery/ui/jquery.ui.datepicker.min.js'></script>
+<script type='text/javascript' src='<?php echo plugins_url('/DC_MultiViewCal/src/Plugins/Common.js', __FILE__); ?>'></script>
+<script type='text/javascript' src='<?php echo plugins_url('/DC_MultiViewCal/src/Plugins/underscore.js', __FILE__); ?>'></script>
+<script type='text/javascript' src='<?php echo plugins_url('/DC_MultiViewCal/src/Plugins/rrule.js', __FILE__); ?>'></script>
+<script type='text/javascript' src='<?php echo $langscript; ?>'></script>
+<script type='text/javascript' src='<?php echo plugins_url('/DC_MultiViewCal/src/Plugins/jquery.calendar.js', __FILE__); ?>'></script>
+<script type='text/javascript' src='<?php echo plugins_url('/DC_MultiViewCal/src/Plugins/jquery.alert.js', __FILE__); ?>'></script>
+<script type='text/javascript' src='<?php echo plugins_url('/DC_MultiViewCal/src/Plugins/multiview.js', __FILE__); ?>'></script>
+<?php @include dirname( __FILE__ ) . '/cp-public-int.inc.php'; ?>
+<script type='text/javascript'>
+/* <![CDATA[ */
+var cpmvc_configmultiview0 = {"obj":"{\"params\":<?php echo $params; ?>,\n  \"ajax_url\":\"<?php echo str_replace(array('"', "'"),array('\\"', "\\'"),$this->get_site_url()); ?>/?cpmvc_id=<?php echo $base_params["id"]; ?>&cpmvc_do_action=mvparse\",\n               \"calendar\":\"<?php echo str_replace(array('"', "'"),array('\\"', "\\'"),$base_params["id"]); ?>\"\n  \t  }"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='<?php echo plugins_url('/DC_MultiViewCal/src/Plugins/multiview.public.js', __FILE__); ?>'></script>
+</body></html>
+        <?php
+        exit;
+    }
+    
+
+    private function insert_public_item($atts) {        
+        global $wpdb;
         
         wp_register_script('cpmvc-common', plugins_url('/DC_MultiViewCal/src/Plugins/Common.js', __FILE__));
         wp_register_script('cpmvc-underscore', plugins_url('/DC_MultiViewCal/src/Plugins/underscore.js', __FILE__));
@@ -120,10 +256,36 @@ class CP_MultiViewCalendar extends CP_BaseClass {
              'userowner'      =>  'userOwner',
              'palettedefault' =>  'paletteDefault'
          );  
-
-         
+    
+        if ($atts["view"] != '') {
+            $myrows = $wpdb->get_results( "SELECT * FROM ".$wpdb->prefix."dc_mv_views WHERE id=".intval($atts["view"]) );
+            $base_params = array ();
+            $base_params['id'] = $myrows[0]->calid;
+            if ($myrows[0]->viewWeek == 'true') $base_params['viewDay'] = $myrows[0]->viewDay;
+            if ($myrows[0]->viewWeek == 'true') $base_params['viewWeek'] = $myrows[0]->viewWeek;
+            if ($myrows[0]->viewMonth == 'true') $base_params['viewMonth'] = $myrows[0]->viewMonth;
+            if ($myrows[0]->viewNMonth == 'true') $base_params['viewNMonth'] = $myrows[0]->viewNMonth;
+            $base_params['viewdefault'] = $myrows[0]->viewdefault;
+            $base_params['start_weekday'] = $myrows[0]->start_weekday;
+            $base_params['cssStyle'] = $myrows[0]->cssStyle;
+            $base_params['palette'] = $myrows[0]->palette;
+            if ($myrows[0]->edition == 'true') $base_params['edition'] = $myrows[0]->edition;
+            if ($myrows[0]->btoday == 'true') $base_params['btoday'] = $myrows[0]->btoday;
+            if ($myrows[0]->bnavigation == 'true') $base_params['bnavigation'] = $myrows[0]->bnavigation;
+            if ($myrows[0]->brefresh == 'true') $base_params['brefresh'] = $myrows[0]->brefresh;
+            $base_params['numberOfMonths'] = $myrows[0]->numberOfMonths;
+            if ($myrows[0]->showtooltip == 'true') $base_params['showtooltip'] = $myrows[0]->showtooltip;
+            $base_params['tooltipon'] = $myrows[0]->tooltipon;
+            if ($myrows[0]->shownavigate == 'true') $base_params['shownavigate'] = $myrows[0]->shownavigate;
+            $base_params['url'] = $myrows[0]->url;
+            $base_params['target'] = $myrows[0]->target;
+            $base_params['otherparams'] = $myrows[0]->otherparams;
+        }
+        else
+            $base_params = $atts;
+    
         $params = "";                   
-        foreach ($atts as $item => $value)
+        foreach ($base_params as $item => $value)
         {
             if (isset($convert_arr[$item]))
                 $item = $convert_arr[$item];
@@ -133,15 +295,14 @@ class CP_MultiViewCalendar extends CP_BaseClass {
             else
                 $params .= ',"'.$item.'":"'.str_replace(array('"', "'"),array('\\"', "\\'"),$value).'"';
         }        
-        $params = '{'.substr($params,1).'}';
+        $params = '{'.substr($params,1).'}';       
         
         wp_localize_script('cpmvc-publicjs', 'cpmvc_configmultiview'.($this->print_counter), array('obj'  	=>
               '{"params":'.$params.',
-               "ajax_url":"'.str_replace(array('"', "'"),array('\\"', "\\'"),$this->get_site_url()).'/?cpmvc_id='.$atts["id"].'&cpmvc_do_action=mvparse",
-               "calendar":"'.str_replace(array('"', "'"),array('\\"', "\\'"),$atts["id"]).'"
+               "ajax_url":"'.str_replace(array('"', "'"),array('\\"', "\\'"),$this->get_site_url()).'/?cpmvc_id='.$base_params["id"].'&cpmvc_do_action=mvparse",
+               "calendar":"'.str_replace(array('"', "'"),array('\\"', "\\'"),$base_params["id"]).'"
     	         }'
-           ));
-        
+           ));        
         @include dirname( __FILE__ ) . '/cp-public-int.inc.php';
         $this->print_counter++;
     }
@@ -169,9 +330,143 @@ class CP_MultiViewCalendar extends CP_BaseClass {
 
     public function insertMetaBox() {
         global $wpdb;
+        wp_enqueue_script( "jquery" );
+        wp_enqueue_script( "jquery-ui-core" );
+        wp_enqueue_script( "jquery-ui-dialog" );        
+        wp_enqueue_style ( "wp-jquery-ui-dialog" );
+        $this->ajax_nonce = wp_create_nonce( $this->prefix );
         @include_once dirname( __FILE__ ) . '/cp-metabox.inc.php';
     }
 
+    private function printViewsList() {
+        global $wpdb;
+        // print the list of views
+        //....
+        $seed = date("His").mt_rand(10,100);
+        $buffer = "";
+        $buffer_scripts = "";
+        $last_id = 0;
+        $myrows = $wpdb->get_results( "SELECT ".$wpdb->prefix."dc_mv_views.*,".$wpdb->prefix."dc_mv_calendars.title FROM ".$wpdb->prefix."dc_mv_views INNER JOIN ".$wpdb->prefix."dc_mv_calendars ON ".$wpdb->prefix."dc_mv_views.calid= ".$wpdb->prefix."dc_mv_calendars.id");                                                                       
+        foreach ($myrows as $item)   
+        {
+            $buffer .= '<tr>';
+            $buffer .= '<td>#'.$item->id.'</td>';
+            $buffer .= '<td>Calendar 1</td>';
+            $buffer .= '<td nowrap>';
+            $buffer .= '<a class="button" style="color:#338833;font-weight:bold;" href="javascript:'.$this->prefix.'Admin.sendToEditor('.$item->calid.','.$item->id.');">'.__('Publish &raquo; Send shortcode to editor').'</a> &nbsp; ';
+            $buffer .= '<a class="button" href="javascript:'.$this->prefix.'previewCalendarId('.$item->id.');">'.__('Preview').'</a> &nbsp; ';
+            $buffer .= '<a class="button" href="javascript:'.$this->prefix.$seed.'editCalendar'.$item->id.'();">'.__('Edit').'</a> &nbsp; ';
+            $buffer .= '<a class="button" href="javascript:'.$this->prefix.'deleteCalendar('.$item->id.');">'.__('Delete').'</a>';
+            $buffer .= '</td>';
+            $buffer .= '</tr>';
+            // generate edit function             
+            $buffer_scripts .= 'function '.$this->prefix.$seed.'editCalendar'.$item->id.'(){';
+            $buffer_scripts .= $this->prefix.'_sel_sel("id","'.$item->calid.'");';
+            $buffer_scripts .= $this->prefix.'_sel_chk("viewDay","'.$item->viewDay.'");';
+            $buffer_scripts .= $this->prefix.'_sel_chk("viewWeek","'.$item->viewWeek.'");';
+            $buffer_scripts .= $this->prefix.'_sel_chk("viewMonth","'.$item->viewMonth.'");';
+            $buffer_scripts .= $this->prefix.'_sel_chk("viewNMonth","'.$item->viewNMonth.'");';
+            $buffer_scripts .= $this->prefix.'_sel_sel("viewdefault","'.$item->viewdefault.'");';
+            $buffer_scripts .= $this->prefix.'_sel_sel("start_weekday","'.$item->start_weekday.'");';
+            $buffer_scripts .= $this->prefix.'_sel_sel("cssStyle","'.$item->cssStyle.'");';
+            $buffer_scripts .= $this->prefix.'_sel_sel("palette","'.$item->palette.'");';
+            $buffer_scripts .= $this->prefix.'_sel_chk("edition","'.$item->edition.'");';
+            $buffer_scripts .= $this->prefix.'_sel_chk("btoday","'.$item->btoday.'");';
+            $buffer_scripts .= $this->prefix.'_sel_chk("bnavigation","'.$item->bnavigation.'");';
+            $buffer_scripts .= $this->prefix.'_sel_chk("brefresh","'.$item->brefresh.'");';
+            $buffer_scripts .= $this->prefix.'_sel_sel("numberOfMonths","'.$item->numberOfMonths.'");';
+            $buffer_scripts .= $this->prefix.'_sel_chk("showtooltip","'.$item->showtooltip.'");';
+            $buffer_scripts .= $this->prefix.'_sel_sel("tooltipon","'.$item->tooltipon.'");';
+            $buffer_scripts .= $this->prefix.'_sel_chk("shownavigate","'.$item->shownavigate.'");';
+            $buffer_scripts .= $this->prefix.'_sel_fld("url","'.$item->url.'");';
+            $buffer_scripts .= $this->prefix.'_sel_sel("target","'.$item->target.'");';
+            $buffer_scripts .= $this->prefix.'_sel_fld("otherparams","'.str_replace("\r","",str_replace("\n","",$item->otherparams)).'");';            
+            $buffer_scripts .= $this->prefix.'createNewCalendar('.$item->id.');';
+            $buffer_scripts .= '}';
+            $last_id = $item->id;           
+        }         
+        $buffer_scripts = '<div id="'.$this->prefix.'scriptsarea" style="display:none">'.$buffer_scripts.(@$_POST["viewid"] == '0'?'document.getElementById("r'.$this->prefix.'isediting").value="'.$last_id.'";':'').'</div>';
+        if ($buffer != '')
+        {
+            ?>
+            <table cellpadding="5">
+             <tr>
+               <th align="left" nowrap style="border-bottom:1px dotted black;">View ID</th>
+               <th align="left" style="border-bottom:1px dotted black;">Calendar</th>       
+               <th align="left" style="border-bottom:1px dotted black;">Options</th>
+             </tr>
+             <?php echo $buffer; ?>
+            </table> 
+            <?php echo $buffer_scripts; ?>
+            <?php
+        } else {
+            echo '<strong>';
+            _e('Start creating a new calendar view with the following button:');
+            echo '</strong>';
+        }
+    }
+
+    public function ajax_get_views() {
+        global $wpdb;
+        check_ajax_referer( $this->prefix, 'security' );         
+        $this->printViewsList();
+        die();
+    }
+    
+    private function ajax_get_posted_params() {
+        foreach ($_POST as $item => $value)
+            $_POST[$item] = stripcslashes($value);
+        $rawparams = explode("||||||",$_POST["params"]);
+        $params =  array ( 'viewDay' => '',
+                           'viewWeek' => '',
+                           'viewMonth' => '',
+                           'viewNMonth' => '',
+                           'edition' => '',
+                           'btoday' => '',
+                           'bnavigation' => '',
+                           'brefresh' => '',
+                           'showtooltip' => '',
+                           'shownavigate' => ''
+                         );
+        foreach ($rawparams as $item)
+        {
+            $item = trim($item);
+            if ($item != '')
+            {
+                $tmp = explode("=",$item);
+                $params[$tmp[0]] = substr($tmp[1],1,strlen($tmp[1])-2);
+            }
+        } 
+        return $params;       
+    }
+
+    public function ajax_add_calendar() { // this function is also used for updating
+        global $wpdb;
+        check_ajax_referer( $this->prefix, 'security' ); 
+        
+        // add calendar view
+        $params = $this->ajax_get_posted_params();
+        if ($_POST["viewid"] == '0')
+            $wpdb->insert($wpdb->prefix."dc_mv_views", $params);
+        else    
+        {  
+            $wpdb->update($wpdb->prefix."dc_mv_views", $params, array( 'id' => $_POST["viewid"] ));        
+        }    
+               
+        $this->printViewsList();
+        die();
+    }
+    
+    public function ajax_delete_calendar() {
+        global $wpdb;
+        check_ajax_referer( $this->prefix, 'security' ); 
+        
+        // delete calendar view
+        $wpdb->delete($wpdb->prefix."dc_mv_views", array( 'id' => $_POST["id"] ));
+               
+        $this->printViewsList();
+        die();
+    }    
 
     public function settings_page() {
         global $wpdb;
@@ -190,11 +485,7 @@ class CP_MultiViewCalendar extends CP_BaseClass {
             wp_enqueue_script( "jquery" );
             wp_enqueue_script( "jquery-ui-core" );
             wp_enqueue_script( "jquery-ui-dialog" );
-            wp_enqueue_script( "jquery-ui-datepicker" );
-            //wp_enqueue_script( "jquery-ui-sortable" );
-            //wp_enqueue_script( "jquery-ui-tabs" );
-            //wp_enqueue_script( "jquery-ui-droppable" );
-            //wp_enqueue_script( "jquery-ui-button" );
+            wp_enqueue_script( "jquery-ui-datepicker" );            
         }
     }
 
@@ -205,7 +496,7 @@ class CP_MultiViewCalendar extends CP_BaseClass {
         $action = $this->get_param('cpmvc_do_action');
     	if (!$action) return; // go out if the call isn't for this one
 
-        if ($this->get_param('cpmvc_id')) $this->calendar = 1;
+        if ($this->get_param('cpmvc_id')) $this->calendar = 1; 
 
         if ($action == "mvparse")
         {
@@ -222,6 +513,11 @@ class CP_MultiViewCalendar extends CP_BaseClass {
                  @include_once dirname( __FILE__ ) . '/php/edit.php';
                  exit();
             }
+        }
+        else if ($action == "preview")
+        {
+            $this->show_preview($_GET["id"]);
+            exit();
         }
         //header("Cache-Control: no-store, no-cache, must-revalidate");
         //header("Pragma: no-cache");
