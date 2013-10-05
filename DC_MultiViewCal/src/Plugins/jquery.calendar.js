@@ -540,6 +540,7 @@
             option.vstart = firstdate;
             option.vend = enddate;
             option.datestrshow = CalDateShow(option.vstart, option.vend);
+
             var html = [];
             html.push("<div id=\"nmonths"+config.thecontainer+"\" class=\"nmonths\" >");
             html.push("</div>");
@@ -574,8 +575,6 @@
                             monthNamesShort:__MonthName,
                             monthNames:__MonthNameLarge,
                             dayNamesShort:__WDAY,
-                            //minDate:option.mindate,
-                            //maxDate:option.maxdate,
                             dayNamesMin:__WDAY2,
                             onChangeMonthYear: function(year, month, inst){
                                 var c = $(this).datepicker("getDate");
@@ -726,6 +725,18 @@
                      move_mv_dlg();                                                                                                                                                                                               
                  }   
              }
+             if (option.date_box_with_color_in_nmonth_view)
+             {
+                 $("#nmonths"+option.thecontainer+" .ui-state-active").each(function(){
+                         var item = $(this).attr("title");
+                         if (item && dates[item] && dates[item][0])
+                         {
+                            var c = ((dates[item][0][7]!=-1 && dates[item][0][7]!=null)?dates[item][0][7]:"#"+option.paletteDefault);
+                            $(this).css("background",c);
+                         }
+                             //showDialogNMonth(dates,item,".myover");
+                 });
+             }        
              $("#nmonths"+option.thecontainer+" .ui-state-non-active a").bind('click', function(e) {
                 var item = $(this).parent().attr("title");
                 var arrdays = item.split('/');
@@ -2009,7 +2020,8 @@
                         ne = r.between( DateAdd("d", -1, start), DateAdd("d", 1, end));
                         for (var j=0;j<ne.length;j++)
                         {
-                            if (($.inArray(ne[j].toString(), excludeEvents))==-1)
+                            var date00 = new Date(ne[j].getFullYear(), ne[j].getMonth(), ne[j].getDate());
+                            if (($.inArray(date00.toString(), excludeEvents))==-1)
                             {
                                 tmp = v.slice(0);
                                 tmp[2] = ne[j];
@@ -2501,9 +2513,8 @@
             var top = offsetP.top + 15;
             var left = offsetMe.left;
 
-            var daystr = this.abbr;
-            var arrdays = daystr.split('/');
-            var day = new Date(arrdays[0], parseInt(arrdays[1] - 1), arrdays[2]);
+            var daystr = $(this).attr("abbr");
+            var day = strtodate(daystr + " 00:00");
             var cc = $("#cal-month-cc"+option.thecontainer);
             var ccontent = $("#cal-month-cc-content"+option.thecontainer+" table tbody");
             var ctitle = $("#cal-month-cc-title"+option.thecontainer);

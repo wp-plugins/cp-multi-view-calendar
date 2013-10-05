@@ -1,10 +1,10 @@
 <?php if ( !is_admin() ) {echo 'Direct access not allowed.';exit;} ?>
 
-
-<table class="form-table">
+<input type="hidden" name="r<?php echo $this->prefix; ?>isediting" id="r<?php echo $this->prefix; ?>isediting" value="0" />
+<table class="form-table" id="<?php echo $this->prefix; ?>createbox" style="display:none">
     <tr valign="top">
         <th scope="row"><label>MultiCalendar</label></th>
-        <td><select id="<?php echo $this->prefix; ?>_id" name="<?php echo $this->prefix; ?>[id]" class="required">            	
+        <td><select id="<?php echo $this->prefix; ?>_id" name="<?php echo $this->prefix; ?>[calid]" class="required">            	
             	<?php                  
                   $myrows = $wpdb->get_results( "SELECT * FROM ". $wpdb->prefix."dc_mv_calendars");                                                                       
                   foreach ($myrows as $item)   
@@ -47,7 +47,7 @@
     </tr>    
     <tr valign="top">
         <th scope="row"><label>Css Style</label></th>
-        <td><select id="<?php echo $this->prefix; ?>_cssStyle" name="<?php echo $this->prefix; ?>[cssStyle]">            	
+        <td><select id="<?php echo $this->prefix; ?>_cssStyle" name="<?php echo $this->prefix; ?>[cssStyle]">
             	<option value="cupertino" selected="selected">Cupertino</option>
             </select>
             <br />
@@ -130,16 +130,157 @@
           <textarea name="<?php echo $this->prefix; ?>[otherparams]" id="<?php echo $this->prefix; ?>_otherparams" cols="40" rows="3"></textarea>		
         </td>  
     </tr>
+    <tr>
+        <td></td>
+        <td align="left">
+            <input type="button" onclick="return <?php echo $this->prefix; ?>saveCloseCalendar(this.form);" value="<?php _e('Save Calendar'); ?>" />
+            <input type="button" onclick="return <?php echo $this->prefix; ?>previewCalendar(this.form);" value="<?php _e('Save & Preview'); ?>" />
+            &nbsp; <input type="button" onclick="return <?php echo $this->prefix; ?>showCalendarArea();" value="<?php _e('Cancel'); ?>" />
+        </td>
+    </tr>    
 </table>
 
-<table class="form-table">    
-    <tr>
-        <td colspan="2">
-            <p class="submit"><input type="button" onclick="return <?php echo $this->prefix; ?>Admin.sendToEditor(this.form);" value="<?php _e('Send Calendar to Editor &raquo;'); ?>" /></p>                    
-        </td>
-    </tr>
-</table>
+<div id="<?php echo $this->prefix; ?>calendarsarea">
+  <div id="<?php echo $this->prefix; ?>calendarslistarea"></div>  
+  <br />
+  <input type="button" onclick="return <?php echo $this->prefix; ?>createNewCalendar(0);" value="<?php _e('Create New Calendar View'); ?>" />  
+  <!--<input type="button" onclick="return <?php echo $this->prefix; ?>Admin.sendToEditor(this.form);" value="<?php _e('Send Calendar to Editor &raquo;'); ?>" />-->
+</div>
+ 
+  
+<div id="dialog" title="Calendar Preview" style="display:none">
+    <iframe frameborder="0" height="99%" width="99%" src="" id="<?php echo $this->prefix; ?>previewcalendarframe" name="<?php echo $this->prefix; ?>previewcalendarframe"></iframe>
+</div>
+
 <script type="text/javascript">  
+    /** Populate functions */
+    function <?php echo $this->prefix; ?>_sel_sel(id,value)
+    {
+         var fld = document.getElementById("<?php echo $this->prefix; ?>_"+id);
+         for ( var i = 0; i < fld.options.length; i++ ) 
+         if ( fld.options[i].value == value ) {
+             fld.options[i].selected = true;
+             return;
+         }
+    }
+    function <?php echo $this->prefix; ?>_sel_chk(id,value)
+    {
+        if (value == 'true')
+            document.getElementById("<?php echo $this->prefix; ?>_"+id).checked = true;
+        else    
+            document.getElementById("<?php echo $this->prefix; ?>_"+id).checked = false;
+    }
+    function <?php echo $this->prefix; ?>_sel_fld(id,value)
+    {
+        document.getElementById("<?php echo $this->prefix; ?>_"+id).value = value;
+    }
+    /** Display add new calendar view */
+    function <?php echo $this->prefix; ?>createNewCalendar(id)
+    {        
+        document.getElementById("r<?php echo $this->prefix; ?>isediting").value = id;
+        document.getElementById("<?php echo $this->prefix; ?>createbox").style.display = "";
+        document.getElementById("<?php echo $this->prefix; ?>calendarsarea").style.display = "none";
+    }
+    /** Display calendar views */
+    function <?php echo $this->prefix; ?>showCalendarArea()
+    {
+        document.getElementById("<?php echo $this->prefix; ?>createbox").style.display = "none";
+        document.getElementById("<?php echo $this->prefix; ?>calendarsarea").style.display = "";
+    }    
+    /** Ajax call add/update new calendar view */
+    function <?php echo $this->prefix; ?>saveCalendar(form)
+    {
+        var code = <?php echo $this->prefix; ?>Admin.getCode(form);        
+        var $j = jQuery.noConflict();
+        var data = {
+            action: '<?php echo $this->prefix; ?>add_calendar',
+            security: '<?php echo $this->ajax_nonce; ?>',
+            viewid: form.r<?php echo $this->prefix; ?>isediting.value,
+	  	    params: code
+	  	    // falta mandar parametro ID para caso de update
+     	};
+     	$j("#<?php echo $this->prefix; ?>calendarslistarea")[0].innerHTML = '<?php _e("Loading..."); ?>';
+     	$j.ajax({
+                type: 'POST',
+                url: ajaxurl,
+                data: data,
+                success: function(response) {            
+                              try {
+		                          $j("#<?php echo $this->prefix; ?>calendarslistarea")[0].innerHTML = response;		  
+                                  var head = document.getElementsByTagName("head")[0];
+                                  var sTag = document.createElement("script");
+                                  sTag.type = "text/javascript";
+                                  sTag.text = $j("#<?php echo $this->prefix; ?>scriptsarea")[0].innerHTML;
+                                  head.appendChild(sTag);	    
+                              } catch (err) {}    
+	                      },
+                async:false
+              });
+	}    
+	function <?php echo $this->prefix; ?>saveCloseCalendar(form)
+	{    
+	    <?php echo $this->prefix; ?>saveCalendar(form);
+        <?php echo $this->prefix; ?>showCalendarArea();
+    }
+    /** Ajax call delete calendar view */
+    function <?php echo $this->prefix; ?>deleteCalendar(viewid)
+    {        
+        var $j = jQuery.noConflict();
+        var data = {
+            action: '<?php echo $this->prefix; ?>delete_calendar',
+            security: '<?php echo $this->ajax_nonce; ?>',
+	  	    id: viewid
+     	};
+     	$j("#<?php echo $this->prefix; ?>calendarslistarea")[0].innerHTML = '<?php _e("Loading..."); ?>';
+        $j.post(ajaxurl, data, function(response) {
+            try {
+		        $j("#<?php echo $this->prefix; ?>calendarslistarea")[0].innerHTML = response;		  		    
+                var head = document.getElementsByTagName("head")[0];
+                var sTag = document.createElement("script");
+                sTag.type = "text/javascript";
+                sTag.text = $j("#<?php echo $this->prefix; ?>scriptsarea")[0].innerHTML;
+                head.appendChild(sTag);
+            } catch (err) {}
+	    });
+        <?php echo $this->prefix; ?>showCalendarArea();
+    }   
+    var <?php echo $this->prefix; ?>previewcount = <?php echo mt_rand(10000,999999); ?>;
+    function <?php echo $this->prefix; ?>previewCalendar(form)
+    {
+        <?php echo $this->prefix; ?>saveCalendar(form);                
+        <?php echo $this->prefix; ?>previewCalendarId(form.r<?php echo $this->prefix; ?>isediting.value)
+    }
+    function <?php echo $this->prefix; ?>previewCalendarId(id)
+    {
+        <?php echo $this->prefix; ?>previewcount++;
+        document.getElementById("<?php echo $this->prefix; ?>previewcalendarframe").src = '<?php echo plugins_url('', __FILE__).'/../../../?cpmvc_do_action=preview&id='; ?>'+id+"&nc="+<?php echo $this->prefix; ?>previewcount;
+        var $j = jQuery.noConflict();
+        var wHeight = $j(window).height();        
+        var dHeight = wHeight * 0.9;
+        $j( "#dialog" ).dialog({
+                                'dialogClass'   : 'wp-dialog',
+                                'height': dHeight,
+                                'width': '90%'
+                               });
+    }
+    /** LOAD CALENDAR VIEWS LIST */
+    var $j = jQuery.noConflict();
+    var data = {
+        action: '<?php echo $this->prefix; ?>get_views',
+        security: '<?php echo $this->ajax_nonce; ?>'
+    };
+    $j("#<?php echo $this->prefix; ?>calendarslistarea")[0].innerHTML = '<?php _e("Loading..."); ?>';
+    $j.post(ajaxurl, data, function(response) {     
+          try {
+		      $j("#<?php echo $this->prefix; ?>calendarslistarea")[0].innerHTML = response;		  
+              var head = document.getElementsByTagName("head")[0];
+              var sTag = document.createElement("script");
+              sTag.type = "text/javascript";
+              sTag.text = $j("#<?php echo $this->prefix; ?>scriptsarea")[0].innerHTML;
+              head.appendChild(sTag);
+          } catch (err) {}
+	});
+    /** getting the shortcode and posting it to the editor */
     var <?php echo $this->prefix; ?>CalendarAdmin = function () {} 
     <?php echo $this->prefix; ?>CalendarAdmin.prototype = { 
         options : {},
@@ -147,19 +288,33 @@
             var attrs = '';
             jQuery.each(this['options'], function(name, value){
                 value = value.replace(/"/g,'#');
-                if (value != '') {attrs += ' ' + name + '="' + value + '"';}
+                if (value != '') {attrs += '||||||' + name + '="' + value + '"';}
             });
-            return '[<?php echo $this->shorttag; ?>' + attrs + ']'; 
+            //return '[<?php echo $this->shorttag; ?>' + attrs + ']'; 
+            return attrs; 
         },
-        sendToEditor : function(f) {
+        getCode : function(f) {
             var collection = jQuery(f).find("input[id^=<?php echo $this->prefix; ?>]:not(input:checkbox),input[id^=<?php echo $this->prefix; ?>]:checkbox:checked,select[id^=<?php echo $this->prefix; ?>],textarea[id^=<?php echo $this->prefix; ?>]");
             var $this = this;
             collection.each(function () {
                 var name = this.name.substring(<?php echo strlen($this->prefix)+1; ?>, this.name.length-1);
                $this['options'][name] = this.value;
             });
-            var shortcode = this.generateShortCode()
-            send_to_editor(shortcode);
+            var shortcode = this.generateShortCode();            
+            //send_to_editor(shortcode);            
+            try {
+                var t = jQuery('#content');
+                if(t.length){
+                    var v= t.val();
+                    if(v.indexOf(shortcode) == -1)
+                        t.val(v+shortcode);
+                }   
+            
+            } catch(e) {}
+            return shortcode;
+        },
+        sendToEditor : function(id,view) {                    
+            send_to_editor('[<?php echo $this->shorttag; ?> view="'+view+'"]');
             try {
                 var t = jQuery('#content');
                 if(t.length){
