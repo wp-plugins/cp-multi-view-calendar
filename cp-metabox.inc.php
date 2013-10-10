@@ -144,7 +144,6 @@
   <div id="<?php echo $this->prefix; ?>calendarslistarea"></div>  
   <br />
   <input type="button" onclick="return <?php echo $this->prefix; ?>createNewCalendar(0);" value="<?php _e('Create New Calendar View'); ?>" />  
-  <!--<input type="button" onclick="return <?php echo $this->prefix; ?>Admin.sendToEditor(this.form);" value="<?php _e('Send Calendar to Editor &raquo;'); ?>" />-->
 </div>
  
   
@@ -190,7 +189,7 @@
     /** Ajax call add/update new calendar view */
     function <?php echo $this->prefix; ?>saveCalendar(form)
     {
-        var code = <?php echo $this->prefix; ?>Admin.getCode(form);        
+        var code = <?php echo $this->prefix; ?>Admin.getCode(form);                
         var $j = jQuery.noConflict();
         var data = {
             action: '<?php echo $this->prefix; ?>add_calendar',
@@ -231,7 +230,7 @@
             security: '<?php echo $this->ajax_nonce; ?>',
 	  	    id: viewid
      	};
-     	$j("#<?php echo $this->prefix; ?>calendarslistarea")[0].innerHTML = '<?php _e("Loading..."); ?>';
+     	$j("#<?php echo $this->prefix; ?>calendarslistarea")[0].innerHTML = '<?php _e("Loading..."); ?>';     	
         $j.post(ajaxurl, data, function(response) {
             try {
 		        $j("#<?php echo $this->prefix; ?>calendarslistarea")[0].innerHTML = response;		  		    
@@ -294,15 +293,26 @@
             return attrs; 
         },
         getCode : function(f) {
-            var collection = jQuery(f).find("input[id^=<?php echo $this->prefix; ?>]:not(input:checkbox),input[id^=<?php echo $this->prefix; ?>]:checkbox:checked,select[id^=<?php echo $this->prefix; ?>],textarea[id^=<?php echo $this->prefix; ?>]");
-            var $this = this;
+            var collection = jQuery(f).find("input[id^=<?php echo $this->prefix; ?>]:not(input:checkbox),select[id^=<?php echo $this->prefix; ?>],textarea[id^=<?php echo $this->prefix; ?>]");
+            /** input[id^=<?php echo $this->prefix; ?>]:checkbox:checked, */
+            var $this = this;            
             collection.each(function () {
                 var name = this.name.substring(<?php echo strlen($this->prefix)+1; ?>, this.name.length-1);
                $this['options'][name] = this.value;
             });
-            var shortcode = this.generateShortCode();            
-            //send_to_editor(shortcode);            
-            try {
+            var shortcode = this.generateShortCode();                                                   
+            if (document.getElementById("<?php echo $this->prefix; ?>_viewDay").checked) shortcode =  shortcode+'||||||viewDay="true"';
+            if (document.getElementById("<?php echo $this->prefix; ?>_viewWeek").checked) shortcode =  shortcode+'||||||viewWeek="true"';
+            if (document.getElementById("<?php echo $this->prefix; ?>_viewMonth").checked) shortcode =  shortcode+'||||||viewMonth="true"';
+            if (document.getElementById("<?php echo $this->prefix; ?>_viewNMonth").checked) shortcode =  shortcode+'||||||viewNMonth="true"';
+            if (document.getElementById("<?php echo $this->prefix; ?>_edition").checked) shortcode =  shortcode+'||||||edition="true"';
+            if (document.getElementById("<?php echo $this->prefix; ?>_btoday").checked) shortcode =  shortcode+'||||||btoday="true"';
+            if (document.getElementById("<?php echo $this->prefix; ?>_bnavigation").checked) shortcode =  shortcode+'||||||bnavigation="true"';
+            if (document.getElementById("<?php echo $this->prefix; ?>_brefresh").checked) shortcode =  shortcode+'||||||brefresh="true"';
+            if (document.getElementById("<?php echo $this->prefix; ?>_showtooltip").checked) shortcode =  shortcode+'||||||showtooltip="true"';
+            if (document.getElementById("<?php echo $this->prefix; ?>_shownavigate").checked) shortcode =  shortcode+'||||||shownavigate="true"';
+            /** send_to_editor(shortcode); */
+            /**try {
                 var t = jQuery('#content');
                 if(t.length){
                     var v= t.val();
@@ -310,7 +320,7 @@
                         t.val(v+shortcode);
                 }   
             
-            } catch(e) {}
+            } catch(e) {}*/            
             return shortcode;
         },
         sendToEditor : function(id,view) {                    

@@ -258,7 +258,7 @@ var cpmvc_configmultiview0 = {"obj":"{\"params\":<?php echo $params; ?>,\n  \"aj
          );  
     
         if ($atts["view"] != '') {
-            $myrows = $wpdb->get_results( "SELECT * FROM ".$wpdb->prefix."dc_mv_views WHERE id=".intval($atts["view"]) );
+            $myrows = $wpdb->get_results( "SELECT * FROM ".$wpdb->prefix."dc_mv_views WHERE id=".intval($atts["view"]) );            
             $base_params = array ();
             $base_params['id'] = $myrows[0]->calid;
             if ($myrows[0]->viewWeek == 'true') $base_params['viewDay'] = $myrows[0]->viewDay;
@@ -313,7 +313,7 @@ var cpmvc_configmultiview0 = {"obj":"{\"params\":<?php echo $params; ?>,\n  \"aj
     public function plugin_page_links($links) {
         $customAdjustments_link = '<a href="http://wordpress.dwbooster.com/contact-us">'.__('Request custom changes').'</a>';
     	array_unshift($links, $customAdjustments_link);
-        $settings_link = '<a href="options-general.php?page='.$this->menu_parameter.'">'.__('Settings').'</a>';
+        $settings_link = '<a href="admin.php?page='.$this->menu_parameter.'_manage">'.__('Settings').'</a>';
     	array_unshift($links, $settings_link);
     	$help_link = '<a href="'.$this->plugin_URL.'">'.__('Help').'</a>';
     	array_unshift($links, $help_link);
@@ -322,7 +322,11 @@ var cpmvc_configmultiview0 = {"obj":"{\"params\":<?php echo $params; ?>,\n  \"aj
 
     public function admin_menu() {
         add_options_page($this->plugin_name.' Options', $this->plugin_name, 'manage_options', $this->menu_parameter, array($this, 'settings_page') );
-        add_menu_page( $this->plugin_name.' Options', $this->plugin_name, 'edit_pages', $this->menu_parameter, array($this, 'settings_page') );
+        add_menu_page( $this->plugin_name.' Options', $this->plugin_name, null, $this->menu_parameter, array($this, 'settings_page') );
+        add_submenu_page( $this->menu_parameter, 'Manage Calendars', 'Manage Calendars', 'edit_pages', $this->menu_parameter."_manage", array($this, 'settings_page') );
+        add_submenu_page( $this->menu_parameter, 'Help: Sample Views', 'Help: Sample Views', 'edit_pages', $this->menu_parameter."_samples", array($this, 'settings_page') );
+        add_submenu_page( $this->menu_parameter, 'Help: CSS Styles', 'Help: CSS Styles', 'edit_pages', $this->menu_parameter."_css", array($this, 'settings_page') );
+        add_submenu_page( $this->menu_parameter, 'Upgrade to Pro Version', 'Upgrade to Pro Version', 'edit_pages', $this->menu_parameter."_upgrade", array($this, 'settings_page') );
 
         add_meta_box($this->prefix.'box', $this->plugin_name, array($this, 'insertMetaBox'), 'post', 'normal');
         add_meta_box($this->prefix.'box', $this->plugin_name, array($this, 'insertMetaBox'), 'page', 'normal');
@@ -351,12 +355,13 @@ var cpmvc_configmultiview0 = {"obj":"{\"params\":<?php echo $params; ?>,\n  \"aj
         {
             $buffer .= '<tr>';
             $buffer .= '<td>#'.$item->id.'</td>';
-            $buffer .= '<td>Calendar 1</td>';
-            $buffer .= '<td nowrap>';
-            $buffer .= '<a class="button" style="color:#338833;font-weight:bold;" href="javascript:'.$this->prefix.'Admin.sendToEditor('.$item->calid.','.$item->id.');">'.__('Publish &raquo; Send shortcode to editor').'</a> &nbsp; ';
+            $buffer .= '<td>'.$item->title.'</td>';
+            $buffer .= '<td nowrap style="color:#338833;font-weight:bold;">[CPMV_CALENDAR view="'.$item->id.'"]</td>';
+            $buffer .= '<td>';
+            $buffer .= '<a class="button" style="" href="javascript:'.$this->prefix.'Admin.sendToEditor('.$item->calid.','.$item->id.');">'.__('Publish').'</a> &nbsp; ';
             $buffer .= '<a class="button" href="javascript:'.$this->prefix.'previewCalendarId('.$item->id.');">'.__('Preview').'</a> &nbsp; ';
             $buffer .= '<a class="button" href="javascript:'.$this->prefix.$seed.'editCalendar'.$item->id.'();">'.__('Edit').'</a> &nbsp; ';
-            $buffer .= '<a class="button" href="javascript:'.$this->prefix.'deleteCalendar('.$item->id.');">'.__('Delete').'</a>';
+            $buffer .= '<a class="button" href="javascript:'.$this->prefix.'deleteCalendar('.$item->id.');">'.__('Delete').'</a>';            
             $buffer .= '</td>';
             $buffer .= '</tr>';
             // generate edit function             
@@ -393,6 +398,7 @@ var cpmvc_configmultiview0 = {"obj":"{\"params\":<?php echo $params; ?>,\n  \"aj
              <tr>
                <th align="left" nowrap style="border-bottom:1px dotted black;">View ID</th>
                <th align="left" style="border-bottom:1px dotted black;">Calendar</th>       
+               <th align="left" style="border-bottom:1px dotted black;">Shortcode</th>
                <th align="left" style="border-bottom:1px dotted black;">Options</th>
              </tr>
              <?php echo $buffer; ?>
@@ -445,7 +451,7 @@ var cpmvc_configmultiview0 = {"obj":"{\"params\":<?php echo $params; ?>,\n  \"aj
         check_ajax_referer( $this->prefix, 'security' ); 
         
         // add calendar view
-        $params = $this->ajax_get_posted_params();
+        $params = $this->ajax_get_posted_params();        
         if ($_POST["viewid"] == '0')
             $wpdb->insert($wpdb->prefix."dc_mv_views", $params);
         else    
@@ -474,13 +480,26 @@ var cpmvc_configmultiview0 = {"obj":"{\"params\":<?php echo $params; ?>,\n  \"aj
         {
             $this->calendar = 1;
             @include_once dirname( __FILE__ ) . '/cp-admin-int.inc.php';
-        }
+        } 
+        else if ($this->get_param("page") == 'cp_multiview_samples')
+        {
+            @include_once dirname( __FILE__ ) . '/help/samples.html';
+        } 
+        else if ($this->get_param("page") == 'cp_multiview_css')
+        {
+            @include_once dirname( __FILE__ ) . '/help/cssstyles.html';
+        }         
+        else if ($this->get_param("page") == 'cp_multiview_upgrade')
+        {
+            echo("Redirecting to upgrade page...<script type='text/javascript'>document.location='http://wordpress.dwbooster.com/calendars/cp-multi-view-calendar#download';</script>");
+            exit;
+        }        
         else
             @include_once dirname( __FILE__ ) . '/cp-admin-int-list.inc.php';
     }
 
     function insert_adminScripts($hook) {
-        if ($this->get_param("page") == $this->menu_parameter)
+        if ($this->get_param("page") == $this->menu_parameter."_manage")
         {
             wp_enqueue_script( "jquery" );
             wp_enqueue_script( "jquery-ui-core" );
