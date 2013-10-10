@@ -36,12 +36,12 @@ if ($message) echo "<div id='setting-error-settings_updated' class='updated sett
     if (owner == '')
         owner = 0;
     var is_public = (document.getElementById("calpublic_"+id).checked?"1":"0");
-    document.location = 'admin.php?page=<?php echo $this->menu_parameter; ?>&u='+id+'&r='+Math.random()+'&public='+is_public+'&owner='+owner+'&name='+encodeURIComponent(calname);    
+    document.location = 'admin.php?page=<?php echo $this->menu_parameter; ?>_manage&u='+id+'&r='+Math.random()+'&public='+is_public+'&owner='+owner+'&name='+encodeURIComponent(calname);    
  }
  
  function cp_manageSettings(id)
  {
-    document.location = 'admin.php?page=<?php echo $this->menu_parameter; ?>&cpmvc_id='+id+'&r='+Math.random();
+    document.location = 'admin.php?page=<?php echo $this->menu_parameter; ?>_manage&cpmvc_id='+id+'&r='+Math.random();
  }
  
  function cp_deleteItem(id)
@@ -67,7 +67,7 @@ if ($message) echo "<div id='setting-error-settings_updated' class='updated sett
       
       <p>In that area you can create a new view and when ready sent the shortcode to the editor through the button included for that purpose.</p>
       
-      <p>Note: Use the section below only to manage the caledar's data.</p>
+      <p>Note: Use the section below only to manage the calendar's data.</p>
 
   </div>    
  </div>

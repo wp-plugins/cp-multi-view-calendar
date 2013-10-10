@@ -12,7 +12,7 @@ $mycalendarrows = $wpdb->get_results( 'SELECT * FROM '.$wpdb->prefix.'dc_mv_cale
 <div class="wrap">
 <h2><?php echo $this->plugin_name; ?> - Manage Data and Settings</h2>
 
-<input type="button" name="backbtn" value="Back to items list..." onclick="document.location='options-general.php?page=<?php echo $this->menu_parameter; ?>';">
+<input type="button" name="backbtn" value="Back to items list..." onclick="document.location='admin.php?page=<?php echo $this->menu_parameter; ?>_manage';">
 
 <form method="post" action="" name="cpformconf"> 
 <input name="cpmvc_do_action" type="hidden" id="save_settings" />
@@ -80,8 +80,20 @@ $mycalendarrows = $wpdb->get_results( 'SELECT * FROM '.$wpdb->prefix.'dc_mv_cale
  
 
 
+  <div id="metabox_basic_settings" class="postbox" >
+  <h3 class='hndle' style="padding:5px;"><span>Instructions</span></h3>
+  <div class="inside"> 
+   
+      <p>To insert a calendar into a page or post, go to the <strong>edition of the page/post</strong> and use the box named "<strong>CP Multi View Calendar</strong>" below the edition area.</p> 
+      
+      <p>In that area you can create a new view and when ready sent the shortcode to the editor through the button included for that purpose.</p>
+      
+      <p>Note: Use the above section only to manage the calendar's data.</p>
 
-<!--<p class="submit"><input type="submit" name="submit" id="submit" class="button-primary" value="Save Changes"  /></p>-->
+  </div>    
+ </div>
+
+
 
 
 [<a href="http://wordpress.dwbooster.com/contact-us" target="_blank">Request Custom Modifications</a>] | [<a href="<?php echo $this->plugin_URL; ?>" target="_blank">Help</a>]
