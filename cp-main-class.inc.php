@@ -432,7 +432,9 @@ var cpmvc_configmultiview0 = {"obj":"{\"params\":<?php echo $params; ?>,\n  \"aj
                            'bnavigation' => '',
                            'brefresh' => '',
                            'showtooltip' => '',
-                           'shownavigate' => ''
+                           'shownavigate' => '',
+                           'otherparams' => '',
+                           'url' => ''
                          );
         foreach ($rawparams as $item)
         {
