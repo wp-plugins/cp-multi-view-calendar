@@ -959,7 +959,7 @@
                 var eD = events[j][3];               
                 
                 var diff = DateDiff("d", sD, eD);
-                if (diff > 0) {
+                if (diff > 0 && !(events[j][4] == 1)) {
                     if (sD < startRange) { //start date out of range
                         sD = startRange;
                     }
