@@ -599,9 +599,9 @@
                                     var item = d1.getFullYear()+"/"+(d1.getMonth()+1)+"/"+d1.getDate(); 
                                     //alert(this.hasClass("ui-datepicker-other-month"));
                                     if (dates[item])
-                                        return [true,"ui-state-active",item];
+                                        return [true,"ui-state-active",dateFormat.call(d1, i18n.dcmvcal.dateformat.fulldayvalue)];
                                     else
-                                        return [true,"ui-state-non-active",item];
+                                        return [true,"ui-state-non-active",dateFormat.call(d1, i18n.dcmvcal.dateformat.fulldayvalue)];
                                 }
                             }
 
@@ -624,9 +624,10 @@
                 if (__VIEWWEEKDAYS[6]==0) $(".ui-datepicker span[title='Saturday']").parent().css("display","none");
                 if (option.shownavigate)
                 {
-                    var item = $(this).parent().attr("title");
+                    var item = datetostr(strtodate($(this).parent().attr("title")+" 00:00"));
                     var i = item.split("/");
                     var title = new Date(i[0],i[1]-1,i[2]);
+                    
                     title = dateFormat.call(title, i18n.dcmvcal.dateformat.fulldayvalue);
                     var navigateurl = option.navigateurl.replace(/the_current_date/g,title);
                     if (option.target==1)
@@ -728,17 +729,18 @@
              if (option.date_box_with_color_in_nmonth_view)
              {
                  $("#nmonths"+option.thecontainer+" .ui-state-active").each(function(){
-                         var item = $(this).attr("title");
+                     try{
+                         var item = datetostr(strtodate($(this).attr("title")+" 00:00"));
                          if (item && dates[item] && dates[item][0])
                          {
                             var c = ((dates[item][0][7]!=-1 && dates[item][0][7]!=null)?dates[item][0][7]:"#"+option.paletteDefault);
                             $(this).css("background",c);
                          }
-                             //showDialogNMonth(dates,item,".myover");
+                     }catch (e) {}
                  });
              }        
              $("#nmonths"+option.thecontainer+" .ui-state-non-active a").bind('click', function(e) {
-                var item = $(this).parent().attr("title");
+                var item = datetostr(strtodate($(this).parent().attr("title")+" 00:00"));
                 var arrdays = item.split('/');
                 var start = new Date(arrdays[0], arrdays[1]-1, arrdays[2]);
                 quickadd(start, start, true, { left: e.pageX, top: e.pageY });
@@ -750,7 +752,7 @@
                  {
                      
                      $("#nmonths"+option.thecontainer+" .ui-state-active a").bind('click', function(e) {
-                         var item = $(this).parent().attr("title");
+                         var item = datetostr(strtodate($(this).parent().attr("title")+" 00:00"));
                          var idover = "myover"+item.replace(/\//g,"_");
                          $(".ui-dialog-content").remove();
                          $(this).parent().append("<div class=\""+idover+"\" ></div>");
@@ -787,7 +789,7 @@
                              }).addClass("mv_dlg_nmonth").parent().addClass("mv_dlg"); 
                              $("<div id=\"mv_corner\" />").appendTo($(".mv_dlg .ui-dialog-titlebar"));
                              try {
-                             var item = $(this).attr("title");
+                             var item = datetostr(strtodate($(this).attr("title")+" 00:00"));
                              showDialogNMonth(dates,item,".myover");
                              }catch (e) {}
                         }
@@ -2659,7 +2661,7 @@
                                  my: "left top",
                                  at: "center bottom",
                                  collision: "fit",
-                                 of:$("#nmonths"+option.thecontainer+" .ui-state-non-active[title='"+start.getFullYear()+"/"+(start.getMonth()+1)+"/"+start.getDate()+"']")
+                                 of:$("#nmonths"+option.thecontainer+" .ui-state-non-active[title='"+dateFormat.call(start, i18n.dcmvcal.dateformat.fulldayvalue)+"']")
                                  };                             
                 buddle.dialog({width:300,resizable: false,                
                            position:pp
@@ -2794,6 +2796,11 @@
             var h = arr3[0].indexOf("0") == 0 ? arr3[0].substr(1, 1) : arr3[0];
             var n = arr3[1].indexOf("0") == 0 ? arr3[1].substr(1, 1) : arr3[1];
             return new Date(y, parseInt(m) - 1, d, h, n);
+        }
+        //str yyyy/m/d
+        function datetostr(d)
+        {
+            return d.getFullYear()+"/"+(d.getMonth()+1)+"/"+d.getDate();
         }
         function str_MdyyyyHHmm_todate(str) {
             var arr = str.split(" ");

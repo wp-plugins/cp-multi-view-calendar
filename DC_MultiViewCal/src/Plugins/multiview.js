@@ -381,7 +381,7 @@ function initMultiViewCal(container,calendarId,config)
                     //Add a new event
                     try {
                     $jc("#faddbtn"+op.thecontainer).click(function(e) {
-                        var url =DATA_EDIT_URL+"&css="+config.cssStyle+"&lang="+config.language+"&weekstartday="+config.weekstartday+"&hoursStart="+config.hoursStart+"&hoursEnd="+config.hoursEnd;
+                        var url =DATA_EDIT_URL+"&r="+Math.random()+"&css="+config.cssStyle+"&lang="+config.language+"&weekstartday="+config.weekstartday+"&hoursStart="+config.hoursStart+"&hoursEnd="+config.hoursEnd;
                         showEditEvent(url);
             
             
