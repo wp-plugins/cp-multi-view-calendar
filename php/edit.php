@@ -447,6 +447,12 @@ $("#repeatsave").dialog({width:500,modal: true,resizable: false}).parent().addCl
   </head>  
   <body class="multicalendar calendaredition">
     <div class="infocontainer ui-widget-content" >
+<?php @include dirname( __FILE__ ) . '/list.inc.php'; ?>
+<script type="text/javascript">//<!--
+<?php echo $arrayJS_list; ?>
+
+//-->
+</script>  
         <form action="<?php echo $this->get_site_url(); ?>/?cpmvc_id=<?php echo $this->calendar; ?>&cpmvc_do_action=mvparse&f=datafeed&calid=<?php echo $_GET["calid"];?>&month_index=<?php echo $_GET["month_index"];?>&method=adddetails<?php echo isset($event)?"&id=".$event["id"]:""; ?>" class="fform" id="fmEdit" method="post">
           <label>
             <span id="s_subject">*Subject:</span>

@@ -206,6 +206,12 @@ class CP_MultiViewCalendar extends CP_BaseClass {
 <script type='text/javascript' src='<?php echo plugins_url('/DC_MultiViewCal/src/Plugins/jquery.calendar.js', __FILE__); ?>'></script>
 <script type='text/javascript' src='<?php echo plugins_url('/DC_MultiViewCal/src/Plugins/jquery.alert.js', __FILE__); ?>'></script>
 <script type='text/javascript' src='<?php echo plugins_url('/DC_MultiViewCal/src/Plugins/multiview.js', __FILE__); ?>'></script>
+<?php @include dirname( __FILE__ ) . '/php/list.inc.php'; ?>
+<script type="text/javascript">//<!--
+<?php echo $arrayJS_list; ?>
+
+//-->
+</script>
 <?php @include dirname( __FILE__ ) . '/cp-public-int.inc.php'; ?>
 <script type='text/javascript'>
 /* <![CDATA[ */
