@@ -1,5 +1,5 @@
 $(function() {
-      var weekDays = new Array(i18n.dcmvcal.dateformat.sun2.toUpperCase(), i18n.dcmvcal.dateformat.mon2.toUpperCase(), i18n.dcmvcal.dateformat.tue2.toUpperCase(), i18n.dcmvcal.dateformat.wed2.toUpperCase(), i18n.dcmvcal.dateformat.thu2.toUpperCase(), i18n.dcmvcal.dateformat.fri2.toUpperCase(), i18n.dcmvcal.dateformat.sat2.toUpperCase());
+      var weekDays = new Array("SU","MO","TU","WE","TH","FR","SA");
       var weekDaysLarge = new Array(i18n.dcmvcal.dateformat.sunday, i18n.dcmvcal.dateformat.monday, i18n.dcmvcal.dateformat.tuesday, i18n.dcmvcal.dateformat.wednesday, i18n.dcmvcal.dateformat.thursday, i18n.dcmvcal.dateformat.friday, i18n.dcmvcal.dateformat.saturday);
       var monthsName = new Array(i18n.dcmvcal.dateformat.jan, i18n.dcmvcal.dateformat.feb, i18n.dcmvcal.dateformat.mar, i18n.dcmvcal.dateformat.apr, i18n.dcmvcal.dateformat.may, i18n.dcmvcal.dateformat.jun, i18n.dcmvcal.dateformat.jul, i18n.dcmvcal.dateformat.aug, i18n.dcmvcal.dateformat.sep, i18n.dcmvcal.dateformat.oct, i18n.dcmvcal.dateformat.nov, i18n.dcmvcal.dateformat.dec);
       var prefixes = new Array(i18n.dcmvcal.first, i18n.dcmvcal.second, i18n.dcmvcal.third, i18n.dcmvcal.fourth, i18n.dcmvcal.last);
@@ -147,7 +147,12 @@ $(function() {
               $("#end_after").append('<option value="'+i+'">'+i+'</option>');
           $("#end_after").val(10);
           var d = $("#starts").html().split("/");
-          var currentDate = new Date(d[2], d[0]-1, d[1]);
+          var arrs = $("#starts").html().split(i18n.dcmvcal.dateformat.separator);
+          var year = arrs[i18n.dcmvcal.dateformat.year_index];
+          var month = arrs[i18n.dcmvcal.dateformat.month_index];
+          var day = arrs[i18n.dcmvcal.dateformat.day_index];
+          $("#stpartdatelast").val([month,day,year].join("/"));
+          var currentDate = new Date(year, month-1, day);
           $("#end_until_input").val(d[0]+"/"+d[1]+"/"+(parseInt(d[2])+1))
           if (data == "")
               data = "FREQ=WEEKLY;BYDAY="+weekDays[currentDate.getDay()]+"";
@@ -263,6 +268,7 @@ $(function() {
                   case 4:
                       format += "FREQ=WEEKLY";
                       for (var i=0;i<weekDays.length;i++)
+                      {                          
                           if ($("#byday"+weekDays[i]).is(":checked"))
                           {
                               if (summary =="")
@@ -278,6 +284,7 @@ $(function() {
                               summary += weekDaysLarge[i];
                               format += weekDays[i];
                           }
+                      }    
                       if ($("#interval").val()==1)
                           summary = i18n.dcmvcal.weekly+summary;
                       else
