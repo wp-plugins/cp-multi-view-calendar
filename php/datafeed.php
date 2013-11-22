@@ -393,9 +393,9 @@ function removeCalendar($id,$rruleType){
             //add
             $pre_rrule .= ";".substr($rruleType,4);
             $sql = "update `".DC_MV_CAL."` set"
-              . " `rrule`=" . esc_sql($pre_rrule) . " "
-              . "where `id`=" . $id;            
-            if (!$qpdb->query($sql)){
+              . " `rrule`='" . esc_sql($pre_rrule) . "' "
+              . "where `id`=" . $id;  
+            if ($wpdb->query($sql)=== FALSE){
               $ret['IsSuccess'] = false;
               $ret['Msg'] = $wpdb->last_error;
             }else{
