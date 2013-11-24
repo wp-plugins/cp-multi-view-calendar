@@ -265,6 +265,11 @@ var cpmvc_configmultiview0 = {"obj":"{\"params\":<?php echo $params; ?>,\n  \"aj
     
         if ($atts["view"] != '') {
             $myrows = $wpdb->get_results( "SELECT * FROM ".$wpdb->prefix."dc_mv_views WHERE id=".intval($atts["view"]) );            
+            if (!count($myrows))
+            {
+                echo '<strong>Warning:</strong> The VIEW ID #<strong>'.$atts["view"].'</strong> isn\'t avaiable in the database. Please be sure to indicate a valid VIEW ID for the CP Multi View Event Calendar in the shortcode.';
+                return;
+            }
             $base_params = array ();
             $base_params['id'] = $myrows[0]->calid;
             if ($myrows[0]->viewWeek == 'true') $base_params['viewDay'] = $myrows[0]->viewDay;
