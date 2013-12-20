@@ -84,7 +84,7 @@ $(function() {
           }    
           else
           {
-              $("#repeatspan").html(summary);
+              //$("#repeatspan").html(summary);
               $("#repeatcheckbox").attr("checked","checked");
           }
           $("#repeat").dialog('close'); 
