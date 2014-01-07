@@ -332,7 +332,7 @@ var cpmvc_configmultiview0 = {"obj":"{\"params\":<?php echo $params; ?>,\n  \"aj
     }
 
     public function admin_menu() {
-        add_options_page($this->plugin_name.' Options', $this->plugin_name, 'manage_options', $this->menu_parameter, array($this, 'settings_page') );
+        add_options_page($this->plugin_name.' Options', $this->plugin_name, 'manage_options', $this->menu_parameter.'settings', array($this, 'settings_page') );
         add_menu_page( $this->plugin_name.' Options', $this->plugin_name, null, $this->menu_parameter, array($this, 'settings_page') );
         add_submenu_page( $this->menu_parameter, 'Manage Calendars', 'Manage Calendars', 'edit_pages', $this->menu_parameter."_manage", array($this, 'settings_page') );
         add_submenu_page( $this->menu_parameter, 'Help: Sample Views', 'Help: Sample Views', 'edit_pages', $this->menu_parameter."_samples", array($this, 'settings_page') );
