@@ -75,3 +75,7 @@
 .multicalendar th{line-height:15px;}
 .multicalendar div.ctoolbar div.fbutton.non-navigate {CURSOR: default;}
 .mv_dlg.ui-dialog{z-index:1000}
+#multicalendar tr td{border-style:solid;border-color:#d8d8d8;border-bottom:0px;}
+#multicalendar tr td{padding:0px;}
+#multicalendar tr th,#multicalendar thead th{border:0px;padding:0px;background:none}
+#multicalendar tr td.st-c,#multicalendar table{border:0px}
