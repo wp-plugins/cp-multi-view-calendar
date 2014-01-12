@@ -2376,7 +2376,7 @@
                 data = getdata($(this));
             }
             if (data != null) {
-                if (option.quickDeleteUrl != "" && data[8] == 1 && ( (option.readonly != true) || (option.readonly == true && option.showtooltipdwm) || (option.readonly == true && option.showtooltipdwm_mouseover)   )) {
+                if (option.quickDeleteUrl != "" && data[8] == 1 && ( (option.readonly != true) || (option.readonly == true && option.showtooltipdwm) || (option.showtooltipdwm_mouseover)   )) {
                      var csbuddle = '<div id="bbit-cs-buddle">'
                         +'<div id="bbit-cs-buddle-timeshow" class="bubbletime"></div>'
                         +'<div id="bbit-cs-title" class="bubbletitle"></div>'
@@ -2546,7 +2546,7 @@
                 $(this).click(dayshow);
                 if (option.showtooltipdwm_mouseover) {
                     $(this).mouseover(dayshow);
-                    $(this).mouseout(function() {try {$("#bbit-cs-buddle").dialog("close");}catch (e) {}});
+                    //if (option.readonly == true) $(this).mouseout(function() {try {$("#bbit-cs-buddle").dialog("close");}catch (e) {}});
                 }
             });
 
@@ -2925,7 +2925,7 @@
                     chip.click(dayshow);
                     if (option.showtooltipdwm_mouseover) {
                         chip.mouseover(dayshow);
-                        chip.mouseout(function() {try {$("#bbit-cs-buddle").dialog("close");}catch (e) {}});
+                        //if (option.readonly == true) chip.mouseout(function() {try {$("#bbit-cs-buddle").dialog("close");}catch (e) {}});
                     }
                     if (chip.hasClass("drag")) {
                         chip.mousedown(function(e) { dragStart.call(this, "dw3", e); return false; });
@@ -2943,7 +2943,7 @@
                     chip.click(dayshow);
                     if (option.showtooltipdwm_mouseover) {
                         chip.mouseover(dayshow);
-                        chip.mouseout(function() {try {$("#bbit-cs-buddle").dialog("close");}catch (e) {}});
+                        //if (option.readonly == true) chip.mouseout(function() {try {$("#bbit-cs-buddle").dialog("close");}catch (e) {}});
                     }
                     if (chip.hasClass("drag") && (viewtype == "week" || viewtype == "nDays" ) ) {
                         //drag;
@@ -2978,7 +2978,7 @@
                     chip.click(dayshow);
                     if (option.showtooltipdwm_mouseover) {
                         chip.mouseover(dayshow);
-                        chip.mouseout(function() {try {$("#bbit-cs-buddle").dialog("close");}catch (e) {}});
+                        //if (option.readonly == true) chip.mouseout(function() {try {$("#bbit-cs-buddle").dialog("close");}catch (e) {}});
                     }
                     if (chip.hasClass("drag")) {
                         //drag;//aqui
