@@ -445,7 +445,7 @@ $("#repeatsave").dialog({width:500,modal: true,resizable: false}).parent().addCl
 #repeat.ui-dialog-content{display:block}
 </style>  
   </head>  
-  <body class="multicalendar calendaredition">
+  <body class="multicalendar calendaredition" id="multicalendar">
     <div class="infocontainer ui-widget-content" >
 <?php @include dirname( __FILE__ ) . '/list.inc.php'; ?>
 <script type="text/javascript">//<!--

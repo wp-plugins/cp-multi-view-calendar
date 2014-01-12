@@ -71,7 +71,7 @@ $mycalendarrows = $wpdb->get_results( 'SELECT * FROM '.$wpdb->prefix.'dc_mv_cale
             userOwner:-1 , palette:0, paletteDefault:"F00"});
   </script>
 
-  <div id="cal<?php echo $this->calendar; ?>" class="multicalendar"></div>
+  <div id="multicalendar"><div id="cal<?php echo $this->calendar; ?>" class="multicalendar"></div></div>
   
    <div style="clear:both;height:20px" ></div>      
    

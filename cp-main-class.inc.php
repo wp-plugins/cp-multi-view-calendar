@@ -163,6 +163,11 @@ class CP_MultiViewCalendar extends CP_BaseClass {
         $base_params['numberOfMonths'] = $myrows[0]->numberOfMonths;
         if ($myrows[0]->showtooltip == 'true') $base_params['showtooltip'] = $myrows[0]->showtooltip;
         $base_params['tooltipon'] = $myrows[0]->tooltipon;
+        if ($myrows[0]->showtooltip == 'true')
+                if ($myrows[0]->tooltipon!=1)
+                    $base_params['showtooltipdwm_mouseover'] = 'true';
+                else
+                    $base_params['showtooltipdwm'] = 'true';        
         if ($myrows[0]->shownavigate == 'true') $base_params['shownavigate'] = $myrows[0]->shownavigate;
         $base_params['url'] = $myrows[0]->url;
         $base_params['target'] = $myrows[0]->target;
@@ -225,7 +230,7 @@ var cpmvc_configmultiview0 = {"obj":"{\"params\":<?php echo $params; ?>,\n  \"aj
     }
     
 
-    private function insert_public_item($atts) {        
+    public function insert_public_item($atts) {        
         global $wpdb;
         
         wp_register_script('cpmvc-common', plugins_url('/DC_MultiViewCal/src/Plugins/Common.js', __FILE__));
@@ -285,8 +290,13 @@ var cpmvc_configmultiview0 = {"obj":"{\"params\":<?php echo $params; ?>,\n  \"aj
             if ($myrows[0]->bnavigation == 'true') $base_params['bnavigation'] = $myrows[0]->bnavigation;
             if ($myrows[0]->brefresh == 'true') $base_params['brefresh'] = $myrows[0]->brefresh;
             $base_params['numberOfMonths'] = $myrows[0]->numberOfMonths;
-            if ($myrows[0]->showtooltip == 'true') $base_params['showtooltip'] = $myrows[0]->showtooltip;
+            if ($myrows[0]->showtooltip == 'true') $base_params['showtooltip'] = $myrows[0]->showtooltip;            
             $base_params['tooltipon'] = $myrows[0]->tooltipon;
+            if ($myrows[0]->showtooltip == 'true')
+                if ($myrows[0]->tooltipon!=1)
+                    $base_params['showtooltipdwm_mouseover'] = 'true';
+                else
+                    $base_params['showtooltipdwm'] = 'true';            
             if ($myrows[0]->shownavigate == 'true') $base_params['shownavigate'] = $myrows[0]->shownavigate;
             $base_params['url'] = $myrows[0]->url;
             $base_params['target'] = $myrows[0]->target;

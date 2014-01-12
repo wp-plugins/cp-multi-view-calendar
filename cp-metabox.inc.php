@@ -106,7 +106,7 @@
         </td>    
     </tr>    
     <tr valign="top">
-        <th scope="row"><label>Other parameters for nMonths View</label></th>
+        <th scope="row"><label>Tooltip Settings</label></th>
         <td>
           <script>function showhide(id){var obj1 = document.getElementById("<?php echo $this->prefix; ?>_showtooltip");var obj2 = document.getElementById("<?php echo $this->prefix; ?>_tooltipon");var obj3 = document.getElementById(id+"div");if ((obj1.checked) && (obj2.selectedIndex==1))    obj3.style.display = "none";else        obj3.style.display = "";}</script>
           <div>
