@@ -393,7 +393,18 @@
                 }
             }
         }
+        function adaptWH()
+	    {
+	        $(".multicalendar").each(function(){
+                    var h = 0;
+                    $(this).find(".ui-datepicker-group").each(function(){
+                        if (h < ($(this).css("height").replace("px","")*1)) h = $(this).css("height").replace("px","")*1;
+                    });
+                    if (h!=0) $(this).find(".ui-datepicker-group").each(function(){$(this).css("height",h+"px");});
+                });
+	    }
         $(window).resize(function() {
+            adaptWH();
             if (option.newWidthGroupCalculate)
             {
                 option.newWidthGroup = 0;
@@ -570,7 +581,11 @@
 
             }
 
-
+            var old_fn = $.datepicker._updateDatepicker;
+            $.datepicker._updateDatepicker = function(inst) {
+               old_fn.call(this, inst);
+               adaptWH();
+            }
             var mydatepicker = $( "#nmonths"+option.thecontainer ).datepicker({numberOfMonths: option.numberOfMonths,firstDay:option.weekstartday,defaultDate:showday,showOtherMonths: true,
                             monthNamesShort:__MonthName,
                             monthNames:__MonthNameLarge,
