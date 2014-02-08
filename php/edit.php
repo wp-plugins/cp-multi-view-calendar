@@ -296,6 +296,7 @@ if (file_exists(dirname( __FILE__ )."/../DC_MultiViewCal/css/".$_GET["css"]."/ca
             $("#r_save_one").click(function() {          
                 $("#rruleType").val("only");
                 $("#repeatsave").dialog('close');
+                document.getElementById('Description').value = document.getElementById('editorframe').contentWindow.document.body.innerHTML;                                    
                 $("#fmEdit").ajaxSubmit(options);
             }); 
             $("#r_save_following").click(function() {
@@ -305,11 +306,13 @@ if (file_exists(dirname( __FILE__ )."/../DC_MultiViewCal/css/".$_GET["css"]."/ca
                 var endDate = DateAdd("d", -1, endDate);                
                 $("#rruleType").val("UNTIL="+timeToUntilString(endDate));
                 $("#repeatsave").dialog('close');
+                document.getElementById('Description').value = document.getElementById('editorframe').contentWindow.document.body.innerHTML;                                    
                 $("#fmEdit").ajaxSubmit(options);
             }); 
             $("#r_save_all").click(function() {
                 $("#rruleType").val("all");
                 $("#repeatsave").dialog('close');
+                document.getElementById('Description').value = document.getElementById('editorframe').contentWindow.document.body.innerHTML;                                    
                 $("#fmEdit").ajaxSubmit(options);
             }); 
             $("#r_save_cancel").click(function() {
@@ -399,6 +402,7 @@ if (file_exists(dirname( __FILE__ )."/../DC_MultiViewCal/css/".$_GET["css"]."/ca
 <?php if (isset($event) && ($event["rrule"]!="")) { ?>
 $("#repeatsave").dialog({width:500,modal: true,resizable: false}).parent().addClass("mv_dlg").addClass("mv_dlg_editevent").addClass("infocontainer") ;    
 <?php } else { ?> 
+                document.getElementById('Description').value = document.getElementById('editorframe').contentWindow.document.body.innerHTML;                    
                 $("#fmEdit").ajaxSubmit(options);
 <?php } ?> 
                  
@@ -452,7 +456,7 @@ $("#repeatsave").dialog({width:500,modal: true,resizable: false}).parent().addCl
 <?php echo $arrayJS_list; ?>
 
 //-->
-</script>  
+</script>    
         <form action="<?php echo $this->get_site_url(); ?>/?cpmvc_id=<?php echo $this->calendar; ?>&cpmvc_do_action=mvparse&f=datafeed&calid=<?php echo $_GET["calid"];?>&month_index=<?php echo $_GET["month_index"];?>&method=adddetails<?php echo isset($event)?"&id=".$event["id"]:""; ?>" class="fform" id="fmEdit" method="post">
           <label>
             <span id="s_subject">*Subject:</span>
