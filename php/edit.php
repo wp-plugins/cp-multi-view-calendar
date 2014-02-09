@@ -295,8 +295,7 @@ if (file_exists(dirname( __FILE__ )."/../DC_MultiViewCal/css/".$_GET["css"]."/ca
             $("#r_save_one","#r_save_following","#r_save_all","#r_save_cancel","#r_delete_one","#r_delete_following","#r_delete_all","#r_delete_cancel" ).button();
             $("#r_save_one").click(function() {          
                 $("#rruleType").val("only");
-                $("#repeatsave").dialog('close');
-                document.getElementById('Description').value = document.getElementById('editorframe').contentWindow.document.body.innerHTML;                                    
+                $("#repeatsave").dialog('close');                                    
                 $("#fmEdit").ajaxSubmit(options);
             }); 
             $("#r_save_following").click(function() {
@@ -305,14 +304,12 @@ if (file_exists(dirname( __FILE__ )."/../DC_MultiViewCal/css/".$_GET["css"]."/ca
                 var endDate = new Date(arrs[2], arrs[0]-1, arrs[1]);
                 var endDate = DateAdd("d", -1, endDate);                
                 $("#rruleType").val("UNTIL="+timeToUntilString(endDate));
-                $("#repeatsave").dialog('close');
-                document.getElementById('Description').value = document.getElementById('editorframe').contentWindow.document.body.innerHTML;                                    
+                $("#repeatsave").dialog('close');                                    
                 $("#fmEdit").ajaxSubmit(options);
             }); 
             $("#r_save_all").click(function() {
                 $("#rruleType").val("all");
-                $("#repeatsave").dialog('close');
-                document.getElementById('Description').value = document.getElementById('editorframe').contentWindow.document.body.innerHTML;                                    
+                $("#repeatsave").dialog('close');                                    
                 $("#fmEdit").ajaxSubmit(options);
             }); 
             $("#r_save_cancel").click(function() {
@@ -401,8 +398,7 @@ if (file_exists(dirname( __FILE__ )."/../DC_MultiViewCal/css/".$_GET["css"]."/ca
 // 
 <?php if (isset($event) && ($event["rrule"]!="")) { ?>
 $("#repeatsave").dialog({width:500,modal: true,resizable: false}).parent().addClass("mv_dlg").addClass("mv_dlg_editevent").addClass("infocontainer") ;    
-<?php } else { ?> 
-                document.getElementById('Description').value = document.getElementById('editorframe').contentWindow.document.body.innerHTML;                    
+<?php } else { ?>                     
                 $("#fmEdit").ajaxSubmit(options);
 <?php } ?> 
                  
