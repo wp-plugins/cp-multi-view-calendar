@@ -15,7 +15,8 @@ try {
                 }
             })(jQuery);             
             var pathCalendar = mvcconfig.ajax_url;
-            initMultiViewCal("cal"+mvcconfig.calendar+"_"+i, mvcconfig.calendar,(mvcconfig.params));
+            if ( document.getElementById("cal"+mvcconfig.calendar+"_"+i) !== null)
+                initMultiViewCal("cal"+mvcconfig.calendar+"_"+i, mvcconfig.calendar,(mvcconfig.params));
         }
     }
 }catch (e) {} 
