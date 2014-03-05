@@ -292,7 +292,7 @@
         if (!option.height) {
             option.height = document.documentElement.clientHeight;
         }
-        if (option.view == "day" || option.view == "week" || option.view == "nDays")
+        //if (option.view == "day" || option.view == "week" || option.view == "nDays")
         {
             if (option.height/(option.hoursEnd-option.hoursStart+1)>option.cellheight)
                 option.cellheight = Math.ceil(option.height/(option.hoursEnd-option.hoursStart+1));
@@ -2032,20 +2032,23 @@
                                 excludeEvents[excludeEvents.length]= iEv.toString();
                              }
                         }
-                        r  = RRule.fromString(v[6],v[2]);//
-                        var diff = v[3]-v[2];
-                        ne = r.between( DateAdd("d", -1, start), DateAdd("d", 1, end));
-                        for (var j=0;j<ne.length;j++)
+                        try 
                         {
-                            var date00 = new Date(ne[j].getFullYear(), ne[j].getMonth(), ne[j].getDate());
-                            if (($.inArray(date00.toString(), excludeEvents))==-1)
+                            r  = RRule.fromString(v[6],v[2]);//
+                            var diff = v[3]-v[2];
+                            ne = r.between( DateAdd("d", -1, start), DateAdd("d", 1, end));
+                            for (var j=0;j<ne.length;j++)
                             {
-                                tmp = v.slice(0);
-                                tmp[2] = ne[j];
-                                tmp[3] = DateAdd("l", diff , ne[j]);
-                                tmpArray[tmpArray.length] = tmp;
+                                var date00 = new Date(ne[j].getFullYear(), ne[j].getMonth(), ne[j].getDate());
+                                if (($.inArray(date00.toString(), excludeEvents))==-1)
+                                {
+                                    tmp = v.slice(0);
+                                    tmp[2] = ne[j];
+                                    tmp[3] = DateAdd("l", diff , ne[j]);
+                                    tmpArray[tmpArray.length] = tmp;
+                                }
                             }
-                        }
+                        }catch (e) {}
                     }
                 }
                 else
