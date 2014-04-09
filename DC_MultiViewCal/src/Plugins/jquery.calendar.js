@@ -1263,7 +1263,7 @@
         }
         function BuildWTBody(ht, dayarrs, events, dMax,config,sufix) {
             //2:
-
+            var sufixIndex = sufix;
             ht.push("<td  class=\"wk-allday\"");
             if (dayarrs.length > 1) {
                 if (option.view == "week")
@@ -1292,28 +1292,33 @@
                     x.push(0);
                 }
                 //var c = tc();
+                var rowsByCategoryArray = new Array();
                 for (var j = 0; ((el < dMax) && (j < dMax)); j++) {
                     ht.push("<tr>");
                     for (var h = 0; h < l; ) {
                         var e = events[h][x[h]];
                         var tmp_h = h;
                         if (__VIEWWEEKDAYS[((dayarrs[tmp_h].date.getDay())%option.numberOfDays)]!=0) ht.push("<td class='st-c");
-                        if (e) { //if exists
+                        if ((e) && ( (option.rowsByCategory=="") || ( (option.rowsByCategory=="dc_locations" && e.event[9]==option.rowsList[sufixIndex] && $.inArray( e.event[0], rowsByCategoryArray)==-1) || (option.rowsByCategory=="dc_subjects" && e.event[1]==option.rowsList[sufixIndex] && $.inArray( e.event[0], rowsByCategoryArray)==-1) ) ))
+                        {
+                            console.log($.inArray( e.event[0], rowsByCategoryArray));
+                            rowsByCategoryArray[rowsByCategoryArray.length]=e.event[0];
                             x[h] = x[h] + 1;
                             if (__VIEWWEEKDAYS[((dayarrs[tmp_h].date.getDay())%option.numberOfDays)]!=0) ht.push("'");
+                            
                             var t = BuildMonthDayEvent(e, dayarrs[h].date, l - h);
                             if (sufix!="")
                                 t = t.replace('class="rb-o', sufix+' class="rb-o');
                             if (e.colSpan > 1) {
                                 if (__VIEWWEEKDAYS[((dayarrs[tmp_h].date.getDay())%option.numberOfDays)]!=0) ht.push(" colSpan='", e.colSpan, "'");
-
+                            
                                 var zz = 0;
                                 for (var p=0; (p<e.colSpan) && (h+zz < option.numberOfDays);)
                                 {
                                     p += __VIEWWEEKDAYS[dayarrs[h+zz].date.getDay()];
                                     zz++;
                                 }
-
+                            
                                 h += zz;
                             }
                             else {
@@ -1569,7 +1574,8 @@
             }
             option.vstart = startdate;
             option.vend = enddate;
-            option.datestrshow = CalDateShow(startdate, enddate);
+            var themonth = DateAdd("d", 15, startdate);
+            option.datestrshow = __MonthNameLarge[themonth.getMonth()]+" "+themonth.getFullYear() ;//CalDateShow(startdate, enddate);
             bodyHeight = bodyHeight - 18 * rc;
             var rowheight = bodyHeight / rc;
             var roweventcount = parseInt(rowheight / 21);
