@@ -35,7 +35,12 @@ $mycalendarrows = $wpdb->get_results( 'SELECT * FROM '.$wpdb->prefix.'dc_mv_cale
   <script type="text/javascript" src="<?php echo plugins_url('DC_MultiViewCal/src/Plugins/underscore.js', __FILE__); ?>"></script>
   <script type="text/javascript" src="<?php echo plugins_url('DC_MultiViewCal/src/Plugins/rrule.js', __FILE__); ?>"></script>
   <script type="text/javascript" src="<?php echo plugins_url('DC_MultiViewCal/src/Plugins/Common.js', __FILE__); ?>"></script>
-  <script type="text/javascript" src="<?php echo plugins_url('DC_MultiViewCal/language/multiview_lang_en_GB.js', __FILE__); ?>"></script>
+  <script type="text/javascript" src="<?php
+         if (file_exists(dirname( __FILE__ ).'/DC_MultiViewCal/language/multiview_lang_'.WPLANG.'.js'))
+            echo plugins_url('DC_MultiViewCal/language/multiview_lang_'.WPLANG.'.js', __FILE__ );
+        else
+            echo plugins_url('DC_MultiViewCal/language/multiview_lang_en_GB.js', __FILE__ );
+    ?>"></script>
   <script type="text/javascript" src="<?php echo plugins_url('DC_MultiViewCal/src/Plugins/jquery.calendar.js', __FILE__); ?>"></script>
   <script type="text/javascript" src="<?php echo plugins_url('DC_MultiViewCal/src/Plugins/jquery.alert.js', __FILE__); ?>"></script>
   <script type="text/javascript" src="<?php echo plugins_url('DC_MultiViewCal/src/Plugins/multiview.js', __FILE__); ?>"></script>
