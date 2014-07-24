@@ -1522,7 +1522,7 @@
                 p.endtime = fomartTimeAMPM(e.et.hour,e.et.minute,__MilitaryTime);
             p.content = e.event[1];
             p.title = getTitle(e.event);
-            p.data = e.event.join("$");
+            p.data = e.event.join("$*$");
             var icons = [];
             icons.push("<I class=\"cic cic-tmr\">&nbsp;</I>");
             if (e.reevent) {
@@ -1894,7 +1894,7 @@
             else {
                 p.eclass = "cal_" + e.event[0];
             }
-            p.data = e.event.join("$");
+            p.data = e.event.join("$*$");
             var sp = "<span style=\"cursor: pointer\">${content}</span>";
             var i = "<I class=\"cic cic-tmr\">&nbsp;</I>";
             var i2 = "<I class=\"cic cic-rcr\">&nbsp;</I>";
@@ -2334,7 +2334,7 @@
             var hddata = chip.find("div.dhdV");
             if (hddata.length == 1) {
                 var str = hddata.html();
-                return parseED(str.split("$"));
+                return parseED(str.split("$*$"));
             }
             return null;
         }
