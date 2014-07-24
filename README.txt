@@ -165,3 +165,4 @@ The following area some sample event calendar views. You can apply or mix config
 * Interface modifications.
 * Added missing images folder
 * Preview options for the event calendar views
+* Fixed bug with special characters in events
