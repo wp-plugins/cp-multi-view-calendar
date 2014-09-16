@@ -42,7 +42,7 @@ class CP_BaseClass {
     function get_site_url()
     {
         $url = parse_url(get_site_url());
-        return rtrim($url["path"],"/");
+        return rtrim(@$url["path"],"/");
     }
     
     
