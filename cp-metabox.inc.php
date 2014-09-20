@@ -334,7 +334,7 @@
                 }   
             
             } catch(e) {}
-            return false;
+            //return false;
         }
     }
     var <?php echo $this->prefix; ?>Admin = new <?php echo $this->prefix; ?>CalendarAdmin();        
