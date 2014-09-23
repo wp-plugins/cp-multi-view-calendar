@@ -1,4 +1,5 @@
 $jc = jQuery.noConflict();
+window.$ = jQuery;
 function initMultiViewCal(container,calendarId,config)
 {
     $jc(document).ready(function($jc) {
