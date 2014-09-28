@@ -63,6 +63,18 @@ A: In the dashboard area go to "WordPress administration menu >> CP Multiview Ev
 
 The events edition on the public event calendar can be also (optionally) enabled, that way the website visitors can edit events directly in the event calendar without having to access through the dashboard.
 
+= Q: How to show differents colors in the event calendar nMonth view? =
+
+A: Use the following configuration parameter:
+
+        date_box_with_color_in_nmonth_view:true
+
+The parameters should be added into the "Other Parameters" box. These parameters must be comma separated and will overwrite the initialconfiguration selected for the event calendar.
+
+The "Other Parameters" box can be found in the following location (link to image):
+
+http://wordpress.dwbooster.com/UserFiles/Image/cp-multiview-calendar/additional-parameters.gif
+
 
 == Other Notes ==
 
