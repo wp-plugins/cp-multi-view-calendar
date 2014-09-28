@@ -75,6 +75,17 @@ The "Other Parameters" box can be found in the following location (link to image
 
 http://wordpress.dwbooster.com/UserFiles/Image/cp-multiview-calendar/additional-parameters.gif
 
+= Q: How to allow edition on the public event calendar only for some registered users? =
+
+A: If you want to setup the event calendar editable only by some users in the public website then publish a view of the event calendar in a private page (restrict the access to the page with the event calendar with "Edition" enabled).
+
+You can have multiple views of the same event calendar, one for read-only public access and another view with edition enabled on a private page accessible only by registered users.
+
+Note that there are two different concepts here:
+
+* **An event calendar:** This is a unit of information and events. The events aren't shared with other event calendars.
+* **An event calendar's view:** This is the way an event calendar is displayed. The same event calendar can have multiple views in the same page or in different pages. Since the event calendar unit is the same the data is shared between all views but the visual settings and features can be different.
+
 
 == Other Notes ==
 
