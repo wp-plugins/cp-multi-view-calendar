@@ -1,7 +1,7 @@
 === CP Multi View Event Calendar ===
 Contributors: codepeople
 Donate link: http://wordpress.dwbooster.com/calendars/cp-multi-view-calendar
-Tags: calendar,calendars,event calendar,event,event manager,picture calendar,images calendar,calendar plugin
+Tags: calendar,calendars,event calendar,event,event manager,images,picture calendar,plugin,page,post,images calendar,calendar plugin
 Requires at least: 3.0.5
 Tested up to: 4.0
 Stable tag: trunk
@@ -29,6 +29,8 @@ The CP Multi View Event Calendar is an **event calendar** for WordPress websites
 * Events can have a location and an extended rich text description
 * Multiple selectable colors to highlight events in the calendar
 * Events can be linked to other pages.
+* Can display images directly on the calendar cells
+* Can be easily published in a page or post by using its shortcode or visual publish button
 * Can be setup to use a 12 or 24 hour clock.
 * Can be setup to display only the weekdays needed
 * Fast Ajax load for the events data
@@ -91,6 +93,34 @@ Note that there are two different concepts here:
 A: Open the calendar plugin file "wp-content/plugins/cp-multi-view-calendar/DC_MultiViewCal/css/main.css" and add this CSS rule at end of the file:
 
         #multicalendar .rb-i{white-space:normal}
+
+= Q: Can I change the event calendar plugin date format to DD/MM/YYYY? =
+
+A: The date format is automatically defined with each language to the proper values, however if you want to overwrite those settings open your plugin language file "wp-content\plugins\cp-multi-view-calendar\DC_MultiViewCal\language\multiview_lang_**xx-XX**.js", where **xx-XX** in the file name is your language identifier and into that file modify the items marked below:
+
+        "fulldaykey": "MMddyyyy",
+        "fulldayshow": "L d yyyy",
+        "fulldayvalue": "M/d/yyyy",
+        "Md": "W M/d",
+        "nDaysView": "M/d",
+        "Md3": "L d",
+        "separator": "/",
+        "year_index": 2,
+        "month_index": 0,
+        "day_index": 1,
+
+... to this:
+
+        "fulldaykey": "ddMMyyyy",
+        "fulldayshow": "d L yyyy",
+        "fulldayvalue": "d/M/yyyy",
+        "Md": "W d/M",
+        "nDaysView": "d/M",
+        "Md3": "d L",
+        "separator": "/",
+        "year_index": 2,
+        "month_index": 1,
+        "day_index": 0,
 
 
 == Other Notes ==
