@@ -1,7 +1,7 @@
 === CP Multi View Event Calendar ===
 Contributors: codepeople
 Donate link: http://wordpress.dwbooster.com/calendars/cp-multi-view-calendar
-Tags: calendar,calendars,event calendar,event,event manager,images,picture calendar,plugin,page,post,images calendar,calendar plugin
+Tags: calendar,calendars,event calendar,event,event manager,images,picture calendar,plugin,page,post,shortcode,images calendar,calendar plugin
 Requires at least: 3.0.5
 Tested up to: 4.0
 Stable tag: trunk
@@ -87,6 +87,8 @@ Note that there are two different concepts here:
 
 * **An event calendar:** This is a unit of information and events. The events aren't shared with other event calendars.
 * **An event calendar's view:** This is the way an event calendar is displayed. The same event calendar can have multiple views in the same page or in different pages. Since the event calendar unit is the same the data is shared between all views but the visual settings and features can be different.
+
+See also this other FAQ entry about additional permissions settings: http://wordpress.dwbooster.com/faq/cp-multi-view-calendar#q205
 
 = Q: How show the entire title on month,week and day view on the event calendar? =
 
