@@ -35,7 +35,7 @@ The CP Multi View Event Calendar is an **event calendar** for WordPress websites
 * Can be setup to display only the weekdays needed
 * Fast Ajax load for the events data
 
-You can see sample visualization modes and a demo at: http://wordpress.dwbooster.com/calendars/cp-multi-view-calendar
+You can see 20 sample visualization modes and an online demo at: http://wordpress.dwbooster.com/calendars/cp-multi-view-calendar
 
 New: The latest update features a new interface for easily editing a previously inserted event calendar view and preview buttons for a faster verification of how the event calendar will look in the website.
 
