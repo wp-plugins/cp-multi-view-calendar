@@ -24,11 +24,6 @@ if ($message) echo "<div id='setting-error-settings_updated' class='updated sett
 <h2><?php echo $this->plugin_name; ?></h2>
 
 <script type="text/javascript">
- function cp_addItem()
- {
-    alert('Feature not available in free version since this version supports one calendar.');
- }
- 
  function cp_updateItem(id)
  {
     var calname = document.getElementById("calname_"+id).value;
@@ -135,7 +130,7 @@ if ($message) echo "<div id='setting-error-settings_updated' class='updated sett
   <h3 class='hndle' style="padding:5px;"><span>New Calendar / Item</span></h3>
   <div class="inside"> 
    
-        * Pro version supports multiple calendars. <a href="http://wordpress.dwbooster.com/calendars/cp-multi-view-calendar">Click here for details</a>.
+        * Pro version supports multiple calendars. <a href="http://wordpress.dwbooster.com/calendars/cp-multi-view-calendar#download">Click here for details</a>.
 
   </div>    
  </div>
