@@ -101,7 +101,7 @@ $mycalendarrows = $wpdb->get_results( 'SELECT * FROM '.$wpdb->prefix.'dc_mv_cale
 
 
 
-[<a href="http://wordpress.dwbooster.com/contact-us" target="_blank">Request Custom Modifications</a>] | [<a href="<?php echo $this->plugin_URL; ?>" target="_blank">Help</a>]
+[<a href="http://wordpress.dwbooster.com/support" target="_blank">Request Custom Modifications</a>] | [<a href="<?php echo $this->plugin_URL; ?>" target="_blank">Help</a>]
 </form>
 </div>
 
