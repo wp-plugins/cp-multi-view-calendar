@@ -63,7 +63,8 @@ if ($message) echo "<div id='setting-error-settings_updated' class='updated sett
       <p>In that area you can create a new view and when ready sent the shortcode to the editor through the button included for that purpose.</p>
       
       <p>Note: Use the section below only to manage the calendar's data.</p>
-
+      
+      <p><strong>Want to help to the development of this plugin?</strong> The main features of this plugin are provided free of charge. We need your help to continue developing it and adding new features. If you want to help with the development please <a href="https://wordpress.org/support/view/plugin-reviews/cp-multi-view-calendar?rate=5#postform" style="color:#0000ff;font-weight:bold;">add a review to support it</a>. Thank you!</p>
   </div>    
  </div>
 
