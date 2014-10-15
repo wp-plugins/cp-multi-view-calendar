@@ -2064,7 +2064,7 @@
             //if (data.issort == false) {
             if (true){
                 if (data.events && data.events.length > 0) {
-                    events = data.events.sort(function(l, r) { return l[2] > r[2] ? 1 : -1; });
+                    events = data.events.sort(function(l, r) { return ((l[2].toString() == r[2].toString())? (l[0] > r[0] ? 1 : -1) : (l[2] > r[2] ? 1 : -1) ); });
                 }
                 else {
                     events = [];
