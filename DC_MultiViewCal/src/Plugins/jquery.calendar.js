@@ -126,12 +126,12 @@
                 prevent = p;
             if (prevent) {
                 return this.each(function() {
-                    if ($.browser.msie || $.browser.safari) $(this).bind('selectstart', function() { return false; });
+                    if ($.browser.msie || $.browser.safari) $(this).bind('selectstart', function(e) { e.stopPropagation(); });
                     else if ($.browser.mozilla) {
                         $(this).css('MozUserSelect', 'none');
                         $('body').trigger('focus');
                     }
-                    else if ($.browser.opera) $(this).bind('mousedown', function() { return false; });
+                    else if ($.browser.opera) $(this).bind('mousedown', function(e) { e.stopPropagation(); });
                     else $(this).attr('unselectable', 'on');
                 });
 
@@ -651,7 +651,7 @@
           	            window.open(navigateurl);
           	    }
                 e.stopPropagation();
-                return;
+                return false;
              });
              function showDialogNMonth(dates,item,idover)
              {
@@ -721,6 +721,7 @@
                              option.EditCmdhandler.call(this, ['0', "", $("#createlink").data("cdata"), $("#createlink").data("cdata"), 1]);
                          
                          realsedragevent();
+                         e.stopPropagation();
                          return false;
                      });
                      $(".dlgNMonth_editlink").click(function(e) {
@@ -728,6 +729,7 @@
                          if (option.EditCmdhandler && $.isFunction(option.EditCmdhandler))
                              option.EditCmdhandler.call(this, $("#"+$(this).attr("id")).data("cdata"));
                          realsedragevent();
+                         e.stopPropagation();
                          return false;
                      });
                      $(".dlgNMonth_dellink").click(function(e) {
@@ -735,6 +737,7 @@
                          if (option.DeleteCmdhandler && $.isFunction(option.DeleteCmdhandler))
                              option.DeleteCmdhandler.call(this, $("#"+$(this).attr("id")).data("cdata"), quickd);
                          realsedragevent();
+                         e.stopPropagation();
                          return false;
                      });                                                                                                                                                                                                            
                      $(idover).dialog('open'); 
@@ -759,6 +762,7 @@
                 var arrdays = item.split('/');
                 var start = new Date(arrdays[0], arrdays[1]-1, arrdays[2]);
                 quickadd(start, start, true, { left: e.pageX, top: e.pageY });
+                e.stopPropagation();
                 return false;
                 })
              if (option.showtooltip || option.readonly != true)
@@ -783,7 +787,7 @@
                              $("<div id=\"mv_corner\" />").appendTo($(".mv_dlg .ui-dialog-titlebar"));
                              showDialogNMonth(dates,item,idover);
                           //e.stopPropagation();
-                          return false;
+                          e.stopPropagation();
                      }).bind('mouseout',function(){
                          });;
                  }
@@ -2159,7 +2163,7 @@
             if (option.onweekormonthtoday) {
                 option.onweekormonthtoday(option);
             }
-            return false;
+            e.stopPropagation();
         }
         function move_mv_dlg(){
             $(".mv_dlg").css("top",parseFloat($(".mv_dlg").css("top"))+17);
@@ -2477,7 +2481,7 @@
                                 }
                             }
                             
-                            return false;
+                            e.stopPropagation();
                         });
                         bud.click(function(e) {
                             e.stopPropagation();
@@ -2526,7 +2530,7 @@
             else {
                 alert(i18n.dcmvcal.data_format_error);
             }
-            return false;
+            e.stopPropagation();
         }
 
         function moreshow(mv) { 
@@ -2704,7 +2708,7 @@
                 });
                 calbutton.click(function(e) {
                     if (option.isloading) {
-                        return false;
+                        e.stopPropagation();
                     }
                     option.isloading = true;
                     var what = $("#bbit-cal-what").val();
@@ -2717,7 +2721,7 @@
                         alert(i18n.dcmvcal.invalid_title);
                         $("#bbit-cal-what").focus();
                         option.isloading = false;
-                        return false;
+                        e.stopPropagation();
                     }
                     var zone = new Date().getTimezoneOffset() / 60 * -1;
                     var param = [{ "name": "CalendarTitle", value: what },
@@ -2783,9 +2787,9 @@
                         }                        
                         realsedragevent();
                     }
-                    return false;
+                    e.stopPropagation();
                 });
-                buddle.mousedown(function(e) { return false });
+                buddle.mousedown(function(e) { e.stopPropagation(); });
             }
             var dateshow = CalDateShow(start, end, !isallday, true);
             
@@ -2939,9 +2943,6 @@
                 //Resize GridContainer
             }
         }
-        function returnfalse() {
-            return false;
-        }
         function initevents(viewtype) {
             if (viewtype == "week" || viewtype == "day" || viewtype == "nDays") {
                 $("div.chip", gridcontainer).each(function(i) {
@@ -2952,14 +2953,14 @@
                         //if (option.readonly == true) chip.mouseout(function() {try {$("#bbit-cs-buddle").dialog("close");}catch (e) {}});
                     }
                     if (chip.hasClass("drag")) {
-                        chip.mousedown(function(e) { dragStart.call(this, "dw3", e); return false; });
+                        chip.mousedown(function(e) { dragStart.call(this, "dw3", e); e.stopPropagation(); });
                         //resize
                         chip.find("div.resizer").mousedown(function(e) {
-                            dragStart.call($(this).parent().parent(), "dw4", e); return false;
+                            dragStart.call($(this).parent().parent(), "dw4", e); e.stopPropagation();
                         });
                     }
                     else {
-                        chip.mousedown(returnfalse)
+                        chip.mousedown(function(e) {e.stopPropagation();})
                     }
                 });
                 $("div.rb-o", gridcontainer).each(function(i) {
@@ -2971,20 +2972,20 @@
                     }
                     if (chip.hasClass("drag") && (viewtype == "week" || viewtype == "nDays" ) ) {
                         //drag;
-                        chip.mousedown(function(e) { dragStart.call(this, {dw5:"dw5",row:chip.attr("row")}, e); return false; });
+                        chip.mousedown(function(e) { dragStart.call(this, {dw5:"dw5",row:chip.attr("row")}, e); e.stopPropagation(); });
                     }
                     else {
-                        chip.mousedown(returnfalse)
+                        chip.mousedown(function(e) {e.stopPropagation();})
                     }
                 });
                 if (option.readonly == false && option.userAdd) {
                     $("td.tg-col", gridcontainer).each(function(i) {
-                        $(this).mousedown(function(e) { dragStart.call(this, "dw1", e); return false; });
+                        $(this).mousedown(function(e) { dragStart.call(this, "dw1", e); e.stopPropagation(); });
                     });
-                    $("#weekViewAllDaywk"+option.thecontainer).mousedown(function(e) { dragStart.call(this, "dw2", e); return false; });
+                    $("#weekViewAllDaywk"+option.thecontainer).mousedown(function(e) { dragStart.call(this, "dw2", e); e.stopPropagation(); });
                     if ( !(option.rowsList=="" || (option.dayWithTime && option.view=="day")) )
                         for (var i=0;i<option.rowsList.length;i++)
-                            $("#weekViewAllDaywk"+option.thecontainer+i).mousedown(function(e) { dragStart.call(this, "dw2", e); return false; });
+                            $("#weekViewAllDaywk"+option.thecontainer+i).mousedown(function(e) { dragStart.call(this, "dw2", e); e.stopPropagation(); });
                 }
 
                 if (viewtype == "week" || viewtype == "nDays" ) {
@@ -3006,20 +3007,20 @@
                     }
                     if (chip.hasClass("drag")) {
                         //drag;//aqui
-                        chip.mousedown(function(e) { dragStart.call(this, "m2", e); return false; });
+                        chip.mousedown(function(e) { dragStart.call(this, "m2", e); e.stopPropagation(); });
                     }
                     else {
-                        chip.mousedown(returnfalse)
+                        chip.mousedown(function(e) {e.stopPropagation();})
                     }
                 });
                 $("td.st-more", gridcontainer).each(function(i) {
 
                     $(this).click(function(e) {
-                        moreshow.call(this, $(this).parent().parent().parent().parent()[0]); return false;
-                    }).mousedown(function() { return false; });
+                        moreshow.call(this, $(this).parent().parent().parent().parent()[0]); e.stopPropagation();
+                    }).mousedown(function() { e.stopPropagation(); });
                 });
                 if (option.readonly == false && option.userAdd) {
-                    $("#mvEventContainer"+option.thecontainer).mousedown(function(e) { dragStart.call(this, "m1", e); return false; });
+                    $("#mvEventContainer"+option.thecontainer).mousedown(function(e) { dragStart.call(this, "m1", e); e.stopPropagation(); });
                 }
             }
 
@@ -3431,7 +3432,7 @@
                         break;
                 }
             }
-            return false;
+            e.stopPropagation();
         }
         function dragEnd(e) {
             if (_dragdata) {
@@ -3546,7 +3547,7 @@
                 }
                 d = _dragdata = null;
                 $('body').noSelect(false);
-                return false;
+                e.stopPropagation();
             }
         }
         function getdi(xa, ya, x, y) {
