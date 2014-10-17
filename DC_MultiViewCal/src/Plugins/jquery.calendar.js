@@ -924,7 +924,7 @@
 
             if (option.rowsList=="" || (option.dayWithTime && option.view=="day"))
             {
-                html.push("<div id=\"dvtec"+config.thecontainer+"\"  class=\"scolltimeevent\"><table style=\"table-layout: fixed;", jQuery.browser.msie ? "" : "width:100%", "\" cellspacing=\"0\" cellpadding=\"0\"><tbody><tr><td>");
+                html.push("<div id=\"dvtec"+config.thecontainer+"\"  class=\"scolltimeevent\"><table style=\"table-layout: fixed;", $.browser.msie ? "" : "width:100%", "\" cellspacing=\"0\" cellpadding=\"0\"><tbody><tr><td>");
                 html.push("<table style=\"height: "+((option.hoursEnd-option.hoursStart+1)*option.cellheight)+"px\" id=\"tgTable"+config.thecontainer+"\" class=\"tg-timedevents\" cellspacing=\"0\" cellpadding=\"0\"><tbody>");
                 BuildDayScollEventheader(html, days, scollDayEvents,config);
                 if (option.columnsList!="" && option.view=="day") //draw columns
