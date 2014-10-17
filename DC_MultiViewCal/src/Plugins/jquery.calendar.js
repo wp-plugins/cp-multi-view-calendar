@@ -777,6 +777,7 @@
                          $(this).parent().append("<div class=\""+idover+"\" ></div>");
                          idover = "."+idover;
                               $(idover).dialog({autoOpen: false ,width:option.dialogWidth,
+                              modal: false,resizable: false,maxWidth: option.dialogWidth,fluid: true,open: function(event, ui){fluidDialog();},
                                position: {
                                  my: "left top",
                                  at: "center bottom",
@@ -799,6 +800,7 @@
                              $(".ui-dialog-content").remove();
                              $(this).append("<div class=\"myover\" ></div>");
                              $(".myover").dialog({autoOpen: false ,width:option.dialogWidth,
+                             modal: false,resizable: false,maxWidth: option.dialogWidth,fluid: true,open: function(event, ui){fluidDialog();},
                                position: {
                                  my: "left top",
                                  at: "center bottom",
@@ -1305,7 +1307,6 @@
                         if (__VIEWWEEKDAYS[((dayarrs[tmp_h].date.getDay())%option.numberOfDays)]!=0) ht.push("<td class='st-c");
                         if ((e) && ( (option.rowsByCategory=="") || ( (option.rowsByCategory=="dc_locations" && e.event[9]==option.rowsList[sufixIndex] && $.inArray( e.event[0], rowsByCategoryArray)==-1) || (option.rowsByCategory=="dc_subjects" && e.event[1]==option.rowsList[sufixIndex] && $.inArray( e.event[0], rowsByCategoryArray)==-1) ) ))
                         {
-                            console.log($.inArray( e.event[0], rowsByCategoryArray));
                             rowsByCategoryArray[rowsByCategoryArray.length]=e.event[0];
                             x[h] = x[h] + 1;
                             if (__VIEWWEEKDAYS[((dayarrs[tmp_h].date.getDay())%option.numberOfDays)]!=0) ht.push("'");
@@ -2433,6 +2434,7 @@
                         //
                         bud = $(csbuddle).appendTo(document.body);
                         bud.dialog({width:300,resizable: false,
+                           modal: true,resizable: false,maxWidth: 300,fluid: true,open: function(event, ui){fluidDialog();},
                            position: {
                              my: "left top",
                              at: "center bottom",
@@ -2691,7 +2693,8 @@
                                  collision: "fit",
                                  of:$("#nmonths"+option.thecontainer+" .ui-state-non-active[title='"+dateFormat.call(start, i18n.dcmvcal.dateformat.fulldayvalue)+"']")
                                  };                             
-                buddle.dialog({width:300,resizable: false,                
+                buddle.dialog({width:300,resizable: false, 
+                           modal: true,resizable: false,maxWidth: 300,fluid: true,open: function(event, ui){fluidDialog();},               
                            position:pp
                            
                            });        
