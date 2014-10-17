@@ -1,4 +1,32 @@
 $jc = jQuery.noConflict();
+function fluidDialog() {
+        var $visible = $jc(".ui-dialog:visible");
+        // each open dialog
+        $visible.each(function () {
+            var $this = $jc(this);
+            var dialog = $this.find(".ui-dialog-content");
+            if (dialog.dialog("option","fluid")) {
+                var wWidth = $jc(window).width();
+                // check window width against dialog width
+                if (wWidth < (parseInt(dialog.dialog("option","maxWidth")) + 50))  {
+                    // keep dialog from filling entire screen
+                    $this.css("max-width", "90%");
+                } else {
+                    // fix maxWidth bug
+                    $this.css("max-width", dialog.dialog("option","maxWidth") + "px");
+                }
+                //reposition dialog
+                dialog.dialog("option","position", dialog.dialog("option","position"));
+            }
+        });
+    
+    }
+    $jc(window).resize(function () {
+       fluidDialog();
+    });
+    $jc(document).on("dialogopen", ".ui-dialog", function (event, ui) {
+        fluidDialog();
+    });
 window.$ = jQuery;
 function initMultiViewCal(container,calendarId,config)
 {
@@ -367,6 +395,9 @@ function initMultiViewCal(container,calendarId,config)
                         $jc("#editEvent").dialog({
                             width: width,
                             height: height,
+                            modal: true,resizable: false,maxWidth: width,
+                            fluid: true,
+                            open: function(event, ui){fluidDialog();},
                             //position: 'center',
                             position: {
                                  my: "left top",
@@ -377,6 +408,11 @@ function initMultiViewCal(container,calendarId,config)
                             title:i18n.dcmvcal.manage_the_calendar
                             ,close: function(event, ui) {$jc("#gridcontainer"+op.thecontainer).reload();  }
                         }).parent().addClass("mv_dlg").addClass("mv_dlg_editevent");
+                        $jc(".ui-widget-overlay").css("position","absolute");
+                        $jc(".ui-widget-overlay").css("top","0");
+                        $jc(".ui-widget-overlay").css("left","0");
+                        $jc(".ui-widget-overlay").css("background","#aaaaaa");
+                        $jc(".ui-widget-overlay").css("opacity","0.3");
                         } catch(e){};
                     }
                     //Add a new event
