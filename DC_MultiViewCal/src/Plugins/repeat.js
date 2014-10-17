@@ -1,3 +1,31 @@
+function fluidDialog() {
+        var $visible = $(".ui-dialog:visible");
+        // each open dialog
+        $visible.each(function () {
+            var $this = $(this);
+            var dialog = $this.find(".ui-dialog-content");
+            if (dialog.dialog("option","fluid")) {
+                var wWidth = $(window).width();
+                // check window width against dialog width
+                if (wWidth < (parseInt(dialog.dialog("option","maxWidth")) + 50))  {
+                    // keep dialog from filling entire screen
+                    $this.css("max-width", "90%");
+                } else {
+                    // fix maxWidth bug
+                    $this.css("max-width", dialog.dialog("option","maxWidth") + "px");
+                }
+                //reposition dialog
+                dialog.dialog("option","position", dialog.dialog("option","position"));
+            }
+        });
+    
+}
+$(window).resize(function () {
+   fluidDialog();
+});
+$(document).on("dialogopen", ".ui-dialog", function (event, ui) {
+    fluidDialog();
+});
 $(function() {
       var weekDays = new Array("SU","MO","TU","WE","TH","FR","SA");
       var weekDaysLarge = new Array(i18n.dcmvcal.dateformat.sunday, i18n.dcmvcal.dateformat.monday, i18n.dcmvcal.dateformat.tuesday, i18n.dcmvcal.dateformat.wednesday, i18n.dcmvcal.dateformat.thursday, i18n.dcmvcal.dateformat.friday, i18n.dcmvcal.dateformat.saturday);
@@ -6,7 +34,7 @@ $(function() {
       
       openRepeatWin = function(){
           loadRepeatData($("#rrule").val());
-          $("#repeat").dialog({width:500,modal: true,resizable: false}).parent().addClass("mv_dlg").addClass("mv_dlg_editevent").addClass("infocontainer") ;
+          $("#repeat").dialog({modal: true,resizable: false,maxWidth: 420,fluid: true,open: function(event, ui){fluidDialog();},width:420}).parent().addClass("mv_dlg").addClass("mv_dlg_editevent").addClass("infocontainer") ;
           $(".mv_dlg").css("height","0px");
       }
       $("#savebtnRepeat,#closebtnRepeat").button();
