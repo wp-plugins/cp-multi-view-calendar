@@ -347,7 +347,8 @@ var cpmvc_configmultiview0 = {"obj":"{\"params\":<?php echo $params; ?>,\n  \"aj
         add_submenu_page( $this->menu_parameter, 'Manage Calendars', 'Manage Calendars', 'edit_pages', $this->menu_parameter."_manage", array($this, 'settings_page') );
         add_submenu_page( $this->menu_parameter, 'Help: Sample Views', 'Help: Sample Views', 'edit_pages', $this->menu_parameter."_samples", array($this, 'settings_page') );
         add_submenu_page( $this->menu_parameter, 'Help: CSS Styles', 'Help: CSS Styles', 'edit_pages', $this->menu_parameter."_css", array($this, 'settings_page') );
-        add_submenu_page( $this->menu_parameter, 'Upgrade to Pro Version', 'Upgrade to Pro Version', 'edit_pages', $this->menu_parameter."_upgrade", array($this, 'settings_page') );
+        add_submenu_page( $this->menu_parameter, 'Help: Online Demo', 'Help: Online Demo', 'edit_pages', $this->menu_parameter."_demo", array($this, 'settings_page') );
+        add_submenu_page( $this->menu_parameter, 'Upgrade', 'Upgrade', 'edit_pages', $this->menu_parameter."_upgrade", array($this, 'settings_page') );
 
         add_meta_box($this->prefix.'box', $this->plugin_name, array($this, 'insertMetaBox'), 'post', 'normal');
         add_meta_box($this->prefix.'box', $this->plugin_name, array($this, 'insertMetaBox'), 'page', 'normal');
@@ -515,6 +516,11 @@ var cpmvc_configmultiview0 = {"obj":"{\"params\":<?php echo $params; ?>,\n  \"aj
         else if ($this->get_param("page") == 'cp_multiview_upgrade')
         {
             echo("Redirecting to upgrade page...<script type='text/javascript'>document.location='http://wordpress.dwbooster.com/calendars/cp-multi-view-calendar#download';</script>");
+            exit;
+        }        
+        else if ($this->get_param("page") == 'cp_multiview_demo')
+        {
+            echo("Redirecting to demo page...<script type='text/javascript'>document.location='http://wordpress.dwbooster.com/calendars/cp-multi-view-calendar#demo';</script>");
             exit;
         }        
         else
