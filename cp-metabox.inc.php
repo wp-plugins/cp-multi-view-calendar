@@ -25,23 +25,23 @@
           <fieldset style="border:1px solid #ccc;margin-top:5px;padding:3px" id="<?php echo $this->prefix; ?>_listconfig">
               <legend>List parameters*</legend>
               Start list:<br />
-              <input type="text" id="<?php echo $this->prefix; ?>_list_start" name="<?php echo $this->prefix; ?>[list_start]" value=""/><br />
+              <input type="text" class="non_available" id="<?php echo $this->prefix; ?>_list_start" name="<?php echo $this->prefix; ?>[list_start]" value=""/><br />
               <div style="font-size:10px;">Examples: now, 10 September 2014, +1 day, +2 weeks. Leave blank if you don't need start list </div>
               End list:<br />
-              <input type="text" id="<?php echo $this->prefix; ?>_list_end" name="<?php echo $this->prefix; ?>[list_end]" value=""/><br />
+              <input type="text" class="non_available" id="<?php echo $this->prefix; ?>_list_end" name="<?php echo $this->prefix; ?>[list_end]" value=""/><br />
               <div style="font-size:10px;">Examples: now, 10 September 2014, +1 day, +2 weeks. Leave blank if you don't need end list </div>
               Order list:<br />
-              <select id="<?php echo $this->prefix; ?>_list_order" name="<?php echo $this->prefix; ?>[list_order]">
+              <select class="non_available" id="<?php echo $this->prefix; ?>_list_order" name="<?php echo $this->prefix; ?>[list_order]">
                 	<option value="asc">Ascendent</option>
                 	<option value="desc">Descendent</option>
                 </select><br />
               Number of the events:<br />
-              <input type="text" id="<?php echo $this->prefix; ?>_list_totalEvents" name="<?php echo $this->prefix; ?>[list_totalEvents]" value="0"/><br />
+              <input type="text" class="non_available" id="<?php echo $this->prefix; ?>_list_totalEvents" name="<?php echo $this->prefix; ?>[list_totalEvents]" value="0"/><br />
               <div style="font-size:10px;">Example: 3 for showing only three events without pagination. Leave zero, if you want to show unlimited events</div>
               Number of the events per page:<br />
-              <input type="text" id="<?php echo $this->prefix; ?>_list_eventsPerPage" name="<?php echo $this->prefix; ?>[list_eventsPerPage]" value="10"/><br />
+              <input type="text" class="non_available" id="<?php echo $this->prefix; ?>_list_eventsPerPage" name="<?php echo $this->prefix; ?>[list_eventsPerPage]" value="10"/><br />
               Use readmore for more n words in the description:<br />
-              <input type="text" id="<?php echo $this->prefix; ?>_list_readmore_numberofwords" name="<?php echo $this->prefix; ?>[list_readmore_numberofwords]" value="0"/><br />
+              <input type="text" class="non_available" id="<?php echo $this->prefix; ?>_list_readmore_numberofwords" name="<?php echo $this->prefix; ?>[list_readmore_numberofwords]" value="0"/><br />
               <div style="font-size:10px;">Leave zero if you want to show the full description</div>
           </fieldset>
           </div>
@@ -339,7 +339,7 @@
             return attrs; 
         },
         getCode : function(f) {
-            var collection = jQuery(f).find("input[id^=<?php echo $this->prefix; ?>]:not(input:checkbox),select[id^=<?php echo $this->prefix; ?>],textarea[id^=<?php echo $this->prefix; ?>]");
+            var collection = jQuery(f).find("input[id^=<?php echo $this->prefix; ?>]:not(input:checkbox),select[id^=<?php echo $this->prefix; ?>],textarea[id^=<?php echo $this->prefix; ?>]").not(".non_available");
             /** input[id^=<?php echo $this->prefix; ?>]:checkbox:checked, */
             var $this = this;            
             collection.each(function () {
