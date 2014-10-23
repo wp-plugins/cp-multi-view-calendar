@@ -6,6 +6,7 @@ var i18n = jQuery.extend({}, i18n || {}, {
             "fulldayvalue": "M/d/yyyy", 
             "Md": "W M/d",
             "nDaysView": "M/d",
+            "listViewDate": "L d yyyy",
             "Md3": "L d",
             "separator": "/",
             "year_index": 2,
@@ -111,6 +112,7 @@ var i18n = jQuery.extend({}, i18n || {}, {
         "week":"Week",
         "month":"Month",
         "ndays":"Days",
+        "list":"List",
         "nmonth":"nMonth",
         "refresh_view":"Refresh view",
         "refresh":"Refresh",
@@ -177,6 +179,8 @@ var i18n = jQuery.extend({}, i18n || {}, {
         "years":"years",
         "once":"Once",
         "times":"times",
+        "readmore":"read more",
+        "readmore_less":"less",
         "until":"until"
     }
 });

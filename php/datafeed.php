@@ -11,21 +11,22 @@ $_POST = stripslashes_deep( $_POST );
 
 $method = $_GET["method"];
 $calid = $_GET["calid"];
-
 switch ($method) {
     case "add":
         $ret = addCalendar($calid, $this->get_param("CalendarStartTime"), $this->get_param("CalendarEndTime"), $this->get_param("CalendarTitle"), $this->get_param("IsAllDayEvent"), $this->get_param("location"));
         break;
     case "list":
-        //$ret = listCalendar($this->get_param("showdate"), $this->get_param("viewtype"));
-
-        $d1 = js2PhpTime($this->get_param("startdate"));
-        $d2 = js2PhpTime($this->get_param("enddate"));
-
-        $d1 = mktime(0, 0, 0,  date("m", $d1), date("d", $d1), date("Y", $d1));
-        $d2 = mktime(0, 0, 0, date("m", $d2), date("d", $d2), date("Y", $d2))+24*60*60-1;
-        $ret = listCalendarByRange($calid, ($d1),($d2));
-
+        if ($_POST["viewtype"]=='list')
+            $ret = listCalendarByPage($calid, $_POST["list_start"], $_POST["list_end"], $_POST["list_order"], $_POST["page"], $_POST["list_eventsPerPage"]);
+        else
+        {
+            $d1 = js2PhpTime($this->get_param("startdate"));
+            $d2 = js2PhpTime($this->get_param("enddate"));
+            
+            $d1 = mktime(0, 0, 0,  date("m", $d1), date("d", $d1), date("Y", $d1));
+            $d2 = mktime(0, 0, 0, date("m", $d2), date("d", $d2), date("Y", $d2))+24*60*60-1;
+            $ret = listCalendarByRange($calid, ($d1),($d2));
+        }
         break;
     case "update":
         $ret = updateCalendar($this->get_param("calendarId"), $this->get_param("CalendarStartTime"), $this->get_param("CalendarEndTime"));
@@ -165,7 +166,63 @@ function addDetailedCalendar($calid, $st, $et, $sub, $ade, $dscr, $loc, $color, 
   }
   return $ret;
 }
+function listCalendarByPage($calid, $list_start, $list_end, $list_order, $page, $list_eventsPerPage){
+  global $wpdb;
+  $ret = array();
+  $ret['events'] = array();
+  $ret["issort"] =true;
+  $ret['error'] = null;
+  $ret["start"] = date("m/d/Y H:i");
+  $ret["end"] = date("m/d/Y H:i");  
+  try{
+  $cond = DC_MV_CAL_IDCAL."=".$calid;
+  if ($list_start!="")
+      $cond .= " and `".DC_MV_CAL_FROM."`>='".date("Y-m-d H:i:s",strtotime($list_start))."'"; 
+  if ($list_end!="")
+      $cond .= " and `".DC_MV_CAL_TO."`<='".date("Y-m-d H:i:s",strtotime($list_end))."'";    
+  $sql = "select * from `".DC_MV_CAL."` where ".$cond." order by  ".DC_MV_CAL_FROM." ".$list_order;
+  $rows = $wpdb->get_results($sql);
+  $ret['total'] = count($rows);
+  $sql .= " limit ".($page*$list_eventsPerPage).", ".$list_eventsPerPage;
+  //echo $sql;
+  
+    $rows = $wpdb->get_results($sql);
+    if (!$rows){
+          $ret['IsSuccess'] = false;
+          $ret['Msg'] = $wpdb->last_error;
+    }
 
+
+    $str = "";
+    for ($i=0;$i<count($rows);$i++)
+    {
+        $row = $rows[$i];
+        if (strlen($row->exdate)>0)
+            $row->rrule .= ";exdate=".$row->exdate;
+        $ev = array(
+            $row->id,
+            $row->title,
+            php2JsTime(mySql2PhpTime($row->starttime)),
+            php2JsTime(mySql2PhpTime($row->endtime)),
+            $row->isalldayevent,
+            0, //more than one day event
+            //$row->InstanceType,
+            ((is_numeric($row->uid) && $row->uid>0)?$row->uid:$row->rrule),//Recurring event rule,
+            $row->color,
+            1,//editable
+            $row->location,
+            '',//$attends
+            $row->description,
+            $row->owner,
+            $row->published
+        );
+        $ret['events'][] = $ev;
+    }
+	}catch(Exception $e){
+     $ret['error'] = $e->getMessage();
+  }
+  return $ret;
+}
 function listCalendarByRange($calid,$sd, $ed){
   global $wpdb;
   $ret = array();
