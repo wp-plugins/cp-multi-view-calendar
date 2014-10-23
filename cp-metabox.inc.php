@@ -20,8 +20,34 @@
           <input type="checkbox" id="<?php echo $this->prefix; ?>_viewWeek" name="<?php echo $this->prefix; ?>[viewWeek]" value="true" checked="checked"/><label>Week</label>
           <input type="checkbox" id="<?php echo $this->prefix; ?>_viewMonth" name="<?php echo $this->prefix; ?>[viewMonth]" value="true" checked="checked"/><label>Month</label>
           <input type="checkbox" id="<?php echo $this->prefix; ?>_viewNMonth" name="<?php echo $this->prefix; ?>[viewNMonth]" value="true" checked="checked"/><label>nMonth</label>
+          <div style="position:relative;display:inline;"><div style="z-index:1;position:absolute;top:0px;left:0px;width:100%;height:100%;background:#888;opacity: 0.4;filter: alpha(opacity=40); "></div>&nbsp;<input type="checkbox" id="<?php echo $this->prefix; ?>_viewList" name="<?php echo $this->prefix; ?>[viewList]" value="true" /><label>List *</label>&nbsp;</div>
+          <div style="position:relative;"><div style="z-index:1;position:absolute;top:0px;left:0px;width:100%;height:100%;background:#888;opacity: 0.4;filter: alpha(opacity=40); "></div>
+          <fieldset style="border:1px solid #ccc;margin-top:5px;padding:3px" id="<?php echo $this->prefix; ?>_listconfig">
+              <legend>List parameters*</legend>
+              Start list:<br />
+              <input type="text" id="<?php echo $this->prefix; ?>_list_start" name="<?php echo $this->prefix; ?>[list_start]" value=""/><br />
+              <div style="font-size:10px;">Examples: now, 10 September 2014, +1 day, +2 weeks. Leave blank if you don't need start list </div>
+              End list:<br />
+              <input type="text" id="<?php echo $this->prefix; ?>_list_end" name="<?php echo $this->prefix; ?>[list_end]" value=""/><br />
+              <div style="font-size:10px;">Examples: now, 10 September 2014, +1 day, +2 weeks. Leave blank if you don't need end list </div>
+              Order list:<br />
+              <select id="<?php echo $this->prefix; ?>_list_order" name="<?php echo $this->prefix; ?>[list_order]">
+                	<option value="asc">Ascendent</option>
+                	<option value="desc">Descendent</option>
+                </select><br />
+              Number of the events:<br />
+              <input type="text" id="<?php echo $this->prefix; ?>_list_totalEvents" name="<?php echo $this->prefix; ?>[list_totalEvents]" value="0"/><br />
+              <div style="font-size:10px;">Example: 3 for showing only three events without pagination. Leave zero, if you want to show unlimited events</div>
+              Number of the events per page:<br />
+              <input type="text" id="<?php echo $this->prefix; ?>_list_eventsPerPage" name="<?php echo $this->prefix; ?>[list_eventsPerPage]" value="10"/><br />
+              Use readmore for more n words in the description:<br />
+              <input type="text" id="<?php echo $this->prefix; ?>_list_readmore_numberofwords" name="<?php echo $this->prefix; ?>[list_readmore_numberofwords]" value="0"/><br />
+              <div style="font-size:10px;">Leave zero if you want to show the full description</div>
+          </fieldset>
+          </div>
+          <b>* List view only available in the <a href="http://wordpress.dwbooster.com/calendars/cp-multi-view-calendar#download">Pro version.</a></b>
         </td>
-    </tr>    
+    </tr>   
     <tr valign="top">
         <th scope="row"><label>Default View</label></th>
         <td><select id="<?php echo $this->prefix; ?>_viewdefault" name="<?php echo $this->prefix; ?>[viewdefault]">
@@ -264,6 +290,26 @@
     }
     /** LOAD CALENDAR VIEWS LIST */
     var $j = jQuery.noConflict();
+    $j("#<?php echo $this->prefix; ?>_viewList").click(function(){
+        if ($j(this).is(':checked'))
+            $j("#<?php echo $this->prefix; ?>_listconfig").css("display","block");
+        else
+            $j("#<?php echo $this->prefix; ?>_listconfig").css("display","none");
+    });
+    $j("#<?php echo $this->prefix; ?>_viewDay,#<?php echo $this->prefix; ?>_viewWeek,#<?php echo $this->prefix; ?>_viewMonth,#<?php echo $this->prefix; ?>_viewNMonth,#<?php echo $this->prefix; ?>_viewList").click(function(){
+        var options = "";
+        if ($j("#<?php echo $this->prefix; ?>_viewDay").is(':checked'))
+            options += '<option value="day">Day</option>';
+        if ($j("#<?php echo $this->prefix; ?>_viewWeek").is(':checked'))
+            options += '<option value="week">Week</option>';
+        if ($j("#<?php echo $this->prefix; ?>_viewMonth").is(':checked'))
+            options += '<option value="month">Month</option>';
+        if ($j("#<?php echo $this->prefix; ?>_viewNMonth").is(':checked'))
+            options += '<option value="nMonth">nMonth</option>';
+        if ($j("#<?php echo $this->prefix; ?>_viewList").is(':checked'))
+            options += '<option value="list">List</option>';    
+        $j("#<?php echo $this->prefix; ?>_viewdefault").html(options);
+    });
     var data = {
         action: '<?php echo $this->prefix; ?>get_views',
         security: '<?php echo $this->ajax_nonce; ?>'

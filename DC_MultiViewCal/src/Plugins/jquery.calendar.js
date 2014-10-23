@@ -150,6 +150,9 @@
         var def = {
             newWidthGroup:0,
             newWidthGroupCalculate:false,
+            list_eventsPerPage:0,
+            total:0,
+            page:0,
             numberOfMonths : 12,
             /**
              * @description {Config} view
@@ -304,8 +307,9 @@
         //populate events data for first display.
         if (option.url && option.autoload) {
             render();
-            var d = getRdate();
-            pushER(d.start, d.end);
+            var d = getRdate(); 
+            if (option.view!="list")
+                pushER(d.start, d.end);
             populate();
         }
         else {
@@ -313,7 +317,8 @@
             render();
             //get date range
             var d = getRdate();
-            pushER(d.start, d.end);
+            if (option.view!="list")
+                pushER(d.start, d.end);
         }
 
         //clear DOM
@@ -416,6 +421,16 @@
         function render() {
             //params needed
             //viewType, showday, events, config
+            if (option.view=="list")
+            {
+                $("#sfprevbtn"+option.thecontainer).css("display","none");
+                $("#sfnextbtn"+option.thecontainer).css("display","none");
+            } 
+            else 
+            {
+                $("#sfprevbtn"+option.thecontainer).css("display","block");
+                $("#sfnextbtn"+option.thecontainer).css("display","block");
+            }  
             if (option.mindate!="" && option.mindate>option.showday)
                 option.showday = option.mindate;
             if (option.maxdate!="" && option.maxdate<option.showday)
@@ -464,6 +479,7 @@
                  
             var showday = new Date(option.showday.getFullYear(), option.showday.getMonth(), option.showday.getDate());
             var events = option.eventItems;
+            
             var config = { view: option.view, weekstartday: option.weekstartday, theme: option.theme,thecontainer: option.thecontainer };
             if (option.view == "day" || option.view == "week" || option.view == "nDays") {
                 var $dvtec = $("#dvtec"+option.thecontainer);
@@ -491,6 +507,10 @@
                     BuildDaysAndWeekView(showday, option.numberOfDays, events, config);
                     gridcontainer.css("overflow-y", "visible").height(option.height - 8);
                     break;
+                case "list":
+                    BuildListView(showday, option.list_eventsPerPage, events, config);
+                    //gridcontainer.height($('#listcontainer'+option.thecontainer).height()+10);
+                    break;    
                 case "nMonth":
                     BuildYearView(showday, events, config);
                     gridcontainer.css("overflow-y", "visible");
@@ -822,6 +842,101 @@
         }
         return;
 
+        }
+        //build list view
+        function BuildListView(startday, l, events, config) {
+            
+            option.vstart = startday;
+            option.vend = startday;
+
+
+            var html = [];
+            html.push("<div id=\"listcontainer"+config.thecontainer+"\" class=\"listcontainer\">");
+            var str = "";
+            for (var i = 0; i<events.length;i++)
+            {
+                d1 = dateFormat.call(events[i][2], i18n.dcmvcal.dateformat.fulldayshow);
+                d1h = fomartTimeAMPM(events[i][2].getHours(),events[i][2].getMinutes(),__MilitaryTime);                                                                                                                                                                                
+                d2 = dateFormat.call(events[i][3], i18n.dcmvcal.dateformat.fulldayshow);
+                d2h = fomartTimeAMPM(events[i][3].getHours(),events[i][3].getMinutes(),__MilitaryTime);
+                                                                        
+                if (d1==d2)
+                {    
+                    d = "<div class=\"list_event_date\">" + d1 + '</div>';
+                    if (events[i][4]!=1)
+                        d += " " + d1h+" - "+d2h;   
+                }                                                                                                                                                                                                                            
+                else
+                {  
+                    if (events[i][4]!=1)
+                        d = "<div class=\"list_event_date\">" + d1+ "</div> "+d1h+" - <div class=\"list_event_date\">"+d2+"</div> "+d2h;
+                    else                                                                                                                                                                                                                                   
+                        d = "<div class=\"list_event_date\">" + d1 +" - "+d2+'</div>';                                                                                                                                                                                                                 
+                }
+                var description = ""; 
+                if (events[i][11]!="" && events[i][11]!="<br />" && events[i][11]!=null)
+                {
+                    if (option.list_readmore_numberofwords==0)
+                        description   = "<div class=\"itemlist_description\">"+events[i][11]+"</div>"; 
+                    else
+                    {
+                        var val   = $.trim(events[i][11]), // Remove spaces from b/e of string
+                        words = val.replace(/\s+/gi, ' ').split(' '); //  word-splits
+                        if (words.length>option.list_readmore_numberofwords)
+                        {
+                            val = "";
+                            for (var w=0;w<option.list_readmore_numberofwords;w++)
+                                val += " "+ words[w]; 
+                        }        
+                        else
+                            val = events[i][11];           
+                        description = '<div class="itemlist_description"><div class="description_short">'+$.trim(val)+' ... <a href="" class="readmore short">'+i18n.dcmvcal.readmore+'</a></div>';     
+                        description += '<div class="description_large">'+events[i][11]+' <a href="" class="readmore large">'+i18n.dcmvcal.readmore_less+'</a></div></div>';     
+                    }
+                }
+                str += '<div><div class="list_event_content" style="border-left:3px solid '+((events[i][7]!=-1 && events[i][7]!=null)?events[i][7]:"#"+option.paletteDefault)+';">' + d + "<div class=\"itemlist_title\">"+events[i][1]+"</div>"+((events[i][9]!="" && events[i][9]!=null)?"<div class=\"itemlist_location\">"+events[i][9]+"</div>":"")+ description + "</div></div>";
+                
+            }
+            if (option.list_totalEvents==0)
+            {
+                str +='<div class="listnav">';
+                if (option.total>option.list_eventsPerPage)
+                {
+                    str +='<a href="#" id="listprevbtn'+option.thecontainer+'" class="listprevbtn '+((option.page>0==0)?"listbtndisabled":"")+'">'+i18n.dcmvcal.prev+'</a>';
+                    str +='<a href="#" id="listnextbtn'+option.thecontainer+'" class="listnextbtn '+((option.total<=(option.page+1)*option.list_eventsPerPage)?"listbtndisabled":"")+'">'+i18n.dcmvcal.next+'</a>';        
+                }
+                str +='<div style="clear:both"></div></div>';
+            }
+            html.push(str);
+            html.push("</div>");
+
+            option.datestrshow = " ";
+            gridcontainer.html(html.join(""));
+            $("#listprevbtn"+option.thecontainer).click(function(){
+                if (!$(this).hasClass("listbtndisabled"))
+                    $("#gridcontainer"+option.thecontainer).previousRange().BcalGetOp(); 
+                return false;       
+            })
+            $("#listnextbtn"+option.thecontainer).click(function(){
+                if (!$(this).hasClass("listbtndisabled"))
+                    $("#gridcontainer"+option.thecontainer).nextRange().BcalGetOp();
+                return false;        
+            })
+            $("#listcontainer"+option.thecontainer).find(".readmore").click(function(){
+                if ($(this).hasClass("short"))
+                {
+                    $(this).parent().parent().find(".description_short").css("display","none");
+                    $(this).parent().parent().find(".description_large").css("display","block");
+                }
+                else
+                {
+                    $(this).parent().parent().find(".description_short").css("display","block");
+                    $(this).parent().parent().find(".description_large").css("display","none");
+                }
+                return false;
+            })
+            
+            html = null;
         }
         //build day view
         function BuildDaysAndWeekView(startday, l, events, config) {
@@ -1668,8 +1783,6 @@
                 }
                 htb.push("</tr>");
                 var sfirstday = C[j * 7];
-                if (formatevents[j][i])
-                    alert(formatevents[j][i].colSpan);
                 BuildMonthRow(htb, formatevents[j], dMax, roweventcount, sfirstday,startday);
                 //htb=htb.concat(rowHtml); rowHtml = null;
 
@@ -1954,6 +2067,11 @@
                 { name: "startdate", value: dateFormat.call(option.vstart, "M/d/yyyy HH:mm") },
                 { name: "enddate", value: dateFormat.call(option.vend, "M/d/yyyy HH:mm") },
                 { name: "viewtype", value: option.view },
+                { name: "list_start", value: option.list_start },
+                { name: "list_end", value: option.list_end },                
+                { name: "list_eventsPerPage", value: ((option.list_totalEvents==0)?option.list_eventsPerPage:option.list_totalEvents) },
+                { name: "page", value: option.page },
+                { name: "list_order", value: option.list_order },
 				 { name: "timezone", value: zone }
                 ];
                 if (option.extParam) {
@@ -1983,14 +2101,18 @@
                         }
                         else {
                             try {
-                                data["start"] = parseDate(data["start"]);
-                                data["end"] = parseDate(data["end"]);
                                 $.each(data.events, function(index, value) {
+                                    
                                     value[2] = parseDate(value[2]);
                                     value[3] = parseDate(value[3]);
-                                });
-                                responseData(data, data.start, data.end);
-                                pushER(data.start, data.end);
+                                }); 
+                                data["start"] = parseDate(data["start"]);
+                                data["end"] = parseDate(data["end"]);
+                                if (option.view=="list")
+                                    option.total = data.total;                                
+                                responseData(data, data.start, data.end);  
+                                if (option.view!="list")
+                                    pushER(data.start, data.end);
                             } catch (e) { }
                         }
                         if (option.onAfterRequestData && $.isFunction(option.onAfterRequestData)) {
@@ -2067,8 +2189,9 @@
             }
             data.events = tmpArray;
             //if (data.issort == false) {
-            if (true){
+            if (option.view!="list"){
                 if (data.events && data.events.length > 0) {
+                    
                     events = data.events.sort(function(l, r) { return ((l[2].toString() == r[2].toString())? (l[0] > r[0] ? 1 : -1) : (l[2] > r[2] ? 1 : -1) ); });
                 }
                 else {
@@ -2078,8 +2201,8 @@
             else {
                 events = data.events;
             }
-            
-
+            if (option.view=="list")
+                option.eventItems = [];
             ConcatEvents(events, start, end);
             render();
 
@@ -3650,6 +3773,11 @@
                 }
                 clearcontainer();
                 option.view = view;
+                if (option.view=="list")
+                {
+                    option.eventItems = [];
+                    option.page = 0;
+                }
                 render();
                 dochange();
             },
@@ -3677,6 +3805,9 @@
                     case "nDays":
                         option.showday = DateAdd("d",(-1 * option.numberOfDays), option.showday);
                         break;
+                    case "list":
+                        option.page--;
+                        break;    
                     case "month":
                     case "nMonth":
                         option.showday = DateAdd("m", -1, option.showday);
@@ -3695,6 +3826,9 @@
                         break;
                     case "nDays":
                         option.showday = DateAdd("d", option.numberOfDays, option.showday);
+                        break;
+                    case "list":
+                        option.page++;
                         break;
                     case "month":
                     case "nMonth":
@@ -3732,6 +3866,7 @@
                 this.bcal.sv(view);
             }
         })
+        
     };
 
     /**

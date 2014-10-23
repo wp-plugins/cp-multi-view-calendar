@@ -41,7 +41,14 @@ function initMultiViewCal(container,calendarId,config)
             viewMonth : false,
             viewNMonth : false,
             viewNDays : false,
+            viewList : false,
             numberOfDays : 10,
+            list_start:"", //"","now" or string compatible with strtotime 
+            list_end:"",  //"","now" or string compatible with strtotime 
+            list_order:"asc",//asc or desc
+            list_totalEvents:0, //0 = unlimited
+            list_eventsPerPage:10,            
+            list_readmore_numberofwords:10, //0 = unlimited, 
             viewRefresh : config.brefresh,
             viewNavigation : config.bnavigation,
             view: config.viewdefault, //'day','week','month','nMonth','nDays'
@@ -92,10 +99,10 @@ function initMultiViewCal(container,calendarId,config)
             if (config.viewWeek) tabs++;
             if (config.viewMonth) tabs++;
             if (config.viewNDays) tabs++;
-            
+            if (config.viewList) tabs++;
             if (config.viewNMonth) tabs++;
             if (config.viewRefresh) tabs++;
-            if (config.viewNavigation) tabs++;
+            if (config.viewNavigation && !config.viewList) tabs++;
             var string = '<div id="calhead'+config.thecontainer+' "> '+
             
               ((tabs>1)?
@@ -134,6 +141,10 @@ function initMultiViewCal(container,calendarId,config)
                   '          <div  id="shownMonthbtn'+config.thecontainer+'" class="fbutton ui-state-default '+((config.view=="nMonth")?'ui-state-active':'')+'">'+
                   '              <div><span title="'+i18n.dcmvcal.nmonth+'" class="shownMonthview">'+i18n.dcmvcal.nmonth+'</span></div>'+
                   '          </div>':'')+
+                  ((config.viewList)?
+                  '          <div  id="shownListbtn'+config.thecontainer+'" class="fbutton ui-state-default '+((config.view=="list")?'ui-state-active':'')+'">'+
+                  '              <div><span title="'+i18n.dcmvcal.list+'" class="showListview">'+i18n.dcmvcal.list+'</span></div>'+
+                  '          </div>':'')+
                   ((config.viewNavigation)?
                   '          <div class="btnseparator"></div>'+
                   '          <div id="sfprevbtn'+config.thecontainer+'" title="'+i18n.dcmvcal.prev+'"  class="fbutton fprevbtn ">'+
@@ -160,6 +171,10 @@ function initMultiViewCal(container,calendarId,config)
               '    </div>'+
               '</div>';
             var $container = $jc("#"+container);
+            if (tabs<=1 && config.viewList)
+               $jc("#"+container).parent().addClass("mvlist");
+            if (tabs<=1 && config.viewNMonth)
+               $jc("#"+container).parent().addClass("mvNMonth");   
             $container.html(string);
                     var DATA_FEED_URL = pathCalendar+"&f=datafeed";
                     var DATA_EDIT_URL = pathCalendar+"&f=edit&month_index="+i18n.dcmvcal.dateformat.month_index+"&delete="+((config.userDel)?"1":"0")+"&palette="+config.palette+"&paletteDefault="+config.paletteDefault+"&calid="+calendarId;
@@ -364,6 +379,20 @@ function initMultiViewCal(container,calendarId,config)
                             $jc("#txtdatetimeshow"+op.thecontainer).text(p.datestrshow);
                         }
                     });
+                    } catch(e){};
+                    //to show List view
+                    try {
+                    $jc("#shownListbtn"+op.thecontainer).click(function(e) {
+                        $jc("#caltoolbar"+op.thecontainer+" div.ui-state-active").each(function() {
+                            $jc(this).removeClass("ui-state-active");
+                        })
+                        $jc(this).addClass("ui-state-active");
+                        var p = $jc("#gridcontainer"+op.thecontainer).swtichView("list").BcalGetOp();
+                        
+                        if (p && p.datestrshow) {
+                            $jc("#txtdatetimeshow"+op.thecontainer).text(p.datestrshow);
+                        }
+                    });                    
                     } catch(e){};
                     //to show nMonth view
                     try {
