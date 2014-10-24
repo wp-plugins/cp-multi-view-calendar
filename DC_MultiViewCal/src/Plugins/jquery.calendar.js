@@ -2303,6 +2303,8 @@
             var s = str.split(" ");
             var s0 = s[0].split("/");
             var s1 = s[1].split(":");
+            if (s1.length!=2)
+                s1 = new Array(0,0);
             return new Date(s0[2]*1, s0[0]*1-1, s0[1]*1,s1[0]*1,s1[1]*1);
         }
         function gP(h, m) {
