@@ -102,7 +102,8 @@ function initMultiViewCal(container,calendarId,config)
             if (config.viewList) tabs++;
             if (config.viewNMonth) tabs++;
             if (config.viewRefresh) tabs++;
-            if (config.viewNavigation && !config.viewList) tabs++;
+            if (config.viewNavigation && ((tabs==1 && config.viewList) || (tabs==1 && config.viewNMonth) || (tabs==2 && config.viewList && config.viewNMonth))) config.viewNavigation=false;
+            if (config.viewNavigation) tabs++;
             var string = '<div id="calhead'+config.thecontainer+' "> '+
             
               ((tabs>1)?
