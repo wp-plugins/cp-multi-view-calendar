@@ -55,6 +55,17 @@ class CP_BaseClass {
             $url = 'http://'.$_SERVER["HTTP_HOST"].$url;
         return $url;
     }
+    
+    function add_field_verify ($table, $field, $type = "text")
+    {
+        global $wpdb;
+        $results = $wpdb->get_results("SHOW columns FROM `".$table."` where field='".$field."'");
+        if (!count($results))
+        {
+            $sql = "ALTER TABLE  `".$table."` ADD `".$field."` ".$type;
+            $wpdb->query($sql);
+        }
+    }     
        
 } // end class
 
