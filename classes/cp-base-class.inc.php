@@ -64,7 +64,9 @@ class CP_BaseClass {
         {
             $sql = "ALTER TABLE  `".$table."` ADD `".$field."` ".$type;
             $wpdb->query($sql);
+            return true;
         }
+        return false;
     }     
        
 } // end class
