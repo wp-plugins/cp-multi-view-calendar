@@ -37,10 +37,10 @@
                 </select><br />
               Number of the events:<br />
               <input type="text" class="non_available" id="<?php echo $this->prefix; ?>_list_totalEvents" name="<?php echo $this->prefix; ?>[list_totalEvents]" value="0"/><br />
-              <div style="font-size:10px;">Example: 3 for showing only three events without pagination. Leave zero, if you want to show unlimited events</div>
+              <div style="font-size:10px;">Example: 3 for showing only three events without pagination. Leave zero if you want to show unlimited events</div>
               Number of the events per page:<br />
               <input type="text" class="non_available" id="<?php echo $this->prefix; ?>_list_eventsPerPage" name="<?php echo $this->prefix; ?>[list_eventsPerPage]" value="10"/><br />
-              Use readmore for more n words in the description:<br />
+              Use readmore for more than "n" words in the description:<br />
               <input type="text" class="non_available" id="<?php echo $this->prefix; ?>_list_readmore_numberofwords" name="<?php echo $this->prefix; ?>[list_readmore_numberofwords]" value="0"/><br />
               <div style="font-size:10px;">Leave zero if you want to show the full description</div>
           </fieldset>
