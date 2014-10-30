@@ -180,6 +180,7 @@ class CP_MultiViewCalendar extends CP_BaseClass {
             if (isset($convert_arr[$item]))
                 $item = $convert_arr[$item];
             $item = str_replace(array('"', "'"),array('\\"', "\\'"),$item);
+            $value = str_replace("\n",'\\\\n',$value);
             if (is_numeric($value) || $value == 'true' || $value == 'false')
                 $params .= ',"'.$item.'":'.$value;
             else
