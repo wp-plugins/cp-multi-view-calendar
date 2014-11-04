@@ -220,8 +220,6 @@ The following area some sample event calendar views. You can apply or mix config
 * First stable version released.
 * More configuration options added.
 
-== Upgrade Notice ==
-
 = 1.0.1 =
 * Interface modifications.
 * Added missing images folder
@@ -229,3 +227,10 @@ The following area some sample event calendar views. You can apply or mix config
 * Fixed bug with special characters in events
 * Compatible with the latest WP versions
 * Modifications to make the calendar responsive
+
+== Upgrade Notice ==
+
+= 1.0.2 =
+* Improved plugin security 
+ 
+Important note: If you are using the Professional version don't update via the WP dashboard but using your personal update link. Contact us if you need further information: http://wordpress.dwbooster.com/support
