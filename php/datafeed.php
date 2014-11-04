@@ -10,7 +10,7 @@ define("JC_NO_OVERLAPPING_LOCATION",false);
 $_POST = stripslashes_deep( $_POST );
 
 $method = $_GET["method"];
-$calid = $_GET["calid"];
+$calid = intval($_GET["calid"]);
 switch ($method) {
     case "add":
         $ret = addCalendar($calid, $this->get_param("CalendarStartTime"), $this->get_param("CalendarEndTime"), $this->get_param("CalendarTitle"), $this->get_param("IsAllDayEvent"), $this->get_param("location"));
@@ -56,7 +56,7 @@ echo json_encode($ret);
 function checkIfOverlappingThisEvent($id, $st, $et)
 {
     global $wpdb;
-    $sql = "select * from `".DC_MV_CAL."` where id=".$id;
+    $sql = "select * from `".DC_MV_CAL."` where id=".intval(esc_sql($id));
 
     $handle = $wpdb->get_results($sql);
     if ( $handle )
@@ -175,7 +175,7 @@ function listCalendarByPage($calid, $list_start, $list_end, $list_order, $page, 
   $ret["start"] = date("m/d/Y H:i");
   $ret["end"] = date("m/d/Y H:i");  
   try{
-  $cond = DC_MV_CAL_IDCAL."=".$calid;
+  $cond = DC_MV_CAL_IDCAL."=".intval(esc_sql($calid));
   if ($list_start!="")
       $cond .= " and `".DC_MV_CAL_FROM."`>='".date("Y-m-d H:i:s",strtotime($list_start))."'"; 
   if ($list_end!="")
@@ -307,7 +307,7 @@ function updateCalendar($id, $st, $et){
         $sql = "update `".DC_MV_CAL."` set"
           . " `".DC_MV_CAL_FROM."`='" . php2MySqlTime(js2PhpTime($st)) . "', "
           . " `".DC_MV_CAL_TO."`='" . php2MySqlTime(js2PhpTime($et)) . "' "
-          . "where `id`=" . $id;        
+          . "where `id`=" . intval(esc_sql($id));        
         if ($wpdb->query($sql)=== FALSE){
           $ret['IsSuccess'] = false;
           $ret['Msg'] = $wpdb->last_error;
@@ -358,7 +358,7 @@ function updateDetailedCalendar($id, $st, $et, $sub, $ade, $dscr, $loc, $color, 
         }        
         else if (substr($rruleType,0,5)=="UNTIL")
         {
-            $sql = "select * from `".DC_MV_CAL."` where id=".$id;
+            $sql = "select * from `".DC_MV_CAL."` where id=".intval(esc_sql($id));
 
             $rows = $wpdb->get_results($sql);
             $pre_rrule = $rows[0]->rrule;
@@ -415,7 +415,7 @@ function removeCalendar($id,$rruleType){
   try{
         if (substr($rruleType,0,8)=="del_only")
         {
-            $sql = "select * from `".DC_MV_CAL."` where id=".$id;
+            $sql = "select * from `".DC_MV_CAL."` where id=".intval(esc_sql($id));
 
             $rows = $wpdb->get_results($sql);
             $exdate = $rows[0]->exdate.substr($rruleType,8);
@@ -434,7 +434,7 @@ function removeCalendar($id,$rruleType){
         }  
         else if (substr($rruleType,0,9)=="del_UNTIL")
         {
-            $sql = "select * from `".DC_MV_CAL."` where id=".$id;
+            $sql = "select * from `".DC_MV_CAL."` where id=".intval(esc_sql($id));
 
             $rows = $wpdb->get_results($sql);
             $pre_rrule = $rows[0]->rrule;
@@ -463,7 +463,7 @@ function removeCalendar($id,$rruleType){
         }
         else  // $rruleType = "del_all" or ""
         {
-            $sql = "delete from `".DC_MV_CAL."` where `id`=" . $id;	        
+            $sql = "delete from `".DC_MV_CAL."` where `id`=" . intval(esc_sql($id));	        
             if ($wpdb->query($sql)=== FALSE){
               $ret['IsSuccess'] = false;
               $ret['Msg'] = $wpdb->last_error;
