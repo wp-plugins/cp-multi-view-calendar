@@ -43,6 +43,31 @@
               Use readmore for more than "n" words in the description:<br />
               <input type="text" class="non_available" id="<?php echo $this->prefix; ?>_list_readmore_numberofwords" name="<?php echo $this->prefix; ?>[list_readmore_numberofwords]" value="0"/><br />
               <div style="font-size:10px;">Leave zero if you want to show the full description</div>
+              Theme list:<br />
+              <textarea class="non_available" id="<?php echo $this->prefix; ?>_theme_list" name="<?php echo $this->prefix; ?>[theme_list]" style="width:100%;height:200px;font-family:Courier;"><?php 
+$theme = '<div>
+
+<div class="list_event_content" style="border-left:3px solid ${color};">
+
+<div class="list_event_date" option="1${option}"><div class="list_date">${date_start}</div></div>
+
+<div class="list_event_date" option="2${option}"><div class="list_date">${date_start}</div><div class="list_time">${time_start} - ${time_end}</div></div>
+
+<div class="list_event_date" option="3${option}"><div class="list_date">${date_start} - ${date_end}</div></div>
+
+<div class="list_event_date" option="4${option}"><div class="list_date">${date_start}</div><div class="list_time">${time_start}</div> - <div class="list_date">${date_end}</div><div class="list_time">${time_end}</div></div>
+
+<div class="itemlist_title">${title}</div>
+
+<div class="itemlist_location">${location}</div>
+
+<div class="itemlist_description" readmore_url="">${description}</div>
+
+</div>
+
+</div>';
+              echo $theme;?></textarea>
+              <div style="font-size:10px;">Please change this html if you need a custom theme list.<br />You can use this data: ${color}, ${title}, ${location}, ${description}, ${date_start}, ${time_start}, ${date_start_year}, ${date_start_month}, ${date_start_day}, ${date_start_monthName}, ${date_start_monthNameLarge}, ${date_start_weekday}, ${date_end}, ${time_end, ${date_end_year}, ${date_end_month}, ${date_end_day}, ${date_end_monthName}, ${date_end_monthNameLarge}, ${date_end_weekday}</div>
           </fieldset>
           </div>
           <b>* List view only available in the <a href="http://wordpress.dwbooster.com/calendars/cp-multi-view-calendar#download">Pro version.</a></b>
