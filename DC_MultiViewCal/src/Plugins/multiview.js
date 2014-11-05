@@ -160,7 +160,15 @@ function initMultiViewCal(container,calendarId,config)
                   '                  <span id="txtdatetimeshow'+config.thecontainer+'">'+i18n.dcmvcal.loading+'</span>'+
                   '              </div>'+
                   '          </div>':'')+
-                  '      </div>':'')+
+                  ((config.print_button)?
+                  '          <div  id="showprintbtn'+config.thecontainer+'" class="fbutton ui-state-default showprintbtn">'+
+                  '              <div><span title="Print" class="shownprintview">Print</span></div>'+
+                  '          </div>':'')+
+                  ((config.export_ical_button)?
+                  '          <div  id="shownICALbtn'+config.thecontainer+'" class="fbutton ui-state-default ">'+
+                  '              <div><span title="iCal" class="showicalview">iCal</span></div>'+
+                  '          </div>':'')+
+                  '      <div style="clear:both"></div></div>':'')+
               '</div>'+
               '<div id="editEventContainer"></div>'+
               '<div>'+
@@ -413,7 +421,22 @@ function initMultiViewCal(container,calendarId,config)
                         $jc("#gridcontainer"+op.thecontainer).reload();
                     });
                     } catch(e){};
-                    
+                    try {
+                    $jc("#shownICALbtn"+op.thecontainer).click(function(e){
+                        window.location = DATA_FEED_URL.replace("datafeed","ical")+"&id="+calendarId;
+                    });
+                    } catch(e){};
+                    try {
+                    $jc("#showprintbtn"+op.thecontainer).click(function(e){
+                         w=window.open();
+                         var code = $jc("#"+op.thecontainer).parent().html()+"";
+                         if ($jc("#gridcontainer"+op.thecontainer).BcalGetOp().view=="nMonth")
+                             code = code.replace(/width:/g,"width-");
+                         w.document.write('<html><head><style>#multicalendar .ctoolbar{height:22px}#multicalendar .fbutton{display:none}</style><link rel="stylesheet" href="'+config.mvcsspath+config.cssStyle+'/calendar.css" type="text/css" media="print,screen"/><link rel="stylesheet" href="'+config.mvcsspath+'main.css" type="text/css" media="print,screen"/></head><body><div id="multicalendar">'+code+'</div></body></html>');
+                         w.document.close();
+                         w.print();
+                    });
+                    } catch(e){};
                     function showEditEvent(url)
                     {   
                         var width = 600;

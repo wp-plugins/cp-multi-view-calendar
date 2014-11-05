@@ -4,6 +4,7 @@
   */
 ; (function($) {
     var __WDAY = new Array(i18n.dcmvcal.dateformat.sun, i18n.dcmvcal.dateformat.mon, i18n.dcmvcal.dateformat.tue, i18n.dcmvcal.dateformat.wed, i18n.dcmvcal.dateformat.thu, i18n.dcmvcal.dateformat.fri, i18n.dcmvcal.dateformat.sat);
+    var __WDAYLarge = new Array(i18n.dcmvcal.dateformat.sunday, i18n.dcmvcal.dateformat.monday, i18n.dcmvcal.dateformat.tuesday, i18n.dcmvcal.dateformat.wednesday, i18n.dcmvcal.dateformat.thursday, i18n.dcmvcal.dateformat.friday, i18n.dcmvcal.dateformat.saturday);
     var __WDAY2 = new Array(i18n.dcmvcal.dateformat.sun2, i18n.dcmvcal.dateformat.mon2, i18n.dcmvcal.dateformat.tue2, i18n.dcmvcal.dateformat.wed2, i18n.dcmvcal.dateformat.thu2, i18n.dcmvcal.dateformat.fri2, i18n.dcmvcal.dateformat.sat2);
     var __MonthName = new Array(i18n.dcmvcal.dateformat.jan, i18n.dcmvcal.dateformat.feb, i18n.dcmvcal.dateformat.mar, i18n.dcmvcal.dateformat.apr, i18n.dcmvcal.dateformat.may, i18n.dcmvcal.dateformat.jun, i18n.dcmvcal.dateformat.jul, i18n.dcmvcal.dateformat.aug, i18n.dcmvcal.dateformat.sep, i18n.dcmvcal.dateformat.oct, i18n.dcmvcal.dateformat.nov, i18n.dcmvcal.dateformat.dec);
     var __MonthNameLarge = new Array(i18n.dcmvcal.dateformat.l_jan, i18n.dcmvcal.dateformat.l_feb, i18n.dcmvcal.dateformat.l_mar, i18n.dcmvcal.dateformat.l_apr, i18n.dcmvcal.dateformat.l_may, i18n.dcmvcal.dateformat.l_jun, i18n.dcmvcal.dateformat.l_jul, i18n.dcmvcal.dateformat.l_aug, i18n.dcmvcal.dateformat.l_sep, i18n.dcmvcal.dateformat.l_oct, i18n.dcmvcal.dateformat.l_nov, i18n.dcmvcal.dateformat.l_dec);
@@ -422,15 +423,9 @@
             //params needed
             //viewType, showday, events, config
             if (option.view=="list")
-            {
-                $("#sfprevbtn"+option.thecontainer).css("display","none");
-                $("#sfnextbtn"+option.thecontainer).css("display","none");
-            } 
+                $("#sfprevbtn"+option.thecontainer+",#sfnextbtn"+option.thecontainer).addClass("nav_list");
             else 
-            {
-                $("#sfprevbtn"+option.thecontainer).css("display","block");
-                $("#sfnextbtn"+option.thecontainer).css("display","block");
-            }  
+                $("#sfprevbtn"+option.thecontainer+",#sfnextbtn"+option.thecontainer).removeClass("nav_list");  
             if (option.mindate!="" && option.mindate>option.showday)
                 option.showday = option.mindate;
             if (option.maxdate!="" && option.maxdate<option.showday)
@@ -528,13 +523,13 @@
                         }    
                     else if (option.newWidthGroup!=0)
                     {
-                        $('.ui-datepicker-multi').width(gW);
-                        $('.ui-datepicker-multi .ui-datepicker-group').width(option.newWidthGroup);
+                        $('#nmonths'+option.thecontainer).find('.ui-datepicker-multi').width(gW);
+                        $('#nmonths'+option.thecontainer).find('.ui-datepicker-multi .ui-datepicker-group').width(option.newWidthGroup);
                     }
                     else 
                     {  
                         option.newWidthGroupCalculate = true;
-                        $('.ui-datepicker-multi').width(gW);
+                        $('#nmonths'+option.thecontainer).find('.ui-datepicker-multi').width(gW);
                         var iW = 2000;
                         $('.ui-datepicker-group .ui-datepicker-calendar').each(function(i) {
                             if (iW>$(this).width())
@@ -545,7 +540,7 @@
                         var nW = Math.floor(gW/cN);
                         nW -=4; //margin:1px;border:1px
                         option.newWidthGroup = nW;
-                        $('.ui-datepicker-multi .ui-datepicker-group').width(nW);
+                        $('#nmonths'+option.thecontainer).find('.ui-datepicker-multi .ui-datepicker-group').width(nW);
                     }
                     gridcontainer.height($('#nmonths'+option.thecontainer).height());
                     break;
@@ -845,39 +840,55 @@
         }
         //build list view
         function BuildListView(startday, l, events, config) {
-            
+            var __list_theme = '';
             option.vstart = startday;
             option.vend = startday;
-
-
+            var p = {};
+            
             var html = [];
             html.push("<div id=\"listcontainer"+config.thecontainer+"\" class=\"listcontainer\">");
             var str = "";
             for (var i = 0; i<events.length;i++)
             {
-                d1 = dateFormat.call(events[i][2], i18n.dcmvcal.dateformat.fulldayshow);
-                d1h = fomartTimeAMPM(events[i][2].getHours(),events[i][2].getMinutes(),__MilitaryTime);                                                                                                                                                                                
-                d2 = dateFormat.call(events[i][3], i18n.dcmvcal.dateformat.fulldayshow);
-                d2h = fomartTimeAMPM(events[i][3].getHours(),events[i][3].getMinutes(),__MilitaryTime);
+                p.date_start = dateFormat.call(events[i][2], i18n.dcmvcal.dateformat.fulldayshow);
+                p.date_start_year = dateFormat.call(events[i][2], "yyyy");
+                p.date_start_month = dateFormat.call(events[i][2], "MM");
+                p.date_start_day = dateFormat.call(events[i][2], "dd");
+                p.date_start_monthName = __MonthName[events[i][2].getMonth()];
+                p.date_start_monthNameLarge = __MonthNameLarge[events[i][2].getMonth()];
+                p.date_start_weekday = __WDAYLarge[events[i][2].getDay()];
+                
+                p.time_start = fomartTimeAMPM(events[i][2].getHours(),events[i][2].getMinutes(),__MilitaryTime);
+                                                                                                                                                                                                
+                p.date_end = dateFormat.call(events[i][3], i18n.dcmvcal.dateformat.fulldayshow);
+                p.date_end_year = dateFormat.call(events[i][3], "yyyy");
+                p.date_end_month = dateFormat.call(events[i][3], "MM");
+                p.date_end_day = dateFormat.call(events[i][3], "dd");
+                p.date_end_monthName = __MonthName[events[i][3].getMonth()];
+                p.date_end_monthNameLarge = __MonthNameLarge[events[i][3].getMonth()];
+                p.date_end_weekday = __WDAYLarge[events[i][3].getDay()];
+                
+                p.time_end = fomartTimeAMPM(events[i][3].getHours(),events[i][3].getMinutes(),__MilitaryTime);
                                                                         
-                if (d1==d2)
-                {    
-                    d = "<div class=\"list_event_date\">" + d1 + '</div>';
+                if (p.date_start==p.date_end)
+                {            
+                    p.option = 1;
                     if (events[i][4]!=1)
-                        d += " " + d1h+" - "+d2h;   
+                        p.option = 2;
                 }                                                                                                                                                                                                                            
                 else
                 {  
                     if (events[i][4]!=1)
-                        d = "<div class=\"list_event_date\">" + d1+ "</div> "+d1h+" - <div class=\"list_event_date\">"+d2+"</div> "+d2h;
-                    else                                                                                                                                                                                                                                   
-                        d = "<div class=\"list_event_date\">" + d1 +" - "+d2+'</div>';                                                                                                                                                                                                                 
+                        p.option = 4;
+                    else
+                        p.option = 3; 
                 }
+                
                 var description = ""; 
                 if (events[i][11]!="" && events[i][11]!="<br />" && events[i][11]!=null)
                 {
                     if (option.list_readmore_numberofwords==0)
-                        description   = "<div class=\"itemlist_description\">"+events[i][11]+"</div>"; 
+                        description   = events[i][11]; 
                     else
                     {
                         var val   = $.trim(events[i][11]), // Remove spaces from b/e of string
@@ -886,15 +897,26 @@
                         {
                             val = "";
                             for (var w=0;w<option.list_readmore_numberofwords;w++)
-                                val += " "+ words[w]; 
+                                val += " "+ words[w];
+                            description = '<div class="description_short">'+$.trim(val)+' ... <a href="" class="readmore short">'+i18n.dcmvcal.readmore+'</a></div>';     
+                            description += '<div class="description_large">'+events[i][11]+' <a href="" class="readmore large">'+i18n.dcmvcal.readmore_less+'</a></div>';          
                         }        
                         else
-                            val = events[i][11];           
-                        description = '<div class="itemlist_description"><div class="description_short">'+$.trim(val)+' ... <a href="" class="readmore short">'+i18n.dcmvcal.readmore+'</a></div>';     
-                        description += '<div class="description_large">'+events[i][11]+' <a href="" class="readmore large">'+i18n.dcmvcal.readmore_less+'</a></div></div>';     
+                        {
+                            val = events[i][11]; 
+                            description   = events[i][11];           
+                        }    
+                        
                     }
                 }
-                str += '<div><div class="list_event_content" style="border-left:3px solid '+((events[i][7]!=-1 && events[i][7]!=null)?events[i][7]:"#"+option.paletteDefault)+';">' + d + "<div class=\"itemlist_title\">"+events[i][1]+"</div>"+((events[i][9]!="" && events[i][9]!=null)?"<div class=\"itemlist_location\">"+events[i][9]+"</div>":"")+ description + "</div></div>";
+                p.id = events[i][0];
+                p.color = ((events[i][7]!=-1 && events[i][7]!=null)?events[i][7]:"#"+option.paletteDefault);
+                p.title = events[i][1];
+                p.location = (events[i][9]!="" && events[i][9]!=null)?events[i][9]:"";
+                p.description = description;
+                if (option.theme_list=="")
+                    option.theme_list = '<div><div class="list_event_content" style="border-left:3px solid ${color};"><div class="list_event_date" option="1${option}"><div class="list_date">${date_start}</div></div><div class="list_event_date" option="2${option}"><div class="list_date">${date_start}</div><div class="list_time">${time_start} - ${time_end}</div></div><div class="list_event_date" option="3${option}"><div class="list_date">${date_start} - ${date_end}</div></div><div class="list_event_date" option="4${option}"><div class="list_date">${date_start}</div><div class="list_time">${time_start}</div> - <div class="list_date">${date_end}</div><div class="list_time">${time_end}</div></div><div class="itemlist_title">${title}</div><div class="itemlist_location">${location}</div><div class="itemlist_description" readmore_url="">${description}</div></div></div>';
+                str += Tp(option.theme_list, p);
                 
             }
             if (option.list_totalEvents==0)
@@ -922,16 +944,27 @@
                     $("#gridcontainer"+option.thecontainer).nextRange().BcalGetOp();
                 return false;        
             })
+            $("#listcontainer"+option.thecontainer).find(".list_event_date").each(function(){
+                if ($(this).attr("option")!="11" && $(this).attr("option")!="22" && $(this).attr("option")!="33" && $(this).attr("option")!="44")
+                    $(this).css("display","none");
+            })
             $("#listcontainer"+option.thecontainer).find(".readmore").click(function(){
-                if ($(this).hasClass("short"))
-                {
-                    $(this).parent().parent().find(".description_short").css("display","none");
-                    $(this).parent().parent().find(".description_large").css("display","block");
+                if ($(this).parent().parent().attr("readmore_url")=="") 
+                {               
+                    if ($(this).hasClass("short"))
+                    {
+                        $(this).parent().parent().find(".description_short").css("display","none");
+                        $(this).parent().parent().find(".description_large").css("display","block");
+                    }
+                    else
+                    {
+                        $(this).parent().parent().find(".description_short").css("display","block");
+                        $(this).parent().parent().find(".description_large").css("display","none");
+                    }
                 }
                 else
                 {
-                    $(this).parent().parent().find(".description_short").css("display","block");
-                    $(this).parent().parent().find(".description_large").css("display","none");
+                    document.location = $(this).parent().parent().attr("readmore_url");
                 }
                 return false;
             })
