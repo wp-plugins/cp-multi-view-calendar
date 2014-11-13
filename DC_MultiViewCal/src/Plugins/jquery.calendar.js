@@ -892,6 +892,7 @@
                     else
                     {
                         var val   = $.trim(events[i][11]), // Remove spaces from b/e of string
+                        val = $("<div/>").html(val).text();
                         words = val.replace(/\s+/gi, ' ').split(' '); //  word-splits
                         if (words.length>option.list_readmore_numberofwords)
                         {
