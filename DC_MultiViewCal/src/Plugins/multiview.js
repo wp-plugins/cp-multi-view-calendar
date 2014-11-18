@@ -1,4 +1,11 @@
 $jc = jQuery.noConflict();
+function waitvisible(gridcontainer)
+                    {
+                        if ($jc(gridcontainer).width()==0)
+                            setTimeout("waitvisible('"+gridcontainer+"')",100);
+                        else
+                            $jc(gridcontainer).reload2();    
+                    }
 function fluidDialog() {
         var $visible = $jc(".ui-dialog:visible");
         // each open dialog
@@ -244,7 +251,7 @@ function initMultiViewCal(container,calendarId,config)
                     //op.height = _MH - dvH;
                     //op.height = "100%";
                     op.eventItems =[];
-                    //setTimeout("alert('ok')",3000);
+                    setTimeout("waitvisible('#gridcontainer"+op.thecontainer+"')",100);
                     var p = $jc("#gridcontainer"+op.thecontainer).bcalendar(op).BcalGetOp();
                     if (p && p.datestrshow) {
                         $jc("#txtdatetimeshow"+op.thecontainer).text(p.datestrshow);
