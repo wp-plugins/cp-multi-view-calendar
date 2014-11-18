@@ -764,10 +764,37 @@
                  $("#nmonths"+option.thecontainer+" .ui-state-active").each(function(){
                      try{
                          var item = datetostr(strtodate($(this).attr("title")+" 00:00"));
-                         if (item && dates[item] && dates[item][0])
+                         if (item && dates[item] && (dates[item].length>0))
                          {
-                            var c = ((dates[item][0][7]!=-1 && dates[item][0][7]!=null)?dates[item][0][7]:"#"+option.paletteDefault);
-                            $(this).css("background",c);
+                            var colors = new Array();
+                            var html = "";
+                            var c = "#"+option.paletteDefault;
+                            for (var i=0;i<dates[item].length;i++)
+                            {
+                                c = ((dates[item][i][7]!=-1 && dates[item][i][7]!=null)?dates[item][i][7]:"#"+option.paletteDefault);
+                                if ($.inArray( c, colors)==-1)
+                                    colors[colors.length] = c;
+                            }
+                            if (colors.length==1)  $(this).css("background",colors[colors.length-1]);
+                            else
+                            {
+                                var count = colors.length;
+                                $(this).css("vertical-align","top").css("padding","0px");
+                                html += '<div style="position:relative;border:0px solid;padding:0px;margin:0px;">';
+                                var top = 0;
+                                var height = parseInt($(this).css("height"));
+                                for (var i=0;i<count;i++)
+                                {
+                                    h = Math.round(height/count*(i+1))-top;
+                                    
+                                    html += '<div style="position:absolute;margin:0px;padding:0px;border:0px solid;width:100%;background:'+colors[i]+';height:'+h+'px;top:'+top+'px;left:0px;"></div>';
+                                    top = Math.round(height/count*(i+1));
+                                }
+                                html += '<div style="position:absolute;margin:0px;padding:0px;border:0px solid;width:100%;background:transparent;height:'+height+'px;top:0px;left:0px;">'+$(this).html()+'</div>';
+                                html += '</div>';
+                                $(this).html(html);
+                                $(this).find("a").bind('click', function(e) {return false;});
+                            }
                          }
                      }catch (e) {}
                  });
