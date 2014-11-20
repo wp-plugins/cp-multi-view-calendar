@@ -55,7 +55,7 @@ function initMultiViewCal(container,calendarId,config)
             list_order:"asc",//asc or desc
             list_totalEvents:0, //0 = unlimited
             list_eventsPerPage:10,            
-            list_readmore_numberofwords:10, //0 = unlimited, 
+            list_readmore_numberofwords:0, //0 = unlimited, 
             viewRefresh : config.brefresh,
             viewNavigation : config.bnavigation,
             view: config.viewdefault, //'day','week','month','nMonth','nDays'

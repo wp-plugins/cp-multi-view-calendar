@@ -942,7 +942,7 @@
                 p.title = events[i][1];
                 p.location = (events[i][9]!="" && events[i][9]!=null)?events[i][9]:"";
                 p.description = description;
-                if (option.theme_list=="")
+                if (!option.theme_list || option.theme_list=="")
                     option.theme_list = '<div><div class="list_event_content" style="border-left:3px solid ${color};"><div class="list_event_date" option="1${option}"><div class="list_date">${date_start}</div></div><div class="list_event_date" option="2${option}"><div class="list_date">${date_start}</div><div class="list_time">${time_start} - ${time_end}</div></div><div class="list_event_date" option="3${option}"><div class="list_date">${date_start} - ${date_end}</div></div><div class="list_event_date" option="4${option}"><div class="list_date">${date_start}</div><div class="list_time">${time_start}</div> - <div class="list_date">${date_end}</div><div class="list_time">${time_end}</div></div><div class="itemlist_title">${title}</div><div class="itemlist_location">${location}</div><div class="itemlist_description" readmore_url="">${description}</div></div></div>';
                 str += Tp(option.theme_list, p);
                 
@@ -3849,6 +3849,10 @@
                 render();
                 dochange();
             },
+            rf2: function() {
+            option.newWidthGroup = 0;
+                render();
+            },
             rf: function() {
             populate();
 
@@ -3944,6 +3948,13 @@
         return this.each(function() {
             if (this.bcal) {
                 this.bcal.rf();
+            }
+        })
+    };
+    $.fn.reload2 = function() {
+        return this.each(function() {
+            if (this.bcal) {
+                this.bcal.rf2();
             }
         })
     };
