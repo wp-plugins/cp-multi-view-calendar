@@ -43,6 +43,7 @@ You can see 20 sample visualization modes and an online demo at: http://wordpres
 * Spanish
 * French
 * German
+* Italian
 
 If your language is not listed here and not available in the calendar feel free to open a support ticket and it will be added asap.
 
