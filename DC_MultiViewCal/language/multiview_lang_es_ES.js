@@ -181,6 +181,8 @@ var i18n = jQuery.extend({}, i18n || {}, {
         "times":"times",
         "readmore":"read more",
         "readmore_less":"less",
+        "readmore":"read more",
+        "readmore_less":"less",
         "until":"until"
     }
 });
