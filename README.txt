@@ -37,6 +37,15 @@ The CP Multi View Event Calendar is an **event calendar** for WordPress websites
 
 You can see 20 sample visualization modes and an online demo at: http://wordpress.dwbooster.com/calendars/cp-multi-view-calendar
 
+**Languages Included in the Calendar**
+
+* English
+* Spanish
+
+If your language is not listed here and not available in the calendar feel free to open a support ticket and it will be added asap.
+
+**Update note**
+
 New: The latest update features a new interface for easily editing a previously inserted event calendar view and preview buttons for a faster verification of how the event calendar will look in the website.
 
 
