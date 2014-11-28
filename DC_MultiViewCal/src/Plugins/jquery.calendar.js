@@ -270,6 +270,8 @@
         if (option.quickUpdateUrl == null || option.quickUpdateUrl == "") {
             option.enableDrag = false;
         }
+        if ( option.readonly || !option.userEdit )
+            option.enableDrag = false;
         if (option.rowsByCategory == "dc_subjects" || option.rowsByCategory == "dc_locations" )
             option.rowsList = eval(option.rowsByCategory);
         if (option.dayWithTime && option.view=="day")
@@ -644,6 +646,46 @@
              if (__VIEWWEEKDAYS[5]==0) $(".ui-datepicker span[title='Friday']").parent().css("display","none");
              if (__VIEWWEEKDAYS[6]==0) $(".ui-datepicker span[title='Saturday']").parent().css("display","none");
              $("#nmonths"+option.thecontainer+" .ui-datepicker-other-month").attr("title","");
+             if (option.date_box_with_color_in_nmonth_view)
+             {
+                 $("#nmonths"+option.thecontainer+" .ui-state-active").each(function(){
+                     try{
+                         var item = datetostr(strtodate($(this).attr("title")+" 00:00"));
+                         if (item && dates[item] && (dates[item].length>0))
+                         {
+                            var colors = new Array();
+                            var html = "";
+                            var c = "#"+option.paletteDefault;
+                            for (var i=0;i<dates[item].length;i++)
+                            {
+                                c = ((dates[item][i][7]!=-1 && dates[item][i][7]!=null)?dates[item][i][7]:"#"+option.paletteDefault);
+                                if ($.inArray( c, colors)==-1)
+                                    colors[colors.length] = c;
+                            }
+                            if (colors.length==1)  $(this).css("background",colors[colors.length-1]);
+                            else
+                            {
+                                var count = colors.length;
+                                $(this).css("vertical-align","top").css("padding","0px");
+                                html += '<div style="position:relative;border:0px solid;padding:0px;margin:0px;">';
+                                var top = 0;
+                                var height = parseInt($(this).css("height"));
+                                for (var i=0;i<count;i++)
+                                {
+                                    h = Math.round(height/count*(i+1))-top;
+                                    
+                                    html += '<div style="position:absolute;margin:0px;padding:0px;border:0px solid;width:100%;background:'+colors[i]+';height:'+h+'px;top:'+top+'px;left:0px;"></div>';
+                                    top = Math.round(height/count*(i+1));
+                                }
+                                html += '<div style="position:absolute;margin:0px;padding:0px;border:0px solid;width:100%;background:transparent;height:'+height+'px;top:0px;left:0px;">'+$(this).html()+'</div>';
+                                html += '</div>';
+                                $(this).html(html);
+                                //$(this).find("a").bind('click', function(e) {return false;});
+                            }
+                         }
+                     }catch (e) {}
+                 });
+             }
              $("#nmonths"+option.thecontainer+" .ui-state-active a").bind('click', function(e) {
                 if (__VIEWWEEKDAYS[0]==0) $(".ui-datepicker span[title='Sunday']").parent().css("display","none");
                 if (__VIEWWEEKDAYS[1]==0) $(".ui-datepicker span[title='Monday']").parent().css("display","none");
@@ -654,7 +696,7 @@
                 if (__VIEWWEEKDAYS[6]==0) $(".ui-datepicker span[title='Saturday']").parent().css("display","none");
                 if (option.shownavigate)
                 {
-                    var item = datetostr(strtodate($(this).parent().attr("title")+" 00:00"));
+                    var item = datetostr(strtodate($(this).parents(".ui-state-active").attr("title")+" 00:00"));
                     var i = item.split("/");
                     var title = new Date(i[0],i[1]-1,i[2]);
                     
@@ -759,46 +801,6 @@
                      move_mv_dlg();                                                                                                                                                                                               
                  }   
              }
-             if (option.date_box_with_color_in_nmonth_view)
-             {
-                 $("#nmonths"+option.thecontainer+" .ui-state-active").each(function(){
-                     try{
-                         var item = datetostr(strtodate($(this).attr("title")+" 00:00"));
-                         if (item && dates[item] && (dates[item].length>0))
-                         {
-                            var colors = new Array();
-                            var html = "";
-                            var c = "#"+option.paletteDefault;
-                            for (var i=0;i<dates[item].length;i++)
-                            {
-                                c = ((dates[item][i][7]!=-1 && dates[item][i][7]!=null)?dates[item][i][7]:"#"+option.paletteDefault);
-                                if ($.inArray( c, colors)==-1)
-                                    colors[colors.length] = c;
-                            }
-                            if (colors.length==1)  $(this).css("background",colors[colors.length-1]);
-                            else
-                            {
-                                var count = colors.length;
-                                $(this).css("vertical-align","top").css("padding","0px");
-                                html += '<div style="position:relative;border:0px solid;padding:0px;margin:0px;">';
-                                var top = 0;
-                                var height = parseInt($(this).css("height"));
-                                for (var i=0;i<count;i++)
-                                {
-                                    h = Math.round(height/count*(i+1))-top;
-                                    
-                                    html += '<div style="position:absolute;margin:0px;padding:0px;border:0px solid;width:100%;background:'+colors[i]+';height:'+h+'px;top:'+top+'px;left:0px;"></div>';
-                                    top = Math.round(height/count*(i+1));
-                                }
-                                html += '<div style="position:absolute;margin:0px;padding:0px;border:0px solid;width:100%;background:transparent;height:'+height+'px;top:0px;left:0px;">'+$(this).html()+'</div>';
-                                html += '</div>';
-                                $(this).html(html);
-                                $(this).find("a").bind('click', function(e) {return false;});
-                            }
-                         }
-                     }catch (e) {}
-                 });
-             }        
              $("#nmonths"+option.thecontainer+" .ui-state-non-active a").bind('click', function(e) {
                 var item = datetostr(strtodate($(this).parent().attr("title")+" 00:00"));
                 var arrdays = item.split('/');
@@ -813,7 +815,7 @@
                  {
                      
                      $("#nmonths"+option.thecontainer+" .ui-state-active a").bind('click', function(e) {
-                         var item = datetostr(strtodate($(this).parent().attr("title")+" 00:00"));
+                         var item = datetostr(strtodate($(this).parents(".ui-state-active").attr("title")+" 00:00"));
                          var idover = "myover"+item.replace(/\//g,"_");
                          $(".ui-dialog-content").remove();
                          $(this).parent().append("<div class=\""+idover+"\" ></div>");
@@ -2503,8 +2505,8 @@
         }
 
         function buildtempdayevent(sh, sm, eh, em, h, title, w, resize, thindex) {
-            //var theme = thindex != undefined && thindex >= 0 ? tc(thindex) : tc();
-            var theme = thindex != undefined ? tc(thindex) : tc();
+            var theme = thindex != undefined && thindex >= 0 ? tc(thindex) : tc();
+            //var theme = thindex != undefined ? tc(thindex) : tc();
             var newtemp = Tp(__SCOLLEVENTTEMP, {
                 bdcolor: theme[0],
                 bgcolor2: theme[0],
@@ -2625,7 +2627,7 @@
                         //
                         bud = $(csbuddle).appendTo(document.body);
                         bud.dialog({width:300,resizable: false,
-                           modal: true,resizable: false,maxWidth: 300,fluid: true,open: function(event, ui){fluidDialog();},
+                           modal: false,resizable: false,maxWidth: 300,fluid: true,open: function(event, ui){fluidDialog();},
                            position: {
                              my: "left top",
                              at: "center bottom",
@@ -3428,7 +3430,7 @@
                         var diffx = x - sx;
                         if (diffx > 5 || diffx < -5 || d.lasso) {
                             if (!d.lasso) {
-                                d.lasso = $("<div style='z-index: 10; display: block' class='drag-lasso-container'/>");
+                                d.lasso = $("<div style='display: block' class='drag-lasso-container'/>");
                                 $(document.body).append(d.lasso);
                             }
                             if (!d.sdi) {
@@ -3450,7 +3452,7 @@
                         var diffy = y - sy;
                         if (diffx > 5 || diffx < -5 || diffy < -5 || diffy > 5 || d.lasso) {
                             if (!d.lasso) {
-                                d.lasso = $("<div style='z-index: 10; display: block' class='drag-lasso-container'/>");
+                                d.lasso = $("<div style='display: block' class='drag-lasso-container'/>");
                                 $(document.body).append(d.lasso);
                             }
                             if (!d.sdi) {
@@ -3584,7 +3586,7 @@
                                 }
                                 var cpwrap = $("<div class='drag-event st-contents' style='width:" + w1 + "px'/>").append(cp).appendTo(document.body);
                                 d.cpwrap = cpwrap;
-                                d.lasso = $("<div style='z-index: 10; display: block' class='drag-lasso-container'/>");
+                                d.lasso = $("<div style='display: block' class='drag-lasso-container'/>");
                                 $(document.body).append(d.lasso);
                                 cp = cpwrap = null;
                             }
@@ -3612,7 +3614,7 @@
                                 }
                                 var cpwrap = $("<div class='drag-event st-contents' style='width:" + w1 + "px'/>").append(cp).appendTo(document.body);
                                 d.cpwrap = cpwrap;
-                                d.lasso = $("<div style='z-index: 10; display: block' class='drag-lasso-container'/>");
+                                d.lasso = $("<div style='display: block' class='drag-lasso-container'/>");
                                 $(document.body).append(d.lasso);
                                 cp = cpwrap = null;
                             }
@@ -3664,7 +3666,7 @@
 								break;
 							}
                             d.fdi = d.sdi = getdi(d.xa, d.ya, d.sx, d.sy);
-                            d.lasso = $("<div style='z-index: 10; display: block' class='drag-lasso-container'/>");
+                            d.lasso = $("<div style='display: block' class='drag-lasso-container'/>");
                             $(document.body).append(d.lasso);
                             addlasso(d.lasso, d.sdi, d.fdi, d.xa, d.ya, d.h);
                         }
@@ -3687,7 +3689,7 @@
                         var start = DateAdd("d", si, firstday);
                         var end = DateAdd("d", ei, firstday);
                         _dragevent = function() { $("#" + lassoid).remove(); };
-                        quickadd(start, end, true, { left: e.pageX, top: e.pageY });
+                        if (!$(source).hasClass("st-more")) quickadd(start, end, true, { left: e.pageX, top: e.pageY });
                         break;
                     case 4: // event moving
                         if (d.cpwrap) {
