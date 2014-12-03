@@ -127,7 +127,7 @@
                 prevent = p;
             if (prevent) {
                 return this.each(function() {
-                    if ($.browser.msie || $.browser.safari) $(this).bind('selectstart', function(e) { e.stopPropagation(); });
+                    if ($.browser.msie || $.browser.safari) $(this).bind('selectstart', function(e) { return false; });
                     else if ($.browser.mozilla) {
                         $(this).css('MozUserSelect', 'none');
                         $('body').trigger('focus');
