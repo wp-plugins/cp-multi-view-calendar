@@ -65,8 +65,8 @@ if (file_exists(dirname( __FILE__ )."/../DC_MultiViewCal/css/".$_GET["css"]."/ca
 
 
     <script src="<?php
-         if (file_exists(dirname( __FILE__ ).'/../DC_MultiViewCal/language/multiview_lang_'.WPLANG.'.js'))
-            echo plugins_url('/DC_MultiViewCal/language/multiview_lang_'.WPLANG.'.js', dirname(__FILE__) );
+         if (file_exists(dirname( __FILE__ ).'/../DC_MultiViewCal/language/multiview_lang_'.str_replace('-','_',get_bloginfo('language')).'.js'))
+            echo plugins_url('/DC_MultiViewCal/language/multiview_lang_'.str_replace('-','_',get_bloginfo('language')).'.js', dirname(__FILE__) );
         else
             echo plugins_url('/DC_MultiViewCal/language/multiview_lang_en_GB.js', dirname(__FILE__) );
     ?>" type="text/javascript"></script>
