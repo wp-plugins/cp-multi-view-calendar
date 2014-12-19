@@ -123,8 +123,8 @@ class CP_MultiViewCalendar extends CP_BaseClass {
     private function show_preview($id) {
         global $wpdb;
        
-        if (file_exists(dirname( __FILE__ ).'/DC_MultiViewCal/language/multiview_lang_'.WPLANG.'.js'))
-            $langscript = plugins_url('/DC_MultiViewCal/language/multiview_lang_'.WPLANG.'.js', __FILE__);
+        if (file_exists(dirname( __FILE__ ).'/DC_MultiViewCal/language/multiview_lang_'.str_replace('-','_',get_bloginfo('language')).'.js'))
+            $langscript = plugins_url('/DC_MultiViewCal/language/multiview_lang_'.str_replace('-','_',get_bloginfo('language')).'.js', __FILE__);
         else
             $langscript = plugins_url('/DC_MultiViewCal/language/multiview_lang_en_GB.js', __FILE__);       
 
@@ -239,8 +239,8 @@ var cpmvc_configmultiview0 = {"obj":"{\"params\":<?php echo $params; ?>,\n  \"aj
         wp_register_script('cpmvc-rrule', plugins_url('/DC_MultiViewCal/src/Plugins/rrule.js', __FILE__));
         
                 
-        if (file_exists(dirname( __FILE__ ).'/DC_MultiViewCal/language/multiview_lang_'.WPLANG.'.js'))
-            wp_register_script('cpmvc-lang', plugins_url('/DC_MultiViewCal/language/multiview_lang_'.WPLANG.'.js', __FILE__));
+        if (file_exists(dirname( __FILE__ ).'/DC_MultiViewCal/language/multiview_lang_'.str_replace('-','_',get_bloginfo('language')).'.js'))
+            wp_register_script('cpmvc-lang', plugins_url('/DC_MultiViewCal/language/multiview_lang_'.str_replace('-','_',get_bloginfo('language')).'.js', __FILE__));
         else
             wp_register_script('cpmvc-lang', plugins_url('/DC_MultiViewCal/language/multiview_lang_en_GB.js', __FILE__));
         
