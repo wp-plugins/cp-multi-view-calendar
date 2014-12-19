@@ -195,7 +195,9 @@ $theme = '<div>
   <div id="<?php echo $this->prefix; ?>calendarslistarea"></div>  
   <br />
   <input type="button" onclick="return <?php echo $this->prefix; ?>createNewCalendar(0);" value="<?php _e('Create New Calendar View'); ?>" />  
-</div>
+  
+  <p>Note: To add events to the calendar go to the "<a href="admin.php?page=<?php echo $this->menu_parameter; ?>_manage">WordPress administration menu >> CP Multiview Calendar</a>" and on that page click the "<strong>Admin Calendar Data</strong>" button that leads to a page where you can add/edit/delete events on the calendar (just click over the desired dates).</p>
+</div> 
  
   
 <div id="dialog" title="Calendar Preview" style="display:none">
