@@ -190,21 +190,25 @@ class CP_MultiViewCalendar extends CP_BaseClass {
         $params = str_replace(array('"', "'"),array('\\"', "\\'"),$params);
         $this->print_counter = 0;
         $plugin_url = plugins_url('', __FILE__);
+        
+        $prefix_ui = '';
+        if (file_exists('./wp-includes/js/jquery/ui/jquery.ui.core.min.js'))
+            $prefix_ui = 'jquery.ui.';
         ?>  
 <!DOCTYPE html>
 <html>      
 <head><title>CP Multi View Event Calendar - Preview</title></head>
 <body>
 <script type='text/javascript' src='<?php echo $plugin_url.'/../../../'; ?>wp-includes/js/jquery/jquery.js'></script>        
-<script type='text/javascript' src='<?php echo $plugin_url.'/../../../'; ?>wp-includes/js/jquery/ui/jquery.ui.core.min.js'></script>
-<script type='text/javascript' src='<?php echo $plugin_url.'/../../../'; ?>wp-includes/js/jquery/ui/jquery.ui.widget.min.js'></script>
-<script type='text/javascript' src='<?php echo $plugin_url.'/../../../'; ?>wp-includes/js/jquery/ui/jquery.ui.mouse.min.js'></script>
-<script type='text/javascript' src='<?php echo $plugin_url.'/../../../'; ?>wp-includes/js/jquery/ui/jquery.ui.resizable.min.js'></script>
-<script type='text/javascript' src='<?php echo $plugin_url.'/../../../'; ?>wp-includes/js/jquery/ui/jquery.ui.draggable.min.js'></script>
-<script type='text/javascript' src='<?php echo $plugin_url.'/../../../'; ?>wp-includes/js/jquery/ui/jquery.ui.button.min.js'></script>
-<script type='text/javascript' src='<?php echo $plugin_url.'/../../../'; ?>wp-includes/js/jquery/ui/jquery.ui.position.min.js?'></script>
-<script type='text/javascript' src='<?php echo $plugin_url.'/../../../'; ?>wp-includes/js/jquery/ui/jquery.ui.dialog.min.js'></script>
-<script type='text/javascript' src='<?php echo $plugin_url.'/../../../'; ?>wp-includes/js/jquery/ui/jquery.ui.datepicker.min.js'></script>
+<script type='text/javascript' src='<?php echo $plugin_url.'/../../../'; ?>wp-includes/js/jquery/ui/<?php echo $prefix_ui; ?>core.min.js'></script>
+<script type='text/javascript' src='<?php echo $plugin_url.'/../../../'; ?>wp-includes/js/jquery/ui/<?php echo $prefix_ui; ?>widget.min.js'></script>
+<script type='text/javascript' src='<?php echo $plugin_url.'/../../../'; ?>wp-includes/js/jquery/ui/<?php echo $prefix_ui; ?>mouse.min.js'></script>
+<script type='text/javascript' src='<?php echo $plugin_url.'/../../../'; ?>wp-includes/js/jquery/ui/<?php echo $prefix_ui; ?>resizable.min.js'></script>
+<script type='text/javascript' src='<?php echo $plugin_url.'/../../../'; ?>wp-includes/js/jquery/ui/<?php echo $prefix_ui; ?>draggable.min.js'></script>
+<script type='text/javascript' src='<?php echo $plugin_url.'/../../../'; ?>wp-includes/js/jquery/ui/<?php echo $prefix_ui; ?>button.min.js'></script>
+<script type='text/javascript' src='<?php echo $plugin_url.'/../../../'; ?>wp-includes/js/jquery/ui/<?php echo $prefix_ui; ?>position.min.js?'></script>
+<script type='text/javascript' src='<?php echo $plugin_url.'/../../../'; ?>wp-includes/js/jquery/ui/<?php echo $prefix_ui; ?>dialog.min.js'></script>
+<script type='text/javascript' src='<?php echo $plugin_url.'/../../../'; ?>wp-includes/js/jquery/ui/<?php echo $prefix_ui; ?>datepicker.min.js'></script>
 <script type='text/javascript' src='<?php echo plugins_url('/DC_MultiViewCal/src/Plugins/Common.js', __FILE__); ?>'></script>
 <script type='text/javascript' src='<?php echo plugins_url('/DC_MultiViewCal/src/Plugins/underscore.js', __FILE__); ?>'></script>
 <script type='text/javascript' src='<?php echo plugins_url('/DC_MultiViewCal/src/Plugins/rrule.js', __FILE__); ?>'></script>

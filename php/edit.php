@@ -47,6 +47,11 @@ $path = plugins_url('/', __FILE__)."../DC_MultiViewCal/";
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <title>Calendar Details</title>
 <?php
+
+ $prefix_ui = '';
+ if (file_exists(dirname( __FILE__ ).'/../../../../wp-includes/js/jquery/ui/jquery.ui.core.min.js'))
+     $prefix_ui = 'jquery.ui.';
+            
 if (file_exists(dirname( __FILE__ )."/../DC_MultiViewCal/css/".$_GET["css"]."/calendar.css"))
 {
 ?>
@@ -55,11 +60,11 @@ if (file_exists(dirname( __FILE__ )."/../DC_MultiViewCal/css/".$_GET["css"]."/ca
     <link type="text/css" href="<?php echo $path; ?>css/cupertino/calendar.css" rel="stylesheet" />
 <?php } ?>
     <script type='text/javascript' src='<?php echo $path.'../../../../wp-includes/js/jquery/jquery.js'; ?>'></script>
-    <script type='text/javascript' src='<?php echo $path.'../../../../wp-includes/js/jquery/ui/jquery.ui.core.min.js'; ?>'></script>
-    <script type='text/javascript' src='<?php echo $path.'../../../../wp-includes/js/jquery/ui/jquery.ui.widget.min.js'; ?>'></script>
-    <script type='text/javascript' src='<?php echo $path.'../../../../wp-includes/js/jquery/ui/jquery.ui.button.min.js'; ?>'></script>
-    <script type='text/javascript' src='<?php echo $path.'../../../../wp-includes/js/jquery/ui/jquery.ui.dialog.min.js'; ?>'></script>
-    <script type='text/javascript' src='<?php echo $path.'../../../../wp-includes/js/jquery/ui/jquery.ui.datepicker.min.js'; ?>'></script>
+    <script type='text/javascript' src='<?php echo $path.'../../../../wp-includes/js/jquery/ui/'.$prefix_ui.'core.min.js'; ?>'></script>
+    <script type='text/javascript' src='<?php echo $path.'../../../../wp-includes/js/jquery/ui/'.$prefix_ui.'widget.min.js'; ?>'></script>
+    <script type='text/javascript' src='<?php echo $path.'../../../../wp-includes/js/jquery/ui/'.$prefix_ui.'button.min.js'; ?>'></script>
+    <script type='text/javascript' src='<?php echo $path.'../../../../wp-includes/js/jquery/ui/'.$prefix_ui.'dialog.min.js'; ?>'></script>
+    <script type='text/javascript' src='<?php echo $path.'../../../../wp-includes/js/jquery/ui/'.$prefix_ui.'datepicker.min.js'; ?>'></script>
     <script src="<?php echo $path; ?>src/Plugins/Common.js" type="text/javascript"></script>
     <script src="<?php echo $path; ?>src/Plugins/jquery.form.js" type="text/javascript"></script>
 
