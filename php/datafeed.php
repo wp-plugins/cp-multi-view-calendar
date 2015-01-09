@@ -17,7 +17,7 @@ switch ($method) {
         break;
     case "list":
         if ($_POST["viewtype"]=='list')
-            $ret = listCalendarByPage($calid, $_POST["list_start"], $_POST["list_end"], $_POST["list_order"], $_POST["page"], $_POST["list_eventsPerPage"]);
+            $ret = listCalendarByPage($calid, $_POST["list_start"], $_POST["list_end"], $_POST["list_order"], $_POST["list_eventsPerPage"], $_POST["lastdate"]);
         else
         {
             $d1 = js2PhpTime($this->get_param("startdate"));
@@ -166,27 +166,62 @@ function addDetailedCalendar($calid, $st, $et, $sub, $ade, $dscr, $loc, $color, 
   }
   return $ret;
 }
-function listCalendarByPage($calid, $list_start, $list_end, $list_order, $page, $list_eventsPerPage){
+function listCalendarByPage($calid, $list_start, $list_end, $list_order, $list_eventsPerPage, $lastdate){
   global $wpdb;
   $ret = array();
   $ret['events'] = array();
   $ret["issort"] =true;
   $ret['error'] = null;
-  $ret["start"] = date("m/d/Y H:i");
-  $ret["end"] = date("m/d/Y H:i");  
+  $ret["start"] = "";
+  $ret["end"] = "";  
   try{
-  $cond = DC_MV_CAL_IDCAL."=".intval(esc_sql($calid));
+  $cond = DC_MV_CAL_IDCAL."=".intval(esc_sql($calid))." and (rrule='' or rrule is null)";
   if ($list_start!="")
-      $cond .= " and `".DC_MV_CAL_FROM."`>='".date("Y-m-d H:i:s",strtotime($list_start))."'"; 
+  {
+      if ($list_order=="asc")
+      {
+          $cond .= " and (`".DC_MV_CAL_FROM."`>='".date("Y-m-d H:i:s",strtotime($list_start))."')"; 
+          $ret["start"] = strtotime($list_start);
+      }
+      else
+      {
+          $cond .= " and (`".DC_MV_CAL_FROM."`<='".date("Y-m-d H:i:s",strtotime($list_start))."')"; 
+          $ret["end"] = strtotime($list_start);
+      }
+  }    
   if ($list_end!="")
-      $cond .= " and `".DC_MV_CAL_TO."`<='".date("Y-m-d H:i:s",strtotime($list_end))."'";    
-  $sql = "select * from `".DC_MV_CAL."` where ".$cond." order by  ".DC_MV_CAL_FROM." ".$list_order;
-  $rows = $wpdb->get_results($sql);
-  $ret['total'] = count($rows);
-  $sql .= " limit ".($page*$list_eventsPerPage).", ".$list_eventsPerPage;
+  {
+      if ($list_order=="asc")
+      {
+          $cond .= " and (`".DC_MV_CAL_TO."`<='".date("Y-m-d H:i:s",strtotime($list_end))."')";    
+          $ret["end"] = strtotime($list_end);
+      }
+      else
+      {
+          $cond .= " and (`".DC_MV_CAL_TO."`>='".date("Y-m-d H:i:s",strtotime($list_end))."')"; 
+          $ret["start"] = strtotime($list_end);
+      }
+      
+  }    
+  if ($lastdate!="")
+  {
+      if ($list_order=="asc")
+      {
+          $cond .= " and (`".DC_MV_CAL_FROM."`>='".date("Y-m-d H:i:s",strtotime($lastdate))."')";
+          $ret["start"] = strtotime($lastdate);
+      }    
+      else
+      {
+          $cond .= " and (`".DC_MV_CAL_FROM."`<='".date("Y-m-d H:i:s",strtotime($lastdate))."')";      
+          $ret["end"] = strtotime($lastdate);
+      }   
+  }    
+  $sql = "select * from `".DC_MV_CAL."` where ".$cond." order by  ".DC_MV_CAL_FROM." ".$list_order." limit 0,".($list_eventsPerPage+1);
+  $rows2 = $wpdb->get_results($sql);
+  $sql = "select * from `".DC_MV_CAL."` where ".DC_MV_CAL_IDCAL."=".$calid." and rrule<>''";
   //echo $sql;
-  
-    $rows = $wpdb->get_results($sql);
+  $rows1 = $wpdb->get_results($sql);
+  $rows = array_merge($rows1,$rows2);
     if (!$rows){
           $ret['IsSuccess'] = false;
           $ret['Msg'] = $wpdb->last_error;
@@ -196,6 +231,15 @@ function listCalendarByPage($calid, $list_start, $list_end, $list_order, $page, 
     $str = "";
     for ($i=0;$i<count($rows);$i++)
     {
+        $row = $rows[$i];
+        //
+        if ($list_order=="desc")
+        {
+            if ($row->rrule=="" && ($ret["start"]=="" || $ret["start"]!="" && strtotime($row->starttime)<$ret["start"]))
+                $ret["start"] = strtotime($row->starttime);
+            if ($row->rrule=="" && ($ret["end"]=="" || $ret["end"]!="" && strtotime($row->endtime)>$ret["end"]))
+                $ret["end"] = strtotime($row->endtime);
+        }    
         $row = $rows[$i];
         if (strlen($row->exdate)>0)
             $row->rrule .= ";exdate=".$row->exdate;
@@ -221,6 +265,10 @@ function listCalendarByPage($calid, $list_start, $list_end, $list_order, $page, 
 	}catch(Exception $e){
      $ret['error'] = $e->getMessage();
   }
+  if ($ret["start"]!="") $ret["start"] = date("m/d/Y H:i",$ret["start"]);
+  if ($ret["end"]!="") $ret["end"] = date("m/d/Y H:i",$ret["end"]);
+  if ($list_order=="desc" && $ret["end"]=="") $ret["end"] = date("m/d/Y H:i");
+  //if ($list_order=="desc" && $ret["start"]=="") $ret["start"] = date("m/d/Y H:i");
   return $ret;
 }
 function listCalendarByRange($calid,$sd, $ed){

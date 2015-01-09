@@ -108,3 +108,4 @@
 #multicalendar .readmore:before {content:"["; padding:0px 3px; display:inline-block; text-decoration: none; color:#000;}
 #multicalendar .readmore{text-decoration:none}
 #multicalendar .readmore:hover{text-decoration:underline}
+#multicalendar .cc{z-index:500}

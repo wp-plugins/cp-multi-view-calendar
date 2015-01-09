@@ -10,6 +10,11 @@
     var __MonthNameLarge = new Array(i18n.dcmvcal.dateformat.l_jan, i18n.dcmvcal.dateformat.l_feb, i18n.dcmvcal.dateformat.l_mar, i18n.dcmvcal.dateformat.l_apr, i18n.dcmvcal.dateformat.l_may, i18n.dcmvcal.dateformat.l_jun, i18n.dcmvcal.dateformat.l_jul, i18n.dcmvcal.dateformat.l_aug, i18n.dcmvcal.dateformat.l_sep, i18n.dcmvcal.dateformat.l_oct, i18n.dcmvcal.dateformat.l_nov, i18n.dcmvcal.dateformat.l_dec);
     var __MilitaryTime = true;
     var __TheContainer = "";
+    var arrs = new Array
+    arrs[i18n.dcmvcal.dateformat.year_index] = "yyyy";
+    arrs[i18n.dcmvcal.dateformat.month_index] = "M";
+    arrs[i18n.dcmvcal.dateformat.day_index] = "d";
+    i18n.dcmvcal.dateformat.fulldayvalue = arrs.join(i18n.dcmvcal.dateformat.separator);
     if (!Clone || typeof (Clone) != "function") {
         var Clone = function(obj) {
             var objClone = new Object();
@@ -152,7 +157,9 @@
             newWidthGroup:0,
             newWidthGroupCalculate:false,
             list_eventsPerPage:0,
-            total:0,
+            currentlist:{dend:"",idend:0},
+            cachepages:new Array(),
+            lastdate : "",
             page:0,
             numberOfMonths : 12,
             /**
@@ -275,7 +282,7 @@
         if (option.rowsByCategory == "dc_subjects" || option.rowsByCategory == "dc_locations" )
             option.rowsList = eval(option.rowsByCategory);
         if (option.dayWithTime && option.view=="day")
-            option.rowsList = "";    
+            option.rowsList = "";
         if (option.dayWithColumns == "dc_subjects" || option.dayWithColumns == "dc_locations" )
             option.columnsList = eval(option.dayWithColumns);
         //template for month and date
@@ -310,7 +317,7 @@
         //populate events data for first display.
         if (option.url && option.autoload) {
             render();
-            var d = getRdate(); 
+            var d = getRdate();
             if (option.view!="list")
                 pushER(d.start, d.end);
             populate();
@@ -418,7 +425,7 @@
                 option.newWidthGroup = 0;
                 render();
             }
-        
+
         });
         //contruct DOM
         function render() {
@@ -426,14 +433,14 @@
             //viewType, showday, events, config
             if (option.view=="list")
                 $("#sfprevbtn"+option.thecontainer+",#sfnextbtn"+option.thecontainer).addClass("nav_list");
-            else 
-                $("#sfprevbtn"+option.thecontainer+",#sfnextbtn"+option.thecontainer).removeClass("nav_list");  
+            else
+                $("#sfprevbtn"+option.thecontainer+",#sfnextbtn"+option.thecontainer).removeClass("nav_list");
             if (option.mindate!="" && option.mindate>option.showday)
                 option.showday = option.mindate;
             if (option.maxdate!="" && option.maxdate<option.showday)
                 option.showday = option.maxdate;
             if (option.vstart && option.vend)
-            {    
+            {
                 if (option.view=="month" || option.view=="nMonth")
                 {
                     if (option.view=="month")
@@ -445,7 +452,7 @@
                     var y = option.showday.getFullYear()+Math.floor((option.showday.getMonth()+meses)/12);
                     var enddate = new Date(y, m, 1);
                     enddate = DateAdd("d", -1 , enddate);
-                    
+
                 }
                 else
                 {
@@ -453,30 +460,30 @@
                     var enddate = option.vend;
                 }
                 if (option.mindate>=firstdate && option.mindate<=enddate)
-                {                    
+                {
                     $("#sfprevbtn"+option.thecontainer).find(".ui-icon-circle-triangle-w").css({ opacity: 0.3 });
-                    $("#sfprevbtn"+option.thecontainer).addClass("non-navigate");                    
-                }    
+                    $("#sfprevbtn"+option.thecontainer).addClass("non-navigate");
+                }
                 else
                 {
                     $("#sfprevbtn"+option.thecontainer).find(".ui-icon-circle-triangle-w").css({ opacity: 1 });
                     $("#sfprevbtn"+option.thecontainer).removeClass("non-navigate");
-                }    
+                }
                 if (option.maxdate>=firstdate && option.maxdate<=enddate)
                 {
                     $("#sfnextbtn"+option.thecontainer).find(".ui-icon-circle-triangle-e").css({ opacity: 0.3 });
                     $("#sfnextbtn"+option.thecontainer).addClass("non-navigate");
-                }    
+                }
                 else
                 {
                     $("#sfnextbtn"+option.thecontainer).find(".ui-icon-circle-triangle-e").css({ opacity: 1 });
                     $("#sfnextbtn"+option.thecontainer).removeClass("non-navigate");
                 }
-            }    
-                 
+            }
+
             var showday = new Date(option.showday.getFullYear(), option.showday.getMonth(), option.showday.getDate());
             var events = option.eventItems;
-            
+
             var config = { view: option.view, weekstartday: option.weekstartday, theme: option.theme,thecontainer: option.thecontainer };
             if (option.view == "day" || option.view == "week" || option.view == "nDays") {
                 var $dvtec = $("#dvtec"+option.thecontainer);
@@ -506,8 +513,8 @@
                     break;
                 case "list":
                     BuildListView(showday, option.list_eventsPerPage, events, config);
-                    //gridcontainer.height($('#listcontainer'+option.thecontainer).height()+10);
-                    break;    
+                    gridcontainer.height("auto");
+                    break;
                 case "nMonth":
                     BuildYearView(showday, events, config);
                     gridcontainer.css("overflow-y", "visible");
@@ -515,21 +522,21 @@
                     if (option.numberOfMonths==1)
                         if (option.newWidthGroup!=0)
                         {
-                            gridcontainer.parent().parent().parent().width(option.newWidthGroup);    
+                            gridcontainer.parent().parent().parent().width(option.newWidthGroup);
                             gridcontainer.children().children().width(option.newWidthGroup-12);//padding:5px
-                        }    
+                        }
                         else
                         {
                             option.newWidthGroupCalculate = true;
                             gridcontainer.parent().parent().width($('#nmonths'+option.thecontainer).children().width()+12);//padding:5px
-                        }    
+                        }
                     else if (option.newWidthGroup!=0)
                     {
                         $('#nmonths'+option.thecontainer).find('.ui-datepicker-multi').width(gW);
                         $('#nmonths'+option.thecontainer).find('.ui-datepicker-multi .ui-datepicker-group').width(option.newWidthGroup);
                     }
-                    else 
-                    {  
+                    else
+                    {
                         option.newWidthGroupCalculate = true;
                         $('#nmonths'+option.thecontainer).find('.ui-datepicker-multi').width(gW);
                         var iW = 2000;
@@ -628,7 +635,7 @@
                                 else if (__VIEWWEEKDAYS[6]==0 && d1.getDay()==6) return [true,"specialday"];
                                 else
                                 {
-                                    var item = d1.getFullYear()+"/"+(d1.getMonth()+1)+"/"+d1.getDate(); 
+                                    var item = d1.getFullYear()+"/"+(d1.getMonth()+1)+"/"+d1.getDate();
                                     //alert(this.hasClass("ui-datepicker-other-month"));
                                     if (dates[item])
                                         return [true,"ui-state-active",dateFormat.call(d1, i18n.dcmvcal.dateformat.fulldayvalue)];
@@ -673,7 +680,7 @@
                                 for (var i=0;i<count;i++)
                                 {
                                     h = Math.round(height/count*(i+1))-top;
-                                    
+
                                     html += '<div style="position:absolute;margin:0px;padding:0px;border:0px solid;width:100%;background:'+colors[i]+';height:'+h+'px;top:'+top+'px;left:0px;"></div>';
                                     top = Math.round(height/count*(i+1));
                                 }
@@ -699,7 +706,7 @@
                     var item = datetostr(strtodate($(this).parents(".ui-state-active").attr("title")+" 00:00"));
                     var i = item.split("/");
                     var title = new Date(i[0],i[1]-1,i[2]);
-                    
+
                     title = dateFormat.call(title, i18n.dcmvcal.dateformat.fulldayvalue);
                     var navigateurl = option.navigateurl.replace(/the_current_date/g,title);
                     if (option.target==1)
@@ -712,36 +719,36 @@
              });
              function showDialogNMonth(dates,item,idover)
              {
-                 var i = item.split("/");                                                                                                                                                                                              
-                 var titleDay = new Date(i[0],i[1]-1,i[2]);                                                                                                                                                        
-                 title = dateFormat.call(titleDay, i18n.dcmvcal.dateformat.fulldayshow);                                                                                                                                                                          
-                 var str = "", d="", d1="",d2="", d1h="",d2h=""; 
+                 var i = item.split("/");
+                 var titleDay = new Date(i[0],i[1]-1,i[2]);
+                 title = dateFormat.call(titleDay, i18n.dcmvcal.dateformat.fulldayshow);
+                 var str = "", d="", d1="",d2="", d1h="",d2h="";
                  var showTitle = true;
-                 if (dates[item])                                                                                                                                                                                                                              
-                 {                                                                                                                                                                                                                                             
-                     for (var i=0;i<dates[item].length;i++)                                                                                                                                                                                                    
-                     { 
+                 if (dates[item])
+                 {
+                     for (var i=0;i<dates[item].length;i++)
+                     {
                          d1 = dateFormat.call(dates[item][i][2], i18n.dcmvcal.dateformat.fulldayshow);
-                         d1h = fomartTimeAMPM(dates[item][i][2].getHours(),dates[item][i][2].getMinutes(),__MilitaryTime);                                                                                                                                                                                
+                         d1h = fomartTimeAMPM(dates[item][i][2].getHours(),dates[item][i][2].getMinutes(),__MilitaryTime);
                          d2 = dateFormat.call(dates[item][i][3], i18n.dcmvcal.dateformat.fulldayshow);
                          d2h = fomartTimeAMPM(dates[item][i][3].getHours(),dates[item][i][3].getMinutes(),__MilitaryTime);
-                                                                                 
+
                          if (d1==d2)
-                         {    
+                         {
                              d = "<div class=\"mv_dlg_nmonth_date\">" + d1 + '</div>';
                              if (dates[item][i][4]!=1)
-                                 d += " " + d1h+" - "+d2h;   
-                         }                                                                                                                                                                                                                            
+                                 d += " " + d1h+" - "+d2h;
+                         }
                          else
-                         {   
+                         {
                              //if (showTitle && (d1!=title))
                                  showTitle = false;
                              if (dates[item][i][4]!=1)
                                  d = "<div class=\"mv_dlg_nmonth_date\">" + d1+ "</div> "+d1h+" - <div class=\"mv_dlg_nmonth_date\">"+d2+"</div> "+d2h;
-                             else                                                                                                                                                                                                                                   
-                                 d = "<div class=\"mv_dlg_nmonth_date\">" + d1 +" - "+d2+'</div>';                                                                                                                                                                                                                 
-                         } 
-                         if (option.readonly != true && (option.userEdit || option.userDel || ((option.userOwner==dates[item][i][12]) && (option.userEditOwner || option.userDelOwner))))                         
+                             else
+                                 d = "<div class=\"mv_dlg_nmonth_date\">" + d1 +" - "+d2+'</div>';
+                         }
+                         if (option.readonly != true && (option.userEdit || option.userDel || ((option.userOwner==dates[item][i][12]) && (option.userEditOwner || option.userDelOwner))))
                              var classEdition = "dialogNMonth_event";
                          else
                              var classEdition = "";
@@ -750,8 +757,8 @@
                              str += '<a href="#" class="dlgNMonth_editlink" id="editlink'+dates[item][i][0]+'">' + i18n.dcmvcal.update_detail + '</a>';
                          if (option.readonly != true && (option.userDel || ((option.userOwner==dates[item][i][12]) && option.userDelOwner)))
                              str += '<a href="#" class="dlgNMonth_dellink" id="dellink'+dates[item][i][0]+'">' + i18n.dcmvcal.i_delete + '</a>';
-                         str += '</div><div class="dialogNMonth_event_content" style="border-left:3px solid '+((dates[item][i][7]!=-1 && dates[item][i][7]!=null)?dates[item][i][7]:"#"+option.paletteDefault)+';">' + d + "<div>"+dates[item][i][1]+"</div>"+((dates[item][i][9]!="" && dates[item][i][9]!=null)?"<div>"+dates[item][i][9]+"</div>":"")+((dates[item][i][11]!="" && dates[item][i][11]!="<br />" && dates[item][i][11]!=null)?"<div>"+dates[item][i][11]+"</div>":"") + "</div></div>";                                                 
-                     }                     
+                         str += '</div><div class="dialogNMonth_event_content" style="border-left:3px solid '+((dates[item][i][7]!=-1 && dates[item][i][7]!=null)?dates[item][i][7]:"#"+option.paletteDefault)+';">' + d + "<div>"+dates[item][i][1]+"</div>"+((dates[item][i][9]!="" && dates[item][i][9]!=null)?"<div>"+dates[item][i][9]+"</div>":"")+((dates[item][i][11]!="" && dates[item][i][11]!="<br />" && dates[item][i][11]!=null)?"<div>"+dates[item][i][11]+"</div>":"") + "</div></div>";
+                     }
                      if (!option.readonly && option.userAdd)
                          str += '<div><a href="#" class="dlgNMonth_createlink" id="createlink">' + i18n.dcmvcal.create_event + ' - ' +title+ '</a></div>';
 
@@ -760,11 +767,11 @@
                      if (showTitle)
                          str = "<div class=\"mv_dlg_nmonth_title\">" + title + "</div>" + str;
                      $(idover).html(str);
-                     $(".mv_dlg_nmonth_date").css("font-weight","bold");  
+                     $(".mv_dlg_nmonth_date").css("font-weight","bold");
                      if (showTitle)
-                         $(".mv_dlg_nmonth_date").css("display","none");                                                                                                                                                                                                                 
+                         $(".mv_dlg_nmonth_date").css("display","none");
                      else
-                         $(".mv_dlg_nmonth_date").css("display","inline");    
+                         $(".mv_dlg_nmonth_date").css("display","inline");
                      $(idover).dialog( "option", "title", title);
                      for (var i=0;i<dates[item].length;i++)
                      {
@@ -773,33 +780,34 @@
                      }
                      $("#createlink").data("cdata", titleDay);
                      $(".dlgNMonth_createlink").click(function(e) {
-                         $(".mv_dlg_nmonth").dialog('destroy');
+                         try {$(".mv_dlg_nmonth").dialog("close");}catch (e) {}
                          if (option.EditCmdhandler && $.isFunction(option.EditCmdhandler))
                              option.EditCmdhandler.call(this, ['0', "", $("#createlink").data("cdata"), $("#createlink").data("cdata"), 1]);
-                         
+
                          realsedragevent();
                          e.stopPropagation();
                          return false;
                      });
                      $(".dlgNMonth_editlink").click(function(e) {
-                         $(".mv_dlg_nmonth").dialog('destroy');
+                         try {$(".mv_dlg_nmonth").dialog("close");}catch (e) {}
                          if (option.EditCmdhandler && $.isFunction(option.EditCmdhandler))
                              option.EditCmdhandler.call(this, $("#"+$(this).attr("id")).data("cdata"));
                          realsedragevent();
                          e.stopPropagation();
                          return false;
                      });
-                     $(".dlgNMonth_dellink").click(function(e) {
-                         $(".mv_dlg_nmonth").dialog('destroy');
+                     $(".dlgNMonth_dellink").bind("click",function(e) {
+
+                         try {$(".mv_dlg_nmonth").dialog("close");}catch (e) {}
                          if (option.DeleteCmdhandler && $.isFunction(option.DeleteCmdhandler))
                              option.DeleteCmdhandler.call(this, $("#"+$(this).attr("id")).data("cdata"), quickd);
                          realsedragevent();
                          e.stopPropagation();
                          return false;
-                     });                                                                                                                                                                                                            
-                     $(idover).dialog('open'); 
-                     move_mv_dlg();                                                                                                                                                                                               
-                 }   
+                     });
+                     $(idover).dialog('open');
+                     move_mv_dlg();
+                 }
              }
              $("#nmonths"+option.thecontainer+" .ui-state-non-active a").bind('click', function(e) {
                 var item = datetostr(strtodate($(this).parent().attr("title")+" 00:00"));
@@ -813,7 +821,7 @@
              {
                  if (option.tooltipon!=0)
                  {
-                     
+
                      $("#nmonths"+option.thecontainer+" .ui-state-active a").bind('click', function(e) {
                          var item = datetostr(strtodate($(this).parents(".ui-state-active").attr("title")+" 00:00"));
                          var idover = "myover"+item.replace(/\//g,"_");
@@ -851,7 +859,7 @@
                                  collision: "fit",
                                  of: $(".myover").parent()
                                }
-                             }).addClass("mv_dlg_nmonth").parent().addClass("mv_dlg"); 
+                             }).addClass("mv_dlg_nmonth").parent().addClass("mv_dlg");
                              $("<div id=\"mv_corner\" />").appendTo($(".mv_dlg .ui-dialog-titlebar"));
                              try {
                              var item = datetostr(strtodate($(this).attr("title")+" 00:00"));
@@ -860,8 +868,8 @@
                         }
                      }).bind('mouseout',function(){
                      });
-                 } 
-                 $(".mv_dlg_nmonth").remove();                
+                 }
+                 $(".mv_dlg_nmonth").remove();
              }
         }
         return;
@@ -869,118 +877,159 @@
         }
         //build list view
         function BuildListView(startday, l, events, config) {
-            var __list_theme = '';
+            if (!option.theme_list || option.theme_list=="")
+                option.theme_list = '<div><div class="list_event_content" style="border-left:3px solid ${color};"><div class="list_event_date" option="1${option}"><div class="list_date">${date_start}</div></div><div class="list_event_date" option="2${option}"><div class="list_date">${date_start}</div><div class="list_time">${time_start} - ${time_end}</div></div><div class="list_event_date" option="3${option}"><div class="list_date">${date_start} - ${date_end}</div></div><div class="list_event_date" option="4${option}"><div class="list_date">${date_start}</div><div class="list_time">${time_start}</div> - <div class="list_date">${date_end}</div><div class="list_time">${time_end}</div></div><div class="itemlist_title">${title}</div><div class="itemlist_location">${location}</div><div class="itemlist_description" readmore_url="">${description}</div></div></div>';
+            option.theme_list = option.theme_list.replace(/\n/g,"");
+            option.theme_list = option.theme_list.replace(/\r/g,"");
+            if (!option.header) option.header="";
+            if (!option.footer) option.footer="";
+            if (!option.find) option.find="";
+            var header = option.theme_list.match("<header>(.*)</header>");
+            if (header && header.length>1) option.header = header[1];
+            option.theme_list = option.theme_list.replace(/<header>(.*)<\/header>/,"");
+            var find = option.theme_list.match("<find>(.*)</find>");
+            if (find && find.length>1) option.find = find[1].split(",");
+            option.theme_list = option.theme_list.replace(/<find>(.*)<\/find>/,"");
+            var footer = option.theme_list.match("<footer>(.*)<\/footer>");
+            if (footer && footer.length>1) option.footer = footer[1];
+            option.theme_list = option.theme_list.replace(/<footer>(.*)<\/footer>/,"");
             option.vstart = startday;
             option.vend = startday;
             var p = {};
-            
             var html = [];
             html.push("<div id=\"listcontainer"+config.thecontainer+"\" class=\"listcontainer\">");
             var str = "";
-            for (var i = 0; i<events.length;i++)
+            var eNumber = 0;
+            var noShow = false;
+            if (option.cachepages.length>option.page)
+                html.push(option.cachepages[option.page]);
+            else
             {
-                p.date_start = dateFormat.call(events[i][2], i18n.dcmvcal.dateformat.fulldayshow);
-                p.date_start_year = dateFormat.call(events[i][2], "yyyy");
-                p.date_start_month = dateFormat.call(events[i][2], "MM");
-                p.date_start_day = dateFormat.call(events[i][2], "dd");
-                p.date_start_monthName = __MonthName[events[i][2].getMonth()];
-                p.date_start_monthNameLarge = __MonthNameLarge[events[i][2].getMonth()];
-                p.date_start_weekday = __WDAYLarge[events[i][2].getDay()];
-                
-                p.time_start = fomartTimeAMPM(events[i][2].getHours(),events[i][2].getMinutes(),__MilitaryTime);
-                                                                                                                                                                                                
-                p.date_end = dateFormat.call(events[i][3], i18n.dcmvcal.dateformat.fulldayshow);
-                p.date_end_year = dateFormat.call(events[i][3], "yyyy");
-                p.date_end_month = dateFormat.call(events[i][3], "MM");
-                p.date_end_day = dateFormat.call(events[i][3], "dd");
-                p.date_end_monthName = __MonthName[events[i][3].getMonth()];
-                p.date_end_monthNameLarge = __MonthNameLarge[events[i][3].getMonth()];
-                p.date_end_weekday = __WDAYLarge[events[i][3].getDay()];
-                
-                p.time_end = fomartTimeAMPM(events[i][3].getHours(),events[i][3].getMinutes(),__MilitaryTime);
-                                                                        
-                if (p.date_start==p.date_end)
-                {            
-                    p.option = 1;
-                    if (events[i][4]!=1)
-                        p.option = 2;
-                }                                                                                                                                                                                                                            
-                else
-                {  
-                    if (events[i][4]!=1)
-                        p.option = 4;
-                    else
-                        p.option = 3; 
-                }
-                
-                var description = ""; 
-                if (events[i][11]!="" && events[i][11]!="<br />" && events[i][11]!=null)
+                for (var i = 0; (i<events.length);i++)
                 {
-                    if (option.list_readmore_numberofwords==0)
-                        description   = events[i][11]; 
+                    noShow = false;
+                    p.date_start = dateFormat.call(events[i][2], i18n.dcmvcal.dateformat.fulldayshow);
+                    p.date_start_year = dateFormat.call(events[i][2], "yyyy");
+                    p.date_start_month = dateFormat.call(events[i][2], "MM");
+                    p.date_start_day = dateFormat.call(events[i][2], "dd");
+                    p.date_start_monthName = __MonthName[events[i][2].getMonth()];
+                    p.date_start_monthNameLarge = __MonthNameLarge[events[i][2].getMonth()];
+                    p.date_start_weekday = __WDAYLarge[events[i][2].getDay()];
+
+                    p.time_start = fomartTimeAMPM(events[i][2].getHours(),events[i][2].getMinutes(),__MilitaryTime);
+
+                    p.date_end = dateFormat.call(events[i][3], i18n.dcmvcal.dateformat.fulldayshow);
+                    p.date_end_year = dateFormat.call(events[i][3], "yyyy");
+                    p.date_end_month = dateFormat.call(events[i][3], "MM");
+                    p.date_end_day = dateFormat.call(events[i][3], "dd");
+                    p.date_end_monthName = __MonthName[events[i][3].getMonth()];
+                    p.date_end_monthNameLarge = __MonthNameLarge[events[i][3].getMonth()];
+                    p.date_end_weekday = __WDAYLarge[events[i][3].getDay()];
+
+                    p.time_end = fomartTimeAMPM(events[i][3].getHours(),events[i][3].getMinutes(),__MilitaryTime);
+
+                    if (p.date_start==p.date_end)
+                    {
+                        p.option = 1;
+                        if (events[i][4]!=1)
+                            p.option = 2;
+                    }
                     else
                     {
-                        var val   = $.trim(events[i][11]), // Remove spaces from b/e of string
-                        val = $("<div/>").html(val).text();
-                        words = val.replace(/\s+/gi, ' ').split(' '); //  word-splits
-                        if (words.length>option.list_readmore_numberofwords)
-                        {
-                            val = "";
-                            for (var w=0;w<option.list_readmore_numberofwords;w++)
-                                val += " "+ words[w];
-                            description = '<div class="description_short">'+$.trim(val)+' ... <a href="" class="readmore short">'+i18n.dcmvcal.readmore+'</a></div>';     
-                            description += '<div class="description_large">'+events[i][11]+' <a href="" class="readmore large">'+i18n.dcmvcal.readmore_less+'</a></div>';          
-                        }        
+                        if (events[i][4]!=1)
+                            p.option = 4;
+                        else
+                            p.option = 3;
+                    }
+
+                    var description = "";
+                    if (events[i][11]!="" && events[i][11]!="<br />" && events[i][11]!=null)
+                    {
+                        if (option.list_readmore_numberofwords==0)
+                            description   = events[i][11];
                         else
                         {
-                            val = events[i][11]; 
-                            description   = events[i][11];           
-                        }    
-                        
+                            var val   = $.trim(events[i][11]), // Remove spaces from b/e of string
+                            val = $("<div/>").html(val).text();
+                            words = val.replace(/\s+/gi, ' ').split(' '); //  word-splits
+                            if (words.length>option.list_readmore_numberofwords)
+                            {
+                                val = "";
+                                for (var w=0;w<option.list_readmore_numberofwords;w++)
+                                    val += " "+ words[w];
+                                description = '<div class="description_short">'+$.trim(val)+' ... <a href="" class="readmore short">'+i18n.dcmvcal.readmore+'</a></div>';
+                                description += '<div class="description_large">'+events[i][11]+' <a href="" class="readmore large">'+i18n.dcmvcal.readmore_less+'</a></div>';
+                            }
+                            else
+                            {
+                                val = events[i][11];
+                                description   = events[i][11];
+                            }
+
+                        }
                     }
+                    p.id = events[i][0];
+                    p.color = ((events[i][7]!=-1 && events[i][7]!=null)?events[i][7]:"#"+option.paletteDefault);
+                    p.title = events[i][1];
+                    p.location = (events[i][9]!="" && events[i][9]!=null)?events[i][9]:"";
+                    p.description = description;
+                    if ((i==0) && (option.header!="")) str = '<div class="headerlist">'+Tp(option.header, p)+'</div>';
+                    eNumber++;
+                    var therule =  (events[i][6]!="" && events[i][6] != null && events[i][6] != undefined)
+                    if (option.lastdate!="" && ((!therule && events[i][0]==option.currentlist.idend) || (therule  && events[i][2].toString()==option.currentlist.dend.toString())))
+                    {
+                        eNumber = 0;
+                        str = "";
+                        if (option.header!="") str = '<div class="headerlist">'+Tp(option.header, p)+'</div>';
+
+                        noShow = true;
+                    }
+                    if (eNumber<=option.list_eventsPerPage && (!noShow))
+                    {
+                        var str1 = Tp(option.theme_list, p);
+                        for (var k=0;k<option.find.length;k++)
+                            if (str1.toLowerCase().indexOf(option.find[k].toLowerCase())!=-1)
+                                str1 = str1.replace("find_and_replace","find_and_replace "+option.find[k]);
+                        str += str1;
+                        eMax = i;
+                    }
+
                 }
-                p.id = events[i][0];
-                p.color = ((events[i][7]!=-1 && events[i][7]!=null)?events[i][7]:"#"+option.paletteDefault);
-                p.title = events[i][1];
-                p.location = (events[i][9]!="" && events[i][9]!=null)?events[i][9]:"";
-                p.description = description;
-                if (!option.theme_list || option.theme_list=="")
-                    option.theme_list = '<div><div class="list_event_content" style="border-left:3px solid ${color};"><div class="list_event_date" option="1${option}"><div class="list_date">${date_start}</div></div><div class="list_event_date" option="2${option}"><div class="list_date">${date_start}</div><div class="list_time">${time_start} - ${time_end}</div></div><div class="list_event_date" option="3${option}"><div class="list_date">${date_start} - ${date_end}</div></div><div class="list_event_date" option="4${option}"><div class="list_date">${date_start}</div><div class="list_time">${time_start}</div> - <div class="list_date">${date_end}</div><div class="list_time">${time_end}</div></div><div class="itemlist_title">${title}</div><div class="itemlist_location">${location}</div><div class="itemlist_description" readmore_url="">${description}</div></div></div>';
-                str += Tp(option.theme_list, p);
-                
-            }
-            if (option.list_totalEvents==0)
-            {
-                str +='<div class="listnav">';
-                if (option.total>option.list_eventsPerPage)
+                if (eNumber>0)
                 {
-                    str +='<a href="#" id="listprevbtn'+option.thecontainer+'" class="listprevbtn '+((option.page>0==0)?"listbtndisabled":"")+'">'+i18n.dcmvcal.prev+'</a>';
-                    str +='<a href="#" id="listnextbtn'+option.thecontainer+'" class="listnextbtn '+((option.total<=(option.page+1)*option.list_eventsPerPage)?"listbtndisabled":"")+'">'+i18n.dcmvcal.next+'</a>';        
+                    option.currentlist = {dend:events[eMax][2],idend:events[eMax][0]};
+                    str +='<div class="listnav">';
+                    {
+                        str +='<a href="#" id="listprevbtn'+option.thecontainer+'" class="listprevbtn '+((option.page==0)?"listbtndisabled":"")+'">'+i18n.dcmvcal.prev+'</a>';
+                        str +='<a href="#" id="listnextbtn'+option.thecontainer+'" class="listnextbtn '+( (events.length-1==eMax)?"listbtndisabled":"")+'">'+i18n.dcmvcal.next+'</a>';
+                    }
+                    str +='<div style="clear:both"></div></div>';
                 }
-                str +='<div style="clear:both"></div></div>';
+                if (str!="")
+                    option.cachepages[option.page] = str;
+                html.push(str);
             }
-            html.push(str);
             html.push("</div>");
 
             option.datestrshow = " ";
             gridcontainer.html(html.join(""));
             $("#listprevbtn"+option.thecontainer).click(function(){
                 if (!$(this).hasClass("listbtndisabled"))
-                    $("#gridcontainer"+option.thecontainer).previousRange().BcalGetOp(); 
-                return false;       
+                    $("#gridcontainer"+option.thecontainer).previousRange().BcalGetOp();
+                return false;
             })
             $("#listnextbtn"+option.thecontainer).click(function(){
                 if (!$(this).hasClass("listbtndisabled"))
                     $("#gridcontainer"+option.thecontainer).nextRange().BcalGetOp();
-                return false;        
+                return false;
             })
             $("#listcontainer"+option.thecontainer).find(".list_event_date").each(function(){
                 if ($(this).attr("option")!="11" && $(this).attr("option")!="22" && $(this).attr("option")!="33" && $(this).attr("option")!="44")
                     $(this).css("display","none");
             })
             $("#listcontainer"+option.thecontainer).find(".readmore").click(function(){
-                if ($(this).parent().parent().attr("readmore_url")=="") 
-                {               
+                if ($(this).parent().parent().attr("readmore_url")=="")
+                {
                     if ($(this).hasClass("short"))
                     {
                         $(this).parent().parent().find(".description_short").css("display","none");
@@ -998,7 +1047,7 @@
                 }
                 return false;
             })
-            
+
             html = null;
         }
         //build day view
@@ -1043,7 +1092,7 @@
                 html.push("<tr><th width=\"60\" class=\"wk-dayWithColumns\">"+days[0].display+"</th>");
                 for (var i=0;i<option.columnsList.length;i++)
                 {
-                    html.push("<th abbr='", dateFormat.call(days[0].date, i18n.dcmvcal.dateformat.fulldayvalue), "' class='gcweekname' scope=\"col\"><div title='", "' ", " class='wk-dayname'><span class='", "'>", option.columnsList[i], "</span></div></th>");
+                    html.push("<th abbr='", dateFormat.call(days[0].date, "M/d/yyyy"), "' class='gcweekname' scope=\"col\"><div title='", "' ", " class='wk-dayname'><span class='", "'>", option.columnsList[i], "</span></div></th>");
                 }
 
                 html.push("<th width=\"16\" >&nbsp;</th></tr>");
@@ -1154,11 +1203,11 @@
             var deA = sDE;
             var startRange = dayarrs[0].date;
             var endRange = dayarrs[dayarrs.length-1].date;
-            endRange = new Date(endRange.getFullYear(),endRange.getMonth(),endRange.getDate(),23,59,59); 
+            endRange = new Date(endRange.getFullYear(),endRange.getMonth(),endRange.getDate(),23,59,59);
             for (var j = 0; j < el; j++) {
                 var sD = events[j][2];
-                var eD = events[j][3];               
-                
+                var eD = events[j][3];
+
                 var diff = DateDiff("d", sD, eD);
                 if (diff > 0 && !(events[j][4] == 1)) {
                     if (sD < startRange) { //start date out of range
@@ -1169,7 +1218,7 @@
                     }
                     var stmp = sD;
                     for (sD;sD<=eD;sD = DateAdd("d", 1, sD))
-                    {   
+                    {
                         var s = {};
                         s.event = events[j];
                         s.day = sD.getDate();
@@ -1183,7 +1232,7 @@
                         s.reevent = events[j][6];//  == 1; //Recurring event
                         s.daystr = [s.year, s.month, s.day].join("/");
                         s.noResizer = true;
-                        
+
                         s.st = {};
                         if (sD>events[j][2])
                         {
@@ -1207,7 +1256,7 @@
                         {
                             s.et.hour = eD.getHours();
                             s.et.minute = eD.getMinutes();
-                        }                        
+                        }
                         s.et.p = s.et.hour * 60 + s.et.minute; // end time
                         //if (s.allday || (   (s.st.hour>=option.hoursStart) && (s.st.hour<=option.hoursEnd)   ))
                           //if ( filter=="" || (filter!="" && ((option.rowsByCategory=="dc_locations" && events[j][9]==filter) || (option.rowsByCategory=="dc_subjects" && events[j][1]==filter)) ) )
@@ -1239,7 +1288,7 @@
                     if (s.allday || (   (s.st.hour>=option.hoursStart) && (s.st.hour<=option.hoursEnd)   ))
                         if ( filter=="" || (filter!="" && ((option.rowsByCategory=="dc_locations" && events[j][9]==filter) || (option.rowsByCategory=="dc_subjects" && events[j][1]==filter)) ) )
                             fE.push(s);
-                }      
+                }
             }
             var dMax = 0;
             for (var i = 0; i < l; i++) {
@@ -1364,7 +1413,7 @@
                     cl = "wk-daylink";
                 }
                 if (dayarrs.length == 1 || __VIEWWEEKDAYS[dayarrs[i].date.getDay()])
-                    ht.push("<th abbr='", dateFormat.call(dayarrs[i].date, i18n.dcmvcal.dateformat.fulldayvalue), "' class='gcweekname' scope=\"col\"><div title='", title, "' ", ev, " class='wk-dayname'><span class='", cl, "'>", dayarrs[i].display, "</span></div></th>");
+                    ht.push("<th abbr='", dateFormat.call(dayarrs[i].date, "M/d/yyyy"), "' class='gcweekname' scope=\"col\"><div title='", title, "' ", ev, " class='wk-dayname'><span class='", cl, "'>", dayarrs[i].display, "</span></div></th>");
 
             }
             //ht.push("<th width=\"16\" rowspan=\"3\">&nbsp;</th>");
@@ -1428,7 +1477,7 @@
                 ht.push("<tr height=\"100%\" class=\"wk-allday-last\">");
                 for (var ii=0;ii<option.columnsList.length;ii++)
                     for (var h = 0; h < l; h++) {
-                        ht.push("<td height=\"100%\" class='st-c st-s' ch='qkadd' abbr='", dateFormat.call(dayarrs[h].date, i18n.dcmvcal.dateformat.fulldayvalue), "' axis='00:00'>&nbsp;</td>");
+                        ht.push("<td height=\"100%\" class='st-c st-s' ch='qkadd' abbr='", dateFormat.call(dayarrs[h].date, "M/d/yyyy"), "' axis='00:00'>&nbsp;</td>");
                     }
                 ht.push("</tr>");
             }
@@ -1488,20 +1537,20 @@
                             rowsByCategoryArray[rowsByCategoryArray.length]=e.event[0];
                             x[h] = x[h] + 1;
                             if (__VIEWWEEKDAYS[((dayarrs[tmp_h].date.getDay())%option.numberOfDays)]!=0) ht.push("'");
-                            
+
                             var t = BuildMonthDayEvent(e, dayarrs[h].date, l - h);
                             if (sufix!="")
                                 t = t.replace('class="rb-o', sufix+' class="rb-o');
                             if (e.colSpan > 1) {
                                 if (__VIEWWEEKDAYS[((dayarrs[tmp_h].date.getDay())%option.numberOfDays)]!=0) ht.push(" colSpan='", e.colSpan, "'");
-                            
+
                                 var zz = 0;
                                 for (var p=0; (p<e.colSpan) && (h+zz < option.numberOfDays);)
                                 {
                                     p += __VIEWWEEKDAYS[dayarrs[h+zz].date.getDay()];
                                     zz++;
                                 }
-                            
+
                                 h += zz;
                             }
                             else {
@@ -1512,7 +1561,7 @@
                             el++;
                         }
                         else {
-                            if (__VIEWWEEKDAYS[((dayarrs[tmp_h].date.getDay())%option.numberOfDays)]!=0) ht.push(" st-s' ch='qkadd' abbr='", dateFormat.call(dayarrs[h].date, i18n.dcmvcal.dateformat.fulldayvalue), "' axis='00:00'>&nbsp;");
+                            if (__VIEWWEEKDAYS[((dayarrs[tmp_h].date.getDay())%option.numberOfDays)]!=0) ht.push(" st-s' ch='qkadd' abbr='", dateFormat.call(dayarrs[h].date, "M/d/yyyy"), "' axis='00:00'>&nbsp;");
                             h++;
                         }
                         if (__VIEWWEEKDAYS[((dayarrs[tmp_h].date.getDay())%option.numberOfDays)]!=0) ht.push("</td>");
@@ -1522,7 +1571,7 @@
                 ht.push("<tr height=\"100%\" class=\"wk-allday-last\">");
                 for (var h = 0; h < l; h++) {
                     if (__VIEWWEEKDAYS[((dayarrs[h].date.getDay())%option.numberOfDays)]!=0)
-                        ht.push("<td height=\"100%\" class='st-c st-s' ch='qkadd' abbr='", dateFormat.call(dayarrs[h].date, i18n.dcmvcal.dateformat.fulldayvalue), "' axis='00:00'>&nbsp;</td>");
+                        ht.push("<td height=\"100%\" class='st-c st-s' ch='qkadd' abbr='", dateFormat.call(dayarrs[h].date, "M/d/yyyy"), "' axis='00:00'>&nbsp;</td>");
                 }
                 ht.push("</tr>");
             }
@@ -1585,7 +1634,7 @@
             {
                 if (__VIEWWEEKDAYS[dayarrs[i].date.getDay()]!=0)
                 {
-                    ht.push("<td class=\"tg-col\" ch='qkadd' abbr='", dateFormat.call(dayarrs[i].date, i18n.dcmvcal.dateformat.fulldayvalue), "'>");
+                    ht.push("<td class=\"tg-col\" ch='qkadd' abbr='", dateFormat.call(dayarrs[i].date, "M/d/yyyy"), "'>");
                     var istoday = dateFormat.call(dayarrs[i].date, "yyyyMMdd") == dateFormat.call(new Date(), "yyyyMMdd");
                     // Today
                     if (istoday) {
@@ -1619,7 +1668,7 @@
             {
                 for (var ii=0;ii<option.columnsList.length;ii++)
                 {
-                    ht.push("<td class=\"tg-col\" ch='qkadd' abbr='", dateFormat.call(dayarrs[i].date, i18n.dcmvcal.dateformat.fulldayvalue), "'>");
+                    ht.push("<td class=\"tg-col\" ch='qkadd' abbr='", dateFormat.call(dayarrs[i].date, "M/d/yyyy"), "'>");
                     var istoday = dateFormat.call(dayarrs[i].date, "yyyyMMdd") == dateFormat.call(new Date(), "yyyyMMdd");
                     // Today
                     if (istoday) {
@@ -1694,7 +1743,7 @@
         function BuildDayEvent(theme, e, index) {
 
             var p = { bdcolor: theme[0], bgcolor2: theme[0], bgcolor1: theme[2], width: "70%", icon: "", title: "", data: "" };
-            
+
             if (e.noStarttime)
                 p.starttime = "";
             else
@@ -1776,7 +1825,7 @@
                 for (var i = 0; i < 7; i++) {
                     var newkeyDate = DateAdd("d", j * 7 + i, startdate);
                     C[j * 7 + i] = newkeyDate;
-                    var newkey = dateFormat.call(newkeyDate, i18n.dcmvcal.dateformat.fulldaykey);
+                    var newkey = dateFormat.call(newkeyDate, "MMddyyyy");
                     b[i] = hastdata[newkey];
                     if (b[i] && b[i].length > 0) {
                         k += b[i].length;
@@ -1798,7 +1847,7 @@
                     var day = C[j * 7 + i];
                     if (__VIEWWEEKDAYS[i]!=0)
                     {
-                        htb.push("<td display=\""+__VIEWWEEKDAYS[i]+"\" abbr='", dateFormat.call(day, i18n.dcmvcal.dateformat.fulldayvalue), "' ch='qkadd' axis='00:00' title=''");
+                        htb.push("<td display=\""+__VIEWWEEKDAYS[i]+"\" abbr='", dateFormat.call(day, "M/d/yyyy"), "' ch='qkadd' axis='00:00' title=''");
 
                         if (dateFormat.call(day, "yyyyMMdd") == dateFormat.call(new Date(), "yyyyMMdd")) {
                             htb.push(" class=\"st-bg st-bg-today\">");
@@ -1840,7 +1889,7 @@
                     else {
                         o.dayshow = day.getDate();
                     }
-                    o.abbr = dateFormat.call(day, i18n.dcmvcal.dateformat.fulldayvalue);
+                    o.abbr = dateFormat.call(day, "M/d/yyyy");
                     if (__VIEWWEEKDAYS[(startday+i)%7]!=0)
                         htb.push(Tp(titletemp, o));
                 }
@@ -1906,7 +1955,7 @@
                             sD = DateAdd("d", 1, sD);
                         }
 
-                        var key = dateFormat.call(sD, i18n.dcmvcal.dateformat.fulldaykey);
+                        var key = dateFormat.call(sD, "MMddyyyy");
 
                         var x = DateDiff("d", sdtemp, eD);
                         var y = DateDiff("d", sdtemp, sD);
@@ -1939,7 +1988,7 @@
                     }
                 }
                 else {
-                    var key = dateFormat.call(events[i][2], i18n.dcmvcal.dateformat.fulldaykey);
+                    var key = dateFormat.call(events[i][2], "MMddyyyy");
                     if (hast[key] == null) {
                         hast[key] = [];
                     }
@@ -1998,7 +2047,7 @@
                         }
                         if (!bs && j == (sc - 1) && z[h] < y[h]) {
                             el++;//here
-                            $.extend(tempdata, { "axis": h, ch: "more", "abbr": dateFormat.call(cday[h], i18n.dcmvcal.dateformat.fulldayvalue), html: i18n.dcmvcal.others + (y[h] - z[h]) + i18n.dcmvcal.item, click: "javascript:alert('more event');" });
+                            $.extend(tempdata, { "axis": h, ch: "more", "abbr": dateFormat.call(cday[h], "M/d/yyyy"), html: i18n.dcmvcal.others + (y[h] - z[h]) + i18n.dcmvcal.item, click: "javascript:alert('more event');" });
                             tempCss.push("st-more st-moreul");
                             h++;
                         }
@@ -2030,13 +2079,13 @@
                     }
                     else {
                         if (j == (sc - 1) && z[h] < y[h] && y[h] > 0) {
-                            $.extend(tempdata, { "axis": h, ch: "more", "abbr": dateFormat.call(cday[h], i18n.dcmvcal.dateformat.fulldayvalue), html: i18n.dcmvcal.others + (y[h] - z[h]) + i18n.dcmvcal.item, click: "javascript:alert('more event');" });
+                            $.extend(tempdata, { "axis": h, ch: "more", "abbr": dateFormat.call(cday[h], "M/d/yyyy"), html: i18n.dcmvcal.others + (y[h] - z[h]) + i18n.dcmvcal.item, click: "javascript:alert('more event');" });
                             tempCss.push("st-more st-moreul");
                             h++;
                         }
                         else {
                             cdisplay = 1;
-                            $.extend(tempdata, { html: "&nbsp;", ch: "qkadd", display:1, "axis": "00:00", "abbr": dateFormat.call(cday[h], i18n.dcmvcal.dateformat.fulldayvalue), title: "" });
+                            $.extend(tempdata, { html: "&nbsp;", ch: "qkadd", display:1, "axis": "00:00", "abbr": dateFormat.call(cday[h], "M/d/yyyy"), title: "" });
                             tempCss.push("st-s");
                             tmp_h = h;
                             h++;
@@ -2110,7 +2159,7 @@
             p.location = (e.event[9]!=null)?e.event[9]:"";
             p.description = (e.event[11]!=null)?e.event[11]:"";
             p.userEdition = ( ((option.userOwner==e.event[12]) && (option.userEditOwner || option.userDelOwner))?"uEdition":"" );
-            
+
             return Tp(__ALLDAYEVENTTEMP, p);
         }
         //to populate the data
@@ -2131,9 +2180,9 @@
                 { name: "enddate", value: dateFormat.call(option.vend, "M/d/yyyy HH:mm") },
                 { name: "viewtype", value: option.view },
                 { name: "list_start", value: option.list_start },
-                { name: "list_end", value: option.list_end },                
-                { name: "list_eventsPerPage", value: ((option.list_totalEvents==0)?option.list_eventsPerPage:option.list_totalEvents) },
-                { name: "page", value: option.page },
+                { name: "list_end", value: option.list_end },
+                { name: "list_eventsPerPage", value: option.list_eventsPerPage },
+                { name: "lastdate", value: ((option.lastdate=="")?"":dateFormat.call(option.lastdate, "M/d/yyyy HH:mm")) },
                 { name: "list_order", value: option.list_order },
 				 { name: "timezone", value: zone }
                 ];
@@ -2165,15 +2214,20 @@
                         else {
                             try {
                                 $.each(data.events, function(index, value) {
-                                    
+
                                     value[2] = parseDate(value[2]);
                                     value[3] = parseDate(value[3]);
-                                }); 
-                                data["start"] = parseDate(data["start"]);
-                                data["end"] = parseDate(data["end"]);
-                                if (option.view=="list")
-                                    option.total = data.total;                                
-                                responseData(data, data.start, data.end);  
+                                });
+                                if (option.view!="list")
+                                {
+                                    data["start"] = parseDate(data["start"]);
+                                    data["end"] = parseDate(data["end"]);
+                                }
+                                if (option.view=="list" && option.lastdate=="" && option.list_order=="desc" && data.end!="")
+                                    option.lastdate  = parseDate(data["end"]);
+                                if (option.view=="list" && option.lastdate=="" && option.list_order=="asc" && data.start!="")
+                                    option.lastdate  = parseDate(data["start"]);
+                                responseData(data, data.start, data.end);
                                 if (option.view!="list")
                                     pushER(data.start, data.end);
                             } catch (e) { }
@@ -2218,9 +2272,9 @@
                     {
                         if (/;exdate=/i.test(v[6])) // delete event from recurring events
                         {
-                             var vv = v[6].split(";exdate=,");                             
+                             var vv = v[6].split(";exdate=,");
                              v[6] = vv[0];
-                             var delEv = vv[1].split(","); 
+                             var delEv = vv[1].split(",");
                              for (var j=0;j<delEv.length;j++)
                              {
                                 var d = delEv[j].split("/");
@@ -2228,11 +2282,40 @@
                                 excludeEvents[excludeEvents.length]= iEv.toString();
                              }
                         }
-                        try 
+                        try
                         {
                             r  = RRule.fromString(v[6],v[2]);//
                             var diff = v[3]-v[2];
-                            ne = r.between( DateAdd("d", -1, start), DateAdd("d", 1, end));
+                            if (option.view=="list")
+                            {
+                                if (option.list_order=="desc")
+                                {
+                                    ne = new Array( r.before( option.lastdate, true));
+                                    for (var j=0;j<=option.list_eventsPerPage;j++)
+                                    {
+                                        var thenext = r.before( ne[ne.length-1], false)
+                                        if (thenext != null && (start=="" || parseDate(start)<=thenext )&& (end=="" || parseDate(end)>=thenext ))
+                                            ne[ne.length] = thenext;
+                                    }
+                                }
+                                else
+                                {
+                                    if (option.lastdate!="")
+                                        ne = new Array( r.after(option.lastdate, true));
+                                    else if (start!="")
+                                        ne = new Array( r.after( parseDate(start), true));
+                                    else
+                                        ne = new Array( r.after( v[2], true));
+                                    for (var j=0;j<=option.list_eventsPerPage;j++)
+                                    {
+                                        var thenext = r.after( ne[ne.length-1], false)
+                                        if (thenext != null && (start=="" || parseDate(start)<=thenext )&& (end=="" || parseDate(end)>=thenext ))
+                                            ne[ne.length] = thenext;
+                                    }
+                                }
+                            }
+                            else
+                                ne = r.between( DateAdd("d", -1, start), DateAdd("d", 1, end));
                             for (var j=0;j<ne.length;j++)
                             {
                                 var date00 = new Date(ne[j].getFullYear(), ne[j].getMonth(), ne[j].getDate());
@@ -2252,18 +2335,21 @@
             }
             data.events = tmpArray;
             //if (data.issort == false) {
-            if (option.view!="list"){
+
+            //if (option.view!="list"){
                 if (data.events && data.events.length > 0) {
-                    
-                    events = data.events.sort(function(l, r) { return ((l[2].toString() == r[2].toString())? (l[0] > r[0] ? 1 : -1) : (l[2] > r[2] ? 1 : -1) ); });
+                    if (option.view=="list" && option.list_order=="desc")
+                        events = data.events.sort(function(l, r) { return ((l[2].toString() == r[2].toString())? (l[0] > r[0] ? -1 : 1) : (l[2] > r[2] ? -1 : 1) ); });
+                    else
+                        events = data.events.sort(function(l, r) { return ((l[2].toString() == r[2].toString())? (l[0] > r[0] ? 1 : -1) : (l[2] > r[2] ? 1 : -1) ); });
                 }
                 else {
                     events = [];
                 }
-            }
-            else {
-                events = data.events;
-            }
+            //}
+            //else {
+            //    events = data.events;
+            //}
             if (option.view=="list")
                 option.eventItems = [];
             ConcatEvents(events, start, end);
@@ -2284,8 +2370,8 @@
                     if (option.eventItems[i][2] >= es) {
                         for (var j = 0; j < jl; j++) {
                             if (
-                                (option.eventItems[i][0] == events[j][0]) 
-                                && (option.eventItems[i][2].toString() == events[j][2].toString()) 
+                                (option.eventItems[i][0] == events[j][0])
+                                && (option.eventItems[i][2].toString() == events[j][2].toString())
                                 && ((option.eventItems[i][2] < start)
                                     || (option.eventItems[i][2] > end))
                                ) {
@@ -2348,7 +2434,7 @@
             $('#show'+option.view+"btn"+option.thecontainer).removeClass("ui-state-active");
             var th = $(this);
             var daystr = th.attr("abbr");
-            option.showday = strtodate(daystr + " 00:00");
+            option.showday = str_MdyyyyHHmm_todate(daystr + " 00:00");
             option.view = "day";
             $('#show'+option.view+"btn"+option.thecontainer).addClass("ui-state-active");
             render();
@@ -2380,10 +2466,10 @@
         function gW(ts1, ts2) {
             var t1 = ts1 / option.cellheight;
             var t2 = parseInt(t1) + option.hoursStart;
-            var t3 = t1 - t2 >= 0.5 ? 30 : 0;
+            var t3 = t1 - t2 +option.hoursStart >= 0.5 ? 30 : 0;
             var t4 = ts2 / option.cellheight;
             var t5 = parseInt(t4) + option.hoursStart;
-            var t6 = t4 - t5 >= 0.5 ? 30 : 0;
+            var t6 = t4 - t5 + option.hoursStart>= 0.5 ? 30 : 0;
             return { sh: t2, sm: t3, eh: t5, em: t6, h: ts2 - ts1 };
         }
         function gH(y1, y2, pt) {
@@ -2465,7 +2551,7 @@
         function dochange() {
             var d = getRdate();
             var loaded = checkInEr(d.start, d.end);
-            //if (!loaded) 
+            //if (!loaded)
             {
                 populate();
             }
@@ -2541,7 +2627,7 @@
                 var e = [];
                 e.push(data[0], data[1], new Date(data[2]), new Date(data[3]), parseInt(data[4]), parseInt(data[5]), (data[6]), data[7] != undefined ? parseInt(data[7]) : -1, data[8] != undefined ? parseInt(data[8]) : 0);
                 for (var i=9;i<data.length;i++)
-                    e.push(data[i]);  
+                    e.push(data[i]);
                 return e;
             }
             return null;
@@ -2592,7 +2678,7 @@
                 ishide = true;
             }
             return { left: tleft, top: ttop, hide: ishide };
-        }  
+        }
         function dayshow(e, data) {
             if (data == undefined) {
                 data = getdata($(this));
@@ -2603,7 +2689,7 @@
                         +'<div id="bbit-cs-buddle-timeshow" class="bubbletime"></div>'
                         +'<div id="bbit-cs-title" class="bubbletitle"></div>'
                         +'<div id="bbit-cs-location" class="bubblelocation"></div>'
-                        +'<div id="bbit-cs-description" class="bubbledescription"></div>';                                                            
+                        +'<div id="bbit-cs-description" class="bubbledescription"></div>';
                         if (option.readonly != true && (option.userEdit || option.userDel || ((option.userOwner==data[12]) && (option.userEditOwner || option.userDelOwner))))
                         {
                             csbuddle +='<div class="bbit-cs-split"><input id="bbit-cs-id" type="hidden" value=""/>';
@@ -2612,16 +2698,16 @@
                                 ///no delete from recurring events
                                 if (!(data[6]!="" && data[6] != null && data[6] != undefined))
                                      csbuddle +='[ <a id="bbit-cs-delete" class="lk">'+ i18n.dcmvcal.i_delete + '</a> ]&nbsp;';
-                            }    
+                            }
                             if (option.userEdit || ((option.userOwner==data[12]) && (option.userEditOwner)))
                     	        csbuddle +=' <a id="bbit-cs-editLink" class="lk">'+ i18n.dcmvcal.update_detail + ' <StrONG>&gt;&gt;</StrONG></a>';
                     	    csbuddle +='</div>';
                         }
-                        
+
                     	csbuddle +='</div>';
                     $("#bbit-cal-buddle").remove();
                     $(".mv_dlg").remove();
-                    $("#bbit-cs-buddle").remove();	
+                    $("#bbit-cs-buddle").remove();
                     var bud = $("#bbit-cs-buddle");
                     if (bud.length == 0) {
                         //
@@ -2635,7 +2721,7 @@
                              of: $(this)
                            }})
                         $("#bbit-cs-buddle").parent().addClass("mv_dlg");
-                        $("<div id=\"mv_corner\" />").appendTo($(".mv_dlg .ui-dialog-titlebar"));   
+                        $("<div id=\"mv_corner\" />").appendTo($(".mv_dlg .ui-dialog-titlebar"));
                         move_mv_dlg();
                         var calbutton = $("#bbit-cs-delete");
                         var lbtn = $("#bbit-cs-editLink");
@@ -2666,16 +2752,17 @@
                             //}
                         });
                         lbtn.click(function(e) {
-                            $("#bbit-cs-buddle").dialog("destroy");
                             if (!option.EditCmdhandler) {
                                 alert("EditCmdhandler" + i18n.dcmvcal.i_undefined);
                             }
                             else {
                                 if (option.EditCmdhandler && $.isFunction(option.EditCmdhandler)) {
-                                    option.EditCmdhandler.call(this, $("#bbit-cs-buddle").data("cdata"));
+                                    var data = $("#bbit-cs-buddle").data("cdata");
+                                    $("#bbit-cs-buddle").remove();
+                                    option.EditCmdhandler.call(this, data);
                                 }
                             }
-                            
+
                             e.stopPropagation();
                         });
                         bud.click(function(e) {
@@ -2728,7 +2815,7 @@
             e.stopPropagation();
         }
 
-        function moreshow(mv) { 
+        function moreshow(mv) {
             var me = $(this);
             var divIndex = mv.id.split('_')[1];
             var pdiv = $(mv);
@@ -2739,7 +2826,7 @@
             var left = offsetMe.left;
 
             var daystr = $(this).attr("abbr");
-            var day = strtodate(daystr + " 00:00");
+            var day = str_MdyyyyHHmm_todate(daystr + " 00:00");
             var cc = $("#cal-month-cc"+option.thecontainer);
             var ccontent = $("#cal-month-cc-content"+option.thecontainer+" table tbody");
             var ctitle = $("#cal-month-cc-title"+option.thecontainer);
@@ -2868,7 +2955,7 @@
                 temparr.push(i18n.dcmvcal.update_detail, ' <StrONG>&gt;&gt;</StrONG></SPAN></div><div style="clear:both"></div><div id="bubbleClose" class="bubble-closebutton"></div><div style="clear:both;margin-bottom:10px"></div></div>');
                 var tempquickAddHanler = temparr.join("");
                 temparr = null;
-                
+
                 $(document.body).append(tempquickAddHanler);
                 try {$("#bbit-cs-buddle").dialog("close");}catch (e) {}
                 buddle = $("#bbit-cal-buddle");
@@ -2885,19 +2972,19 @@
                                  at: "center bottom",
                                  collision: "fit",
                                  of:$("#nmonths"+option.thecontainer+" .ui-state-non-active[title='"+dateFormat.call(start, i18n.dcmvcal.dateformat.fulldayvalue)+"']")
-                                 };                             
-                buddle.dialog({width:300,resizable: false, 
-                           modal: true,resizable: false,maxWidth: 300,fluid: true,open: function(event, ui){fluidDialog();},               
+                                 };
+                buddle.dialog({width:300,resizable: false,
+                           modal: true,resizable: false,maxWidth: 300,fluid: true,open: function(event, ui){fluidDialog();},
                            position:pp
-                           
-                           });        
-                buddle.dialog( "open" );  
+
+                           });
+                buddle.dialog( "open" );
                 move_mv_dlg();
                 $("#bbit-cal-buddle").parent().addClass("mv_dlg");
-                $("<div id=\"mv_corner\" />").appendTo($(".mv_dlg .ui-dialog-titlebar"));             
+                $("<div id=\"mv_corner\" />").appendTo($(".mv_dlg .ui-dialog-titlebar"));
                 var calbutton = $("#bbit-cal-quickAddBTN");
                 var lbtn = $("#bbit-cal-editLink");
-                
+
                 var closebtn = $("#bubbleClose1").click(function() {
                     $("#bbit-cal-buddle").dialog( "close" );
                     realsedragevent();
@@ -2967,20 +3054,20 @@
 
                             }
 
-                        }, "json");                         
+                        }, "json");
                         realsedragevent();
                         render();
-                    }         
-                });           
+                    }
+                });
                 lbtn.click(function(e) {
-                    $("#bbit-cal-buddle").dialog( "destroy" );
+                    try {$("#bbit-cal-buddle").dialog("close");}catch (e) {}
                     if (!option.EditCmdhandler) {
                         alert("EditCmdhandler" + i18n.dcmvcal.i_undefined);
-                    }         
+                    }
                     else {
                         if (option.EditCmdhandler && $.isFunction(option.EditCmdhandler)) {
                             option.EditCmdhandler.call(this, ['0', $("#bbit-cal-what").val(), $("#bbit-cal-start").val(), $("#bbit-cal-end").val(), $("#bbit-cal-allday").val()]);
-                        }                        
+                        }
                         realsedragevent();
                     }
                     e.stopPropagation();
@@ -2988,18 +3075,18 @@
                 buddle.mousedown(function(e) { e.stopPropagation(); });
             }
             var dateshow = CalDateShow(start, end, !isallday, true);
-            
+
             $("#bbit-cal-buddle-timeshow").html(dateshow);
             var calwhat = $("#bbit-cal-what").val("");
             $("#bbit-cal-allday").val(isallday ? "1" : "0");
             $("#bbit-cal-start").val(dateFormat.call(start, "M/d/yyyy HH:mm"));
             $("#bbit-cal-end").val(dateFormat.call(end, "M/d/yyyy HH:mm"));
-            
-            buddle.css({ "visibility": "visible"});            
+
+            buddle.css({ "visibility": "visible"});
             var postmp = $("#bbit-cal-buddle").dialog( "option", "position");
             postmp.at = "center bottom"
             $("#bbit-cal-buddle").dialog( "option", "position",postmp);
-            $("#bbit-cal-buddle").dialog( "open" ); 
+            $("#bbit-cal-buddle").dialog( "open" );
             move_mv_dlg();
 			calwhat.blur().focus(); //add 2010-01-26 blur() fixed chrome
             $(document).one("mousedown", function() {
@@ -3036,7 +3123,7 @@
             var h = arr3[0].indexOf("0") == 0 ? arr3[0].substr(1, 1) : arr3[0];
             var n = arr3[1].indexOf("0") == 0 ? arr3[1].substr(1, 1) : arr3[1];
             return new Date(y, parseInt(m) - 1, d, h, n);
-        }            
+        }
 
         function rebyKey(key, remove) {
             if (option.eventItems && option.eventItems.length > 0) {
@@ -3650,8 +3737,8 @@
                         var pos = d.cpwrap.offset();
                         pos.left = pos.left + 30;
                         d.cpwrap.attr("id", wrapid);
-                        var start = strtodate(d.target.attr("abbr") + " " + d.cgh.sh + ":" + d.cgh.sm);
-                        var end = strtodate(d.target.attr("abbr") + " " + d.cgh.eh + ":" + d.cgh.em);
+                        var start = str_MdyyyyHHmm_todate(d.target.attr("abbr") + " " + d.cgh.sh + ":" + d.cgh.sm);
+                        var end = str_MdyyyyHHmm_todate(d.target.attr("abbr") + " " + d.cgh.eh + ":" + d.cgh.em);
                         _dragevent = function() { $("#" + wrapid).remove(); $("#bbit-cal-buddle").dialog( "close" ); };
                         quickadd(start, end, false, pos);
                         break;
@@ -3846,7 +3933,9 @@
                 if (option.view=="list")
                 {
                     option.eventItems = [];
-                    option.page = 0;
+                    option.lastdate = "";
+                    option.currentlist = {dend:"",idend:0};
+                    option.cachepages = new Array();
                 }
                 render();
                 dochange();
@@ -3881,14 +3970,14 @@
                         break;
                     case "list":
                         option.page--;
-                        break;    
+                        break;
                     case "month":
                     case "nMonth":
                         option.showday = DateAdd("m", -1, option.showday);
                         break;
                 }
                 render();
-                dochange();
+                if (option.view!="list") dochange();
             },
             nt: function() {
                 switch (option.view) {
@@ -3902,6 +3991,7 @@
                         option.showday = DateAdd("d", option.numberOfDays, option.showday);
                         break;
                     case "list":
+                        option.lastdate = option.currentlist.dend;
                         option.page++;
                         break;
                     case "month":
@@ -3915,8 +4005,8 @@
 						}
                         break;
                 }
-                render();
-                dochange();
+                if (option.view!="list" || (option.view=="list" && (option.cachepages.length>option.page))) render();
+                if (option.view!="list" || (option.view=="list" && (option.cachepages.length<=option.page))) dochange();
             },
             go: function() {
                 return option;
@@ -3940,7 +4030,7 @@
                 this.bcal.sv(view);
             }
         })
-        
+
     };
 
     /**
@@ -4015,5 +4105,5 @@
             return this[0].bcal.so(p);
         }
     };
-    
+
 })(jQuery);
