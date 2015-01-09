@@ -442,6 +442,7 @@ function initMultiViewCal(container,calendarId,config)
                          w.document.write('<html><head><style>#multicalendar .ctoolbar{height:22px}#multicalendar .fbutton{display:none}</style><link rel="stylesheet" href="'+config.mvcsspath+config.cssStyle+'/calendar.css" type="text/css" media="print,screen"/><link rel="stylesheet" href="'+config.mvcsspath+'main.css" type="text/css" media="print,screen"/></head><body><div id="multicalendar">'+code+'</div></body></html>');
                          w.document.close();
                          w.print();
+                         w.close();
                     });
                     } catch(e){};
                     function showEditEvent(url)

@@ -51,7 +51,7 @@ $path = plugins_url('/', __FILE__)."../DC_MultiViewCal/";
  $prefix_ui = '';
  if (file_exists(dirname( __FILE__ ).'/../../../../wp-includes/js/jquery/ui/jquery.ui.core.min.js'))
      $prefix_ui = 'jquery.ui.';
-            
+     
 if (file_exists(dirname( __FILE__ )."/../DC_MultiViewCal/css/".$_GET["css"]."/calendar.css"))
 {
 ?>
@@ -474,8 +474,17 @@ $("#repeatsave").dialog({modal: true,resizable: false,maxWidth: 420,fluid: true,
                 echo '</select>';
             }
             else
+            {
                 echo '<input MaxLength="200" class="required safe inputtext" id="Subject" name="Subject" type="text" value="'.(isset($event)?rquote_field($event["title"]):"").'" />';
-
+                if (!isset($event))
+                {
+                ?>
+                <script>
+                $("#Subject").val('<?php echo $_GET["title"];?>');
+                </script>
+                <?php
+                }
+            }
             ?>
             <input id="colorvalue" name="colorvalue" type="hidden" value="<?php echo isset($event)?$event["color"]:"" ?>" />
           </label>
