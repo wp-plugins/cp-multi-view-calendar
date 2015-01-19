@@ -772,7 +772,7 @@
                          $(".mv_dlg_nmonth_date").css("display","none");
                      else
                          $(".mv_dlg_nmonth_date").css("display","inline");
-                     $(idover).dialog( "option", "title", title);
+                     try {$(idover).dialog( "option", "title", title)}catch (e) {}
                      for (var i=0;i<dates[item].length;i++)
                      {
                          $("#editlink"+dates[item][i][0]).data("cdata", dates[item][i]);
