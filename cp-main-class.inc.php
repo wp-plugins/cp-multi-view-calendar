@@ -192,7 +192,7 @@ class CP_MultiViewCalendar extends CP_BaseClass {
         $plugin_url = plugins_url('', __FILE__);
         
         $prefix_ui = '';
-        if (file_exists('./wp-includes/js/jquery/ui/jquery.ui.core.min.js'))
+        if (@file_exists('./wp-includes/js/jquery/ui/jquery.ui.core.min.js'))
             $prefix_ui = 'jquery.ui.';
         ?>  
 <!DOCTYPE html>
