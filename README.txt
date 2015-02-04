@@ -249,9 +249,14 @@ The following area some sample event calendar views. You can apply or mix config
 * Compatible with the latest WP versions
 * Modifications to make the calendar responsive
 
+= 1.0.2 =
+* Improved plugin security 
+* Fixed warning that appeared with PHP safe mode restrictions 
+
 == Upgrade Notice ==
 
 = 1.0.2 =
 * Improved plugin security 
+* Fixed warning that appeared with PHP safe mode restrictions 
  
 Important note: If you are using the Professional version don't update via the WP dashboard but using your personal update link. Contact us if you need further information: http://wordpress.dwbooster.com/support
