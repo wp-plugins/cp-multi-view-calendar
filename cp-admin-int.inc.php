@@ -6,7 +6,7 @@ if ( !is_admin() )
     exit;
 }
 
-$mycalendarrows = $wpdb->get_results( 'SELECT * FROM '.$wpdb->prefix.'dc_mv_calendars WHERE id='.$this->calendar); 
+$mycalendarrows = $wpdb->get_results( 'SELECT * FROM '.$wpdb->prefix.'dc_mv_calendars WHERE id='.intval($this->calendar)); 
 
 ?>
 <div class="wrap">
