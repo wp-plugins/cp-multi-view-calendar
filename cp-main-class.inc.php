@@ -325,7 +325,7 @@ var cpmvc_configmultiview0 = {"obj":"{\"params\":<?php echo $params; ?>,\n  \"aj
         
         wp_localize_script('cpmvc-publicjs', 'cpmvc_configmultiview'.($this->print_counter), array('obj'  	=>
               '{"params":'.$params.',
-               "ajax_url":"'.str_replace(array('"', "'"),array('\\"', "\\'"),$this->get_site_url()).'/?cpmvc_id='.$base_params["id"].'&cpmvc_do_action=mvparse",
+               "ajax_url":"'.str_replace(array('"', "'"),array('\\"', "\\'"),$this->get_site_url()).'/?cpmvc_id='.intval($base_params["id"]).'&cpmvc_do_action=mvparse",
                "calendar":"'.str_replace(array('"', "'"),array('\\"', "\\'"),$base_params["id"]).'"
     	         }'
            ));        
