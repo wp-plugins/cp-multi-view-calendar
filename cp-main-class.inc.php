@@ -49,7 +49,7 @@ class CP_MultiViewCalendar extends CP_BaseClass {
           rrule varchar(255) DEFAULT NULL,
           exdate text,
           uid int(11),
-          description text,
+          description mediumtext,
           isalldayevent tinyint(3) unsigned DEFAULT NULL,
           color varchar(10) DEFAULT NULL,
           owner int(11),
