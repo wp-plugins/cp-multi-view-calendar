@@ -2688,10 +2688,10 @@
             if (data != null) {
                 if (option.quickDeleteUrl != "" && data[8] == 1 && ( (option.readonly != true) || (option.readonly == true && option.showtooltipdwm) || (option.showtooltipdwm_mouseover)   )) {
                      var csbuddle = '<div id="bbit-cs-buddle">'
-                        +'<div id="bbit-cs-buddle-timeshow" class="bubbletime"></div>'
+                        +'<div class="dialogdwm_event_content" style="border-left:3px solid '+((data[7] && data[7]!=-1 && data[7]!=null)?data[7]:"#"+option.paletteDefault)+';padding-left:5px"><div id="bbit-cs-buddle-timeshow" class="bubbletime"></div>'
                         +'<div id="bbit-cs-title" class="bubbletitle"></div>'
                         +'<div id="bbit-cs-location" class="bubblelocation"></div>'
-                        +'<div id="bbit-cs-description" class="bubbledescription"></div>';
+                        +'<div id="bbit-cs-description" class="bubbledescription"></div></div>';
                         if (option.readonly != true && (option.userEdit || option.userDel || ((option.userOwner==data[12]) && (option.userEditOwner || option.userDelOwner))))
                         {
                             csbuddle +='<div class="bbit-cs-split"><input id="bbit-cs-id" type="hidden" value=""/>';
