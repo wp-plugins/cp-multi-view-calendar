@@ -11,6 +11,7 @@ $_POST = stripslashes_deep( $_POST );
 
 $method = $_GET["method"];
 $calid = intval($_GET["calid"]);
+$_GET["id"] = intval(@$_GET["id"]);
 switch ($method) {
     case "add":
         $ret = addCalendar($calid, $this->get_param("CalendarStartTime"), $this->get_param("CalendarEndTime"), $this->get_param("CalendarTitle"), $this->get_param("IsAllDayEvent"), $this->get_param("location"));
@@ -216,7 +217,7 @@ function listCalendarByPage($calid, $list_start, $list_end, $list_order, $list_e
           $ret["end"] = strtotime($lastdate);
       }   
   }    
-  $sql = "select * from `".DC_MV_CAL."` where ".$cond." order by  ".DC_MV_CAL_FROM." ".$list_order." limit 0,".($list_eventsPerPage+1);
+  $sql = "select * from `".DC_MV_CAL."` where ".$cond." order by  ".DC_MV_CAL_FROM." ".(strtolower($list_order)=='asc'?'asc':'desc')." limit 0,".($list_eventsPerPage+1);
   $rows2 = $wpdb->get_results($sql);
   $sql = "select * from `".DC_MV_CAL."` where ".DC_MV_CAL_IDCAL."=".$calid." and rrule<>''";
   //echo $sql;

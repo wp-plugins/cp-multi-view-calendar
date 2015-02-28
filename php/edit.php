@@ -258,7 +258,7 @@ if (file_exists(dirname( __FILE__ )."/../DC_MultiViewCal/css/".$_GET["css"]."/ca
               monthNames:__MonthNameLarge,
               dayNamesShort:__WDAY,
               dayNamesMin:__WDAY2,
-              firstDay: <?php echo (isset($_GET["weekstartday"]))?$_GET["weekstartday"]:1;?>,
+              firstDay: <?php echo (isset($_GET["weekstartday"]))?intval($_GET["weekstartday"]):1;?>,
 			  changeMonth: true,
 			  showOn: "button",
 			  	 		//buttonImage: "<?php echo $path; ?>css/images/cal.gif",

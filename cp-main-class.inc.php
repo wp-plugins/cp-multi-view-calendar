@@ -478,7 +478,7 @@ var cpmvc_configmultiview0 = {"obj":"{\"params\":<?php echo $params; ?>,\n  \"aj
     public function ajax_add_calendar() { // this function is also used for updating
         global $wpdb;
         check_ajax_referer( $this->prefix, 'security' ); 
-        
+        $_POST["viewid"] = intval($_POST["viewid"]);
         // add calendar view
         $params = $this->ajax_get_posted_params();        
         if ($_POST["viewid"] == '0')
@@ -495,7 +495,7 @@ var cpmvc_configmultiview0 = {"obj":"{\"params\":<?php echo $params; ?>,\n  \"aj
     public function ajax_delete_calendar() {
         global $wpdb;
         check_ajax_referer( $this->prefix, 'security' ); 
-        
+        $_POST["id"] = intval($_POST["id"]);
         // delete calendar view
         $wpdb->delete($wpdb->prefix."dc_mv_views", array( 'id' => $_POST["id"] ));
                

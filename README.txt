@@ -254,11 +254,20 @@ The following area some sample event calendar views. You can apply or mix config
 * Fixed warning that appeared with PHP safe mode restrictions 
 * Sanitized GET parameters used in queries
 
+= 1.1.5 =
+* Fixed SQL and XSS Vulnerabilities (vulnerability was found by Joaquin Ramirez Martinez with the help Christian Mondragon Uriel Zarate)
+* Translations improved
+* Update to the ajax url paths
+* Fixed bug related to the date format
+
+Important note: If you are using the Professional version don't update via the WP dashboard but using your personal update link. Contact us if you need further information: http://wordpress.dwbooster.com/support
+
 == Upgrade Notice ==
 
-= 1.0.2 =
-* Improved plugin security 
-* Fixed warning that appeared with PHP safe mode restrictions 
-* Sanitized GET parameters used in queries
+= 1.1.5 =
+* Fixed SQL and XSS Vulnerabilities (vulnerability was found by Joaquin Ramirez Martinez with the help Christian Mondragon Uriel Zarate)
+* Translations improved
+* Update to the ajax url paths
+* Fixed bug related to the date format
  
 Important note: If you are using the Professional version don't update via the WP dashboard but using your personal update link. Contact us if you need further information: http://wordpress.dwbooster.com/support
