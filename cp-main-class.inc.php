@@ -382,7 +382,7 @@ var cpmvc_configmultiview0 = {"obj":"{\"params\":<?php echo $params; ?>,\n  \"aj
         {
             $buffer .= '<tr>';
             $buffer .= '<td>#'.$item->id.'</td>';
-            $buffer .= '<td>'.$item->title.'</td>';
+            $buffer .= '<td>'.htmlentities($item->title).'</td>';
             $buffer .= '<td nowrap style="color:#338833;font-weight:bold;">[CPMV_CALENDAR view="'.$item->id.'"]</td>';
             $buffer .= '<td>';
             $buffer .= '<a class="button" style="" href="javascript:'.$this->prefix.'Admin.sendToEditor('.$item->calid.','.$item->id.');">'.__('Publish').'</a> &nbsp; ';

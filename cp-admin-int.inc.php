@@ -23,7 +23,7 @@ $mycalendarrows = $wpdb->get_results( 'SELECT * FROM '.$wpdb->prefix.'dc_mv_cale
 <div id="normal-sortables" class="meta-box-sortables">
 
  <hr />
- <h3>These settings apply only to: <?php echo $mycalendarrows[0]->title; ?></h3>
+ <h3>These settings apply only to: <?php echo htmlentities ($mycalendarrows[0]->title); ?></h3>
 
  <div id="metabox_basic_settings" class="postbox" >
   <h3 class='hndle' style="padding:5px;"><span>Calendar Configuration / Administration</span></h3>

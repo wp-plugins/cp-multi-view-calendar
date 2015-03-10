@@ -260,14 +260,14 @@ The following area some sample event calendar views. You can apply or mix config
 * Update to the ajax url paths
 * Fixed bug related to the date format
 
+= 1.1.6 =
+* Sanitized output of items on the admin area
+
 Important note: If you are using the Professional version don't update via the WP dashboard but using your personal update link. Contact us if you need further information: http://wordpress.dwbooster.com/support
 
 == Upgrade Notice ==
 
-= 1.1.5 =
-* Fixed SQL and XSS Vulnerabilities (vulnerability was found by Joaquin Ramirez Martinez with the help Christian Mondragon Uriel Zarate)
-* Translations improved
-* Update to the ajax url paths
-* Fixed bug related to the date format
+= 1.1.6 =
+* Sanitized output of items on the admin area
  
 Important note: If you are using the Professional version don't update via the WP dashboard but using your personal update link. Contact us if you need further information: http://wordpress.dwbooster.com/support

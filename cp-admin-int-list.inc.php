@@ -12,7 +12,7 @@ global $wpdb;
 $message = "";
 if (isset($_GET['u']) && $_GET['u'] != '')
 {    
-    $wpdb->query('UPDATE `'.$wpdb->prefix.'dc_mv_calendars` SET title="'.esc_sql($_GET["name"]).'",published='.$_GET["public"].',owner="'.esc_sql($_GET["owner"]).'" WHERE id='.intval($_GET['u']));           
+    $wpdb->query('UPDATE `'.$wpdb->prefix.'dc_mv_calendars` SET title="'.esc_sql(strip_tags($_GET["name"])).'",published='.intval($_GET["public"]).',owner="'.esc_sql(strip_tags($_GET["owner"])).'" WHERE id='.intval($_GET['u']));           
     $message = "Item updated";
 }
 

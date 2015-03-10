@@ -8,7 +8,7 @@
             	<?php                  
                   $myrows = $wpdb->get_results( "SELECT * FROM ". $wpdb->prefix."dc_mv_calendars");                                                                       
                   foreach ($myrows as $item)   
-                      echo '<option value="'.$item->id.'">'.$item->title.'</option>';
+                      echo '<option value="'.$item->id.'">'.htmlentities($item->title).'</option>';
             	?>
             </select>
         </td>
