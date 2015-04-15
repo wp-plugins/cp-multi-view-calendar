@@ -2596,6 +2596,8 @@
             var theme = thindex != undefined && thindex >= 0 ? tc(thindex) : tc();
             //var theme = thindex != undefined ? tc(thindex) : tc();
             var newtemp = Tp(__SCOLLEVENTTEMP, {
+                location:"",
+                description:"",
                 bdcolor: theme[0],
                 bgcolor2: theme[0],
                 bgcolor1: theme[2],
