@@ -1668,7 +1668,7 @@
             {
                 for (var ii=0;ii<option.columnsList.length;ii++)
                 {
-                    ht.push("<td class=\"tg-col\" ch='qkadd' abbr='", dateFormat.call(dayarrs[i].date, "M/d/yyyy"), "'>");
+                    ht.push("<td class=\"tg-col\" ch='qkadd' col='"+option.columnsList[ii]+"' abbr='", dateFormat.call(dayarrs[i].date, "M/d/yyyy"), "'>");
                     var istoday = dateFormat.call(dayarrs[i].date, "yyyyMMdd") == dateFormat.call(new Date(), "yyyyMMdd");
                     // Today
                     if (istoday) {
