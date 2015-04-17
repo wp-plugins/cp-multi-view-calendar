@@ -3081,7 +3081,7 @@
             var dateshow = CalDateShow(start, end, !isallday, true);
 
             $("#bbit-cal-buddle-timeshow").html(dateshow);
-            var calwhat = $("#bbit-cal-what").val("");
+            var calwhat = $("#bbit-cal-what");
             $("#bbit-cal-allday").val(isallday ? "1" : "0");
             $("#bbit-cal-start").val(dateFormat.call(start, "M/d/yyyy HH:mm"));
             $("#bbit-cal-end").val(dateFormat.call(end, "M/d/yyyy HH:mm"));
