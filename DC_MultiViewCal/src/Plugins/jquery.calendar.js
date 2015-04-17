@@ -2947,7 +2947,7 @@
                 {
                     temparr.push('<select id="bbit-cal-what" class="textbox-fill-input">');
                     for (var i=0;i<dc_subjects.length;i++)
-                        temparr.push('<option value="'+dc_subjects[i]+'">'+dc_subjects[i]+'</option>');
+                        temparr.push('<option value="'+dc_subjects[i]+'" '+((pos.col && pos.col==dc_subjects[i])?"selected=\"selected\"":"")+'>'+dc_subjects[i]+'</option>');
                     temparr.push('</select>');
 
                 }
