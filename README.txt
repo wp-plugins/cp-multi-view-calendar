@@ -263,11 +263,19 @@ The following area some sample event calendar views. You can apply or mix config
 = 1.1.6 =
 * Sanitized output of items on the admin area
 
+= 1.1.7 =
+* Tooltip setting is now marked as default
+* New col attribute in the day view with columns
+* Pre-selection of items in quick add tooltip features
+
 Important note: If you are using the Professional version don't update via the WP dashboard but using your personal update link. Contact us if you need further information: http://wordpress.dwbooster.com/support
 
 == Upgrade Notice ==
 
-= 1.1.6 =
-* Sanitized output of items on the admin area
+= 1.1.7 =
+* Tooltip setting is now marked as default
+* New col attribute in the day view with columns
+* Pre-selection of items in quick add tooltip features
+
  
 Important note: If you are using the Professional version don't update via the WP dashboard but using your personal update link. Contact us if you need further information: http://wordpress.dwbooster.com/support
