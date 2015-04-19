@@ -148,7 +148,7 @@ class CP_MultiViewCalendar extends CP_BaseClass {
         $myrows = $wpdb->get_results( "SELECT * FROM ".$wpdb->prefix."dc_mv_views WHERE id=".intval($id) );
         $base_params = array ();
         $base_params['id'] = $myrows[0]->calid;
-        if ($myrows[0]->viewWeek == 'true') $base_params['viewDay'] = $myrows[0]->viewDay;
+        if ($myrows[0]->viewDay == 'true') $base_params['viewDay'] = $myrows[0]->viewDay;
         if ($myrows[0]->viewWeek == 'true') $base_params['viewWeek'] = $myrows[0]->viewWeek;
         if ($myrows[0]->viewMonth == 'true') $base_params['viewMonth'] = $myrows[0]->viewMonth;
         if ($myrows[0]->viewNMonth == 'true') $base_params['viewNMonth'] = $myrows[0]->viewNMonth;
@@ -282,7 +282,7 @@ var cpmvc_configmultiview0 = {"obj":"{\"params\":<?php echo $params; ?>,\n  \"aj
             }
             $base_params = array ();
             $base_params['id'] = $myrows[0]->calid;
-            if ($myrows[0]->viewWeek == 'true') $base_params['viewDay'] = $myrows[0]->viewDay;
+            if ($myrows[0]->viewDay == 'true') $base_params['viewDay'] = $myrows[0]->viewDay;
             if ($myrows[0]->viewWeek == 'true') $base_params['viewWeek'] = $myrows[0]->viewWeek;
             if ($myrows[0]->viewMonth == 'true') $base_params['viewMonth'] = $myrows[0]->viewMonth;
             if ($myrows[0]->viewNMonth == 'true') $base_params['viewNMonth'] = $myrows[0]->viewNMonth;
