@@ -3744,6 +3744,7 @@
                         var start = str_MdyyyyHHmm_todate(d.target.attr("abbr") + " " + d.cgh.sh + ":" + d.cgh.sm);
                         var end = str_MdyyyyHHmm_todate(d.target.attr("abbr") + " " + d.cgh.eh + ":" + d.cgh.em);
                         _dragevent = function() { $("#" + wrapid).remove(); $("#bbit-cal-buddle").dialog( "close" ); };
+                        try {pos.col = d.cpwrap.parent().parent().attr("col");}catch (e) {}
                         quickadd(start, end, false, pos);
                         break;
                     case 2: //week view
