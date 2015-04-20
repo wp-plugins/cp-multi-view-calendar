@@ -2791,9 +2791,9 @@
                         ss.push(" - ",fomartTimeAMPM(data[3].getHours(),data[3].getMinutes(),__MilitaryTime));
                     var ts = $("#bbit-cs-buddle-timeshow").html(ss.join(""));
                     $("#bbit-cs-id").val(data[0]);
-                    $(".bubbletitle").html(data[1]);
-                    $(".bubblelocation").html(data[9]);
-                    $(".bubbledescription").html(data[11]);
+                    $(".dialogdwm_event_content").find("#bbit-cs-title").html(data[1]);
+                    $(".dialogdwm_event_content").find("#bbit-cs-location").html(data[9]);
+                    $(".dialogdwm_event_content").find("#bbit-cs-description").html(data[11]);
 
                     bud.data("cdata", data);
                     //bud.css({ "visibility": "visible", left: pos.left, top: pos.top });
