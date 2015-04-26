@@ -2,6 +2,8 @@
 //$dc_subjects = array("title 1","title 2","title 3","title 4");
 //$dc_locations = array("location 1","location 2","location 3","location 4");
 
+// NOTE: See instructions at http://wordpress.dwbooster.com/demos/multi-view/18-lists-for-location-and-title.html
+
 
 global $arrayJS_list;
 $arrayJS_list = 'var dc_subjects = ';
