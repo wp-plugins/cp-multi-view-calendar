@@ -45,7 +45,7 @@ var i18n = jQuery.extend({}, i18n || {}, {
             "sep": "Sep",
             "oct": "Oct",
             "nov": "Nov",
-            "dec": "Dec",
+            "dec": "Dic",
             "l_jan": "Enero",
             "l_feb": "Febrero",
             "l_mar": "Marzo",
