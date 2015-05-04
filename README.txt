@@ -86,6 +86,13 @@ A: In the dashboard area go to "WordPress administration menu >> CP Multiview Ev
 
 The events edition on the public event calendar can be also (optionally) enabled, that way the website visitors can edit events directly in the event calendar without having to access through the dashboard.
 
+= Q: How show the entire title on month,week and day view? =
+
+A: Open the file "wp-content/plugins/cp-multi-view-calendar/DC_MultiViewCal/css/main.css" and add this CSS rule at end of the file:
+
+    #multicalendar .rb-i{white-space:normal}
+    
+
 = Q: How to show differents colors in the event calendar nMonth view? =
 
 A: Use the following configuration parameter:
