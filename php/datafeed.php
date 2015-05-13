@@ -57,7 +57,7 @@ echo json_encode($ret);
 function checkIfOverlappingThisEvent($id, $st, $et)
 {
     global $wpdb;
-    $sql = "select * from `".DC_MV_CAL."` where id=".intval(esc_sql($id));
+    $sql = "select * from `".DC_MV_CAL."` where id=".intval($id);
 
     $handle = $wpdb->get_results($sql);
     if ( $handle )
