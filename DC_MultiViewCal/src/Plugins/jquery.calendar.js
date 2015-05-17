@@ -2118,7 +2118,7 @@
 
             p.title = getTitle(e.event);
             p.id = "bbit_cal_event_" + e.event[0];
-            if (option.enableDrag && e.event[8] == 1) {
+            if (option.enableDrag && (option.readonly != true && (option.userEdit || ((option.userOwner==e.event[12]) && option.userEditOwner ))) && e.event[8] == 1) {
                 p.eclass = "drag";
             }
             else {
