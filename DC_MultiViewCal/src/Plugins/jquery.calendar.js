@@ -277,8 +277,6 @@
         if (option.quickUpdateUrl == null || option.quickUpdateUrl == "") {
             option.enableDrag = false;
         }
-        if ( option.readonly || !option.userEdit )
-            option.enableDrag = false;
         if (option.rowsByCategory == "dc_subjects" || option.rowsByCategory == "dc_locations" )
             option.rowsList = eval(option.rowsByCategory);
         if (option.dayWithTime && option.view=="day")
@@ -1768,7 +1766,7 @@
             p.width = (e.aQ * 100) + "%";
             p.height = (eP - sP - 4);
             p.i = index;
-            if (option.enableDrag && e.event[8] == 1 && !e.noResizer) {
+            if (option.enableDrag && (option.readonly != true && (option.userEdit || ((option.userOwner==e.event[12]) && option.userEditOwner ))) && e.event[8] == 1 && !e.noResizer) {
                 p.drag = "drag";
                 p.redisplay = "block";
             }
