@@ -2878,7 +2878,7 @@
             return false;
         }
         function dayupdate(data, start, end) {
-            if (option.quickUpdateUrl != "" && data[8] == 1 && option.readonly != true && option.userEdit) {
+            if (option.quickUpdateUrl != "" && data[8] == 1 && (option.readonly != true && (option.userEdit || ((option.userOwner==data[12]) && option.userEditOwner ))) ) {
                 if (option.isloading) {
                     return false;
                 }
