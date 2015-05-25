@@ -859,10 +859,7 @@
                                }
                              }).addClass("mv_dlg_nmonth").parent().addClass("mv_dlg");
                              $("<div id=\"mv_corner\" />").appendTo($(".mv_dlg .ui-dialog-titlebar"));
-                             try {
-                             var item = datetostr(strtodate($(this).attr("title")+" 00:00"));
-                             showDialogNMonth(dates,item,".myover");
-                             }catch (e) {}
+                             try { var item = datetostr(strtodate($(this).attr("title")+" 00:00"));showDialogNMonth(dates,item,".myover"); }catch (e) {}
                         }
                      }).bind('mouseout',function(){
                      });
