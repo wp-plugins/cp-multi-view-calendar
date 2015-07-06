@@ -10,7 +10,7 @@ define("JC_NO_OVERLAPPING_LOCATION",false);
 $_POST = stripslashes_deep( $_POST );
 
 $method = $_GET["method"];
-$calid = intval($_GET["calid"]);
+$calid = intval(@$_GET["calid"]);
 $_GET["id"] = intval(@$_GET["id"]);
 switch ($method) {
     case "add":
