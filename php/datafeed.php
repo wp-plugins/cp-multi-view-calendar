@@ -9,9 +9,13 @@ define("JC_NO_OVERLAPPING_LOCATION",false);
 
 $_POST = stripslashes_deep( $_POST );
 
-$method = $_GET["method"];
-$calid = intval(@$_GET["calid"]);
 $_GET["id"] = intval(@$_GET["id"]);
+$_GET["calid"] = intval(@$_GET["calid"]);
+$_GET["calendarId"] = intval(@$_GET["calendarId"]);
+
+$method = $_GET["method"];
+$calid = $_GET["calid"];
+
 switch ($method) {
     case "add":
         $ret = addCalendar($calid, $this->get_param("CalendarStartTime"), $this->get_param("CalendarEndTime"), $this->get_param("CalendarTitle"), $this->get_param("IsAllDayEvent"), $this->get_param("location"));

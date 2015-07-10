@@ -1,5 +1,9 @@
 <?php
 
+$_GET["id"] = intval(@$_GET["id"]);
+$_GET["calid"] = intval(@$_GET["calid"]);
+$_GET["calendarId"] = intval(@$_GET["calendarId"]);
+
 $hoursStart = (is_numeric($_GET["hoursStart"]))?$_GET["hoursStart"]:0;
 $hoursEnd = (is_numeric($_GET["hoursEnd"]))?$_GET["hoursEnd"]:23;
 

@@ -276,14 +276,15 @@ The following area some sample event calendar views. You can apply or mix config
 * Pre-selection of items in quick add tooltip features
 * Compatible with the latest WordPress 4.2.x version
 
+= 1.1.8 =
+* Fixed SQL vulnerability (thank you to Joaquin Ramirez Martinez for the report)
+
 Important note: If you are using the Professional version don't update via the WP dashboard but using your personal update link. Contact us if you need further information: http://wordpress.dwbooster.com/support
 
 == Upgrade Notice ==
 
-= 1.1.7 =
-* Tooltip setting is now marked as default
-* New col attribute in the day view with columns
-* Pre-selection of items in quick add tooltip features
+= 1.1.8 =
+* Fixed SQL vulnerability (thank you to Joaquin Ramirez Martinez for the report)
 
  
 Important note: If you are using the Professional version don't update via the WP dashboard but using your personal update link. Contact us if you need further information: http://wordpress.dwbooster.com/support
