@@ -468,7 +468,8 @@ var cpmvc_configmultiview0 = {"obj":"{\"params\":<?php echo $params; ?>,\n  \"aj
             $item = trim($item);
             if ($item != '')
             {
-                $tmp = explode("=",$item);
+                $tmppos = strpos($item, "="); //explode("=",$item);
+                $tmp = array( substr($item,0,$tmppos), substr($item,$tmppos+1) );
                 $params[$tmp[0]] = substr($tmp[1],1,strlen($tmp[1])-2);
             }
         } 
