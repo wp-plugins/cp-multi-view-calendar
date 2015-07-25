@@ -575,7 +575,7 @@ var cpmvc_configmultiview0 = {"obj":"{\"params\":<?php echo $params; ?>,\n  \"aj
         }
 
         // ...
-        echo 'Some unexpected error happened. If you see this error contact the support service at http://wordpress.dwbooster.com/support';
+        echo 'Some unexpected error happened. If you see this error contact the support service at http://wordpress.dwbooster.com/support?src=cp_nv_cal_unexpected';
 
         exit();
     }
