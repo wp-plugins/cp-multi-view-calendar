@@ -143,9 +143,7 @@ $(function() {
           }
       }
       function weekAndDay(date) {
-
-          var firstDay = new Date(date.getFullYear(), date.getMonth(), 1).getDay();
-          return (0 | date.getDate() / 7);
+            return (0 | date.getDate() / 7);
       }
       timeToUntilString= function(time) {
           var date = new Date(time);
@@ -331,7 +329,7 @@ $(function() {
                       else
                       {
                           summary += " "+i18n.dcmvcal.on_the+" "+prefixes[weekAndDay(currentDate)]+ " " +weekDaysLarge[currentDate.getDay()];
-                          format += ";BYDAY="+(weekAndDay(currentDate)+1)+weekDays[currentDate.getDay()];
+                          format += ";BYDAY="+(weekAndDay(currentDate)==4?-1:(weekAndDay(currentDate)+1))+weekDays[currentDate.getDay()];
                       }
                       if ($("#interval").val()==1)
                           summary = i18n.dcmvcal.monthly+summary;
