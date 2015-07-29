@@ -279,12 +279,17 @@ The following area some sample event calendar views. You can apply or mix config
 = 1.1.8 =
 * Fixed SQL vulnerability (thank you to Joaquin Ramirez Martinez for the report)
 
-Important note: If you are using the Professional version don't update via the WP dashboard but using your personal update link. Contact us if you need further information: http://wordpress.dwbooster.com/support
+= 1.1.9 =
+* Fixed bug related to the latest day of the month for repeat events
+* Added tracking to error codes
+* Fixed bug in parameters processing
+
 
 == Upgrade Notice ==
 
-= 1.1.8 =
-* Fixed SQL vulnerability (thank you to Joaquin Ramirez Martinez for the report)
+= 1.1.9 =
+* Fixed bug related to the latest day of the month for repeat events
+* Added tracking to error codes
+* Fixed bug in parameters processing
 
- 
 Important note: If you are using the Professional version don't update via the WP dashboard but using your personal update link. Contact us if you need further information: http://wordpress.dwbooster.com/support
