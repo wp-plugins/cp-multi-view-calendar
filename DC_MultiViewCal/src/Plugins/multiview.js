@@ -230,7 +230,7 @@ function initMultiViewCal(container,calendarId,config)
                         op.showday = op.startdate;
                     }
                     else
-                        op.mindate = "";
+                        op.startdate = "";
                     if (op.mindate && (op.mindate.length>=8) && (op.mindate.length<=10))
                     {
                         var i = op.mindate.split("-");
