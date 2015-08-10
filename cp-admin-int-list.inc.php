@@ -21,7 +21,7 @@ if ($message) echo "<div id='setting-error-settings_updated' class='updated sett
 
 ?>
 <div class="wrap">
-<h2><?php echo $this->plugin_name; ?></h2>
+<h1><?php echo $this->plugin_name; ?></h1>
 
 <script type="text/javascript">
  function cp_updateItem(id)
