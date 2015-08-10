@@ -10,7 +10,7 @@ $mycalendarrows = $wpdb->get_results( 'SELECT * FROM '.$wpdb->prefix.'dc_mv_cale
 
 ?>
 <div class="wrap">
-<h2><?php echo $this->plugin_name; ?> - Manage Data and Settings</h2>
+<h1><?php echo $this->plugin_name; ?> - Manage Data and Settings</h1>
 
 <input type="button" name="backbtn" value="Back to items list..." onclick="document.location='admin.php?page=<?php echo $this->menu_parameter; ?>_manage';">
 
