@@ -12,7 +12,7 @@ class CP_MultiViewCalendar extends CP_BaseClass {
     
     public $shorttag = 'CPMV_CALENDAR';
 
-    function CP_MultiViewCalendar()
+    function __construct()
     {
         if ( is_admin() ) { 
             add_action('wp_ajax_'.$this->prefix.'add_calendar', array($this,'ajax_add_calendar'));      
